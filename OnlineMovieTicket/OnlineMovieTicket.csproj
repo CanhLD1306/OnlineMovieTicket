@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-OnlineMovieTicket-7ba27ae7-d20c-45f1-9be2-6a355fee496b</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.36" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.36" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.36" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.36" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.36" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OnlineMovieTicket.BL\OnlineMovieTicket.BL.csproj" />
+    <ProjectReference Include="..\OnlineMovieTicket.DAL\OnlineMovieTicket.DAL.csproj" />
+  </ItemGroup>
+
+</Project>
