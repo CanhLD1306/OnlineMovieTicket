@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using OnlineMovieTicket.Models;
+using OnlineMovieTicket.ViewModels;
 
 namespace OnlineMovieTicket.Controllers
 {

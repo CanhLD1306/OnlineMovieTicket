@@ -1,4 +1,4 @@
-namespace OnlineMovieTicket.Models
+﻿namespace OnlineMovieTicket.ViewModels
 {
     public class ErrorViewModel
     {
