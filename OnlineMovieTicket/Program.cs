@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using OnlineMovieTicket.DAL.Data;
 using OnlineMovieTicket.DAL.Models;
+using OnlineMovieTicket.DAL.SeedData;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,11 +32,36 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     options.User.RequireUniqueEmail = true;
 
 })
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddScoped<RoleSeeder>();
+builder.Services.AddScoped<UserSeeder>();
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope()) 
+{
+    var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
+
+    try
+    {
+        var roleSeeder = services.GetRequiredService<RoleSeeder>();
+        var userSeeder = services.GetRequiredService<UserSeeder>();
+
+        await roleSeeder.SeedRoleAsync();
+        await userSeeder.SeedAdminUser();
+
+        logger.LogInformation("Seeding completed successfully!");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError($"Error during seeding: {ex.Message}");
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
