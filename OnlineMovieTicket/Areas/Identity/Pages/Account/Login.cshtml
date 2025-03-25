@@ -1,0 +1,58 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<div class="p-5">
+    <div class="text-center">
+        <h1 class="h4 text-gray-900 mb-4">Login</h1>
+    </div>
+    <form id="account" method="post" class="user">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group">
+            <input asp-for="Input.Email" class="form-control form-control-user"
+                id="exampleInputEmail" aria-describedby="emailHelp"
+                placeholder="Enter Email Address..." autocomplete="username">
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input asp-for="Input.Password" class="form-control form-control-user"
+                id="exampleInputPassword" placeholder="Password" autocomplete="current-password">
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <div class="custom-control custom-checkbox small">
+                <input asp-for="Input.RememberMe" class="custom-control-input" id="customCheck">
+                <label class="custom-control-label" for="customCheck">
+                    Remember Me
+                </label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-user btn-block">
+            Log in
+        </button>
+        <hr>
+        @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+        {
+            foreach (var provider in Model.ExternalLogins)
+            {
+                <button type="submit" class="btn btn-google btn-user btn-block" name="provider" value="@provider.Name">
+                    <i class="fab fa-google fa-fw"></i> Log in with @provider.DisplayName
+                </button>
+                <hr>
+            }
+        }
+    </form>
+    <div class="text-center">
+        <a class="small" asp-page="./ForgotPassword">Forgot Password?</a>
+    </div>
+    <div class="text-center">
+        <a class="small" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Create an Account!</a>
+    </div>
+</div>
+                
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

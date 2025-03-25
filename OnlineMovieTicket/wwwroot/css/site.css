@@ -16,3 +16,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.object-fit-cover{
+  object-fit: cover;
+}
