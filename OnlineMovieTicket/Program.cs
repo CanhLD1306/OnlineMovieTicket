@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using OnlineMovieTicket.DAL.Data;
 using OnlineMovieTicket.DAL.Models;
 using OnlineMovieTicket.DAL.SeedData;
-using Microsoft.Extensions.DependencyInjection;
+using OnlineMovieTicket.BL.Interfaces;
+using OnlineMovieTicket.BL.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,11 +35,36 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+var googleAuth = builder.Configuration.GetSection("Authentication:Google");
+builder.Services.AddAuthentication()
+    .AddCookie(option =>{
+        option.LoginPath = "/Account/Login";
+        option.LogoutPath = "/Account/Logout";
+        option.AccessDeniedPath = "/Account/AccessDenied";
+        option.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        option.SlidingExpiration = true;
+    })
+    .AddGoogle(option => {
+        option.ClientId = googleAuth["ClientId"] ?? throw new InvalidOperationException("Google ClientId is missing!");
+        option.ClientSecret = googleAuth["ClientSecret"] ?? throw new InvalidOperationException("Google ClientSecret is missing!");
+        option.CallbackPath = "/signin-google";
+        option.SignInScheme = IdentityConstants.ExternalScheme;
+        option.Events.OnRemoteFailure = context =>
+        {
+            context.Response.Redirect("/Identity/Account/Login");
+            context.HandleResponse();
+            return Task.CompletedTask;
+        };
+    });
+
 builder.Services.AddScoped<RoleSeeder>();
 builder.Services.AddScoped<UserSeeder>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 var app = builder.Build();
 

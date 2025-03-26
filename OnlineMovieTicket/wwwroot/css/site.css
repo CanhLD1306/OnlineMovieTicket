@@ -17,6 +17,17 @@ body {
   margin-bottom: 60px;
 }
 
-.object-fit-cover{
+.mb-10px {
+  margin-bottom: 10px !important;
+}
+
+.object-fit-cover {
   object-fit: cover;
 }
+
+.validation-message{
+  display: block;
+  min-height: 20px;
+  margin-top: 3px;
+}
+

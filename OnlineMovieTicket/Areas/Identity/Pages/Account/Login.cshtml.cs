@@ -11,28 +11,24 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using OnlineMovieTicket.DAL.Models;
+using OnlineMovieTicket.BL.Interfaces;
 
 namespace OnlineMovieTicket.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class LoginModel : PageModel
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IAuthService _authService;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, 
-            ILogger<LoginModel> logger,
-            UserManager<ApplicationUser> userManager)
+        public LoginModel(IAuthService authService, ILogger<LoginModel> logger)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            _authService = authService;
             _logger = logger;
         }
 
         [BindProperty]
-        public InputModel? Input { get; set; }
+        public InputModel Input { get; set; } = new InputModel();
 
         public IList<AuthenticationScheme>? ExternalLogins { get; set; }
 
@@ -43,13 +39,13 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
-            public string? Email { get; set; }
+            [Required(ErrorMessage = "Please enter your email.")]
+            [EmailAddress(ErrorMessage = "Invalid email format.")]
+            public string Email { get; set; } = string.Empty;
 
-            [Required]
+            [Required(ErrorMessage = "Please enter your password.")]
             [DataType(DataType.Password)]
-            public string? Password { get; set; }
+            public string Password { get; set; } = string.Empty;
 
             [Display(Name = "Remember me?")]
             public bool RememberMe { get; set; }
@@ -67,7 +63,7 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await _authService.GetExternalAuthSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
         }
@@ -76,18 +72,16 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await _authService.GetExternalAuthSchemesAsync()).ToList();
         
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
+                var (result, user) = await _authService.LoginAsync(Input.Email, Input.Password, Input.RememberMe);
+                if (result.Succeeded && user != null)
                 {
-                    var user = await _userManager.FindByEmailAsync(Input.Email);
-                    var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
-                    if(isAdmin)
+                    if(await _authService.IsAdminAsync(user))
                     {
                         _logger.LogInformation("Admin logged in.");
                         return RedirectToAction("Dashboard", "Admin");

@@ -9,38 +9,46 @@
         <h1 class="h4 text-gray-900 mb-4">Register</h1>
     </div>
     <form id="account" method="post" class="user">
-        <div asp-validation-summary="All" class="text-danger"></div>
-        <div class="form-group">
+        <div class="form-group mb-10px">
             <input asp-for="Input.Email" class="form-control form-control-user"
-                id="exampleInputEmail" aria-describedby="emailHelp"
+                aria-describedby="emailHelp"
                 placeholder="Enter Email Address..." autocomplete="username">
-            <span asp-validation-for="Input.Email" class="text-danger"></span>
+            <span asp-validation-for="Input.Email" class="text-danger small validation-message"></span>
         </div>
-        <div class="form-group">
+        <div class="form-group mb-10px">
             <input asp-for="Input.Password" class="form-control form-control-user"
-                id="exampleInputPassword" placeholder="Password" autocomplete="current-password">
-            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                id="inputPassword" placeholder="Password" autocomplete="current-password">
+            <span asp-validation-for="Input.Password" class="text-danger small validation-message"></span>
+            <ul class="text-muted small mt-1 pl-3" id="passwordRequirements">
+                <li id="req-length">At least 6 characters</li>
+                <li id="req-uppercase">At least 1 uppercase letter (A-Z)</li>
+                <li id="req-lowercase">At least 1 lowercase letter (a-z)</li>
+                <li id="req-number">At least 1 number (0-9)</li>
+                <li id="req-special">At least 1 special character (@Html.Raw("!@#$%^&*"))</li>
+            </ul>
         </div>
-        <div class="form-group">
+        <div class="form-group mb-10px">
             <input asp-for="Input.ConfirmPassword" class="form-control form-control-user"
-                id="exampleInputPassword" placeholder="Password" autocomplete="current-password">
-            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            placeholder="Confirm Password" autocomplete="current-password">
+            <span asp-validation-for="Input.ConfirmPassword" class="text-danger small validation-message"></span>
         </div>
         <button type="submit" class="btn btn-primary btn-user btn-block">
             Register
         </button>
         <hr>
-        @if ((Model.ExternalLogins?.Count ?? 0) > 0)
-        {
-            foreach (var provider in Model.ExternalLogins)
+    </form>
+    @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+    {
+        <form asp-page="./ExternalLogin" method="post" class="user">
+            @foreach (var provider in Model.ExternalLogins)
             {
                 <button type="submit" class="btn btn-google btn-user btn-block" name="provider" value="@provider.Name">
-                    <i class="fab fa-google fa-fw"></i> Log in with @provider.DisplayName
+                    <i class="fab fa-google fa-fw"></i> Countinue with @provider.DisplayName
                 </button>
                 <hr>
             }
-        }
-    </form>
+        </form>
+    }
     <div class="text-center">
         <a class="small" asp-page="./ForgotPassword">Forgot Password?</a>
     </div>
@@ -50,4 +58,24 @@
 </div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const inputPassword = document.getElementById("inputPassword");
+            const reqLength = document.getElementById("req-length");
+            const reqUppercase = document.getElementById("req-uppercase");
+            const reqLowercase = document.getElementById("req-lowercase");
+            const reqNumber = document.getElementById("req-number");
+            const reqSpecial = document.getElementById("req-special");
+
+            inputPassword.addEventListener("input", function () {
+                const password = inputPassword.value;
+                reqLength.classList.toggle("text-success", password.length >= 6);
+                reqUppercase.classList.toggle("text-success", /[A-Z]/.test(password));
+                reqLowercase.classList.toggle("text-success", /[a-z]/.test(password));
+                reqNumber.classList.toggle("text-success", /\d/.test(password));
+                reqSpecial.classList.toggle("text-success", /[@Html.Raw("!@#$%^&*")]/.test(password));
+            });
+        });
+    </script>
 }
