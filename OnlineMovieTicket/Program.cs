@@ -65,6 +65,7 @@ builder.Services.AddScoped<RoleSeeder>();
 builder.Services.AddScoped<UserSeeder>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

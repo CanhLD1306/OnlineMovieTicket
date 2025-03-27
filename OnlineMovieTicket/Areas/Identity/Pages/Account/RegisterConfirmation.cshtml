@@ -1,22 +1,34 @@
 ﻿@page
 @model RegisterConfirmationModel
 @{
-    ViewData["Title"] = "Register confirmation";
+    ViewData["Title"] = "Register Confirmation";
 }
+<div class="p-5 text-center">
+    <h3 class="text-primary"><i class="fas fa-envelope-open-text"></i> Email Confirmation</h3>
+    <hr />
 
-<h1>@ViewData["Title"]</h1>
-@{
-    if (@Model.DisplayConfirmAccountLink)
+    @if (Model.DisplayConfirmAccountLink)
     {
-<p>
-    This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
-    Normally this would be emailed: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
-</p>
+        <p class="text-muted">
+            This app does not currently have a real email sender registered.  
+            See <a href="https://aka.ms/aspaccountconf" target="_blank">these docs</a> for how to configure a real email sender.
+        </p>
+        <div class="alert alert-info">
+            <strong>Normally this would be emailed:</strong> <br />
+            <a id="confirm-link" class="btn btn-success mt-2" href="@Model.EmailConfirmationUrl">
+                <i class="fas fa-check-circle"></i> Click here to confirm your account
+            </a>
+        </div>
     }
     else
     {
-<p>
-        Please check your email to confirm your account.
-</p>
+        <p class="text-muted">
+            Please check your email inbox to confirm your account.
+        </p>
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-circle"></i> If you haven't received an email, check your spam folder.
+        </div>
     }
-}
+    
+    <a href="/" class="btn btn-primary mt-3"><i class="fas fa-home"></i> Return to Home</a>
+</div>

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using OnlineMovieTicket.BL.Interfaces;
+using OnlineMovieTicket.BL.Services;
 using OnlineMovieTicket.DAL.Models;
 
 namespace OnlineMovieTicket.Areas.Identity.Pages.Account
@@ -17,21 +18,18 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ILogger<RegisterModel> _logger;
+        private readonly IAuthService _authService;
         private readonly IEmailService _emailService;
+        private readonly ILogger<RegisterModel> _logger;
 
         public RegisterModel(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger,
-            IEmailService emailService)
+            IAuthService authService,
+            IEmailService emailService,
+            ILogger<RegisterModel> logger)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _logger = logger;
+            _authService = authService;
             _emailService = emailService;
+            _logger = logger;
         }
 
         [BindProperty]
@@ -60,23 +58,21 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
         public async Task OnGetAsync(string? returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await _authService.GetExternalAuthSchemesAsync()).ToList();
         }
 
         public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await _authService.GetExternalAuthSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
-                var result = await _userManager.CreateAsync(user, Input.Password);
-                if (result.Succeeded)
+                var (result, user) = await _authService.RegisterUserAsync(Input.Email, Input.Password);
+                if (result.Succeeded && user != null)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    var code = await _authService.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
@@ -89,13 +85,13 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
 
                     await _emailService.SendEmailAsync(Input.Email, "Confirm your email","ConfirmEmail",placeholder);
 
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    if (await _authService.IsEmailConfirmationRequiredAsync())
                     {
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        await _authService.SignInUserAsync(user);
                         return LocalRedirect(returnUrl);
                     }
                 }
@@ -104,8 +100,6 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
-
-            // If we got this far, something failed, redisplay form
             return Page();
         }
     }
