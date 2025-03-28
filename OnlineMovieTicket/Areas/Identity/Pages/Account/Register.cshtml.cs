@@ -70,8 +70,6 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
                 var (result, user) = await _authService.RegisterUserAsync(Input.Email, Input.Password);
                 if (result.Succeeded && user != null)
                 {
-                    _logger.LogInformation("User created a new account with password.");
-
                     var token = await _authService.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
@@ -80,8 +78,7 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
                             area = "Identity", 
                             userId = user.Id, 
                             token = token, 
-                            returnUrl = returnUrl, 
-                            isExternalRegister = false },
+                            returnUrl = returnUrl},
                         protocol: Request.Scheme);
                     var placeholder = new Dictionary<string, string>
                     {

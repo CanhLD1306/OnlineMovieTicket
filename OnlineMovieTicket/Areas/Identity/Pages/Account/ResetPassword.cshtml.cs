@@ -78,13 +78,12 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
             }
 
             var (result, user) = await _authService.ResetPasswordAsync(Input.Email, Input.Token, Input.Password);
-            _logger.LogInformation("Token: " + Input.Token);
             if (result.Succeeded && user != null)
             {
                 await _authService.SignInUserAsync(user);
                 return RedirectToPage("/Account/ResetPasswordConfirmation", new {
                     area = "Identity", 
-                    isExternalRegister = true
+                    isExternalRegister = Input.IsExternalRegister
                 });
             }
             foreach (var error in result.Errors)

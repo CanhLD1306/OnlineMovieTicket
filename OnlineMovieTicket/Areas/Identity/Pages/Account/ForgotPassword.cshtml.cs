@@ -11,19 +11,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using OnlineMovieTicket.DAL.Models;
+using OnlineMovieTicket.BL.Interfaces;
 
 namespace OnlineMovieTicket.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class ForgotPasswordModel : PageModel
     {
+        private readonly IAuthService _authService;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailService _emailService;
 
-        public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
+        public ForgotPasswordModel(IAuthService authService, UserManager<ApplicationUser> userManager, IEmailService emailService)
         {
+            _authService = authService;
             _userManager = userManager;
-            _emailSender = emailSender;
+            _emailService = emailService;
         }
 
         [BindProperty]
@@ -40,24 +43,33 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(Input.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                var user = await _authService.GetUserByEmail(Input.Email);
+                if (user == null || !(await _authService.IsEmailConfirmationRequiredAsync()))
                 {
                     return RedirectToPage("./ForgotPasswordConfirmation");
                 }
+                if(await _authService.IsAdminAsync(user))
+                {
+                    return Page();
+                }
 
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+                var token = await _authService.GeneratePasswordResetTokenAsync(user);
                 var callbackUrl = Url.Page(
                     "/Account/ResetPassword",
                     pageHandler: null,
-                    values: new { area = "Identity", token },
+                    values: new { 
+                        area = "Identity", 
+                        email = Input.Email, 
+                        token = token , 
+                        isExternalRegister = false},
                     protocol: Request.Scheme);
 
-                await _emailSender.SendEmailAsync(
-                    Input.Email,
-                    "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                var placeholder = new Dictionary<string, string>
+                    {
+                        { "callbackUrl", callbackUrl }
+                    };
+
+                await _emailService.SendEmailAsync(Input.Email, "Reset Your Password","ForgotPassword",placeholder);
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }
