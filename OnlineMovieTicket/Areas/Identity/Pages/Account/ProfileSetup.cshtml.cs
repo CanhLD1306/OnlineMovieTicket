@@ -80,7 +80,7 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
                 ViewData["GenderList"] = new SelectList(Enum.GetValues(typeof(Gender)));
                 return Page();
             }
-            return RedirectToPage("/Index");
+            return Redirect("~/");
         }
     }
 }

@@ -17,7 +17,7 @@
         </div>
         <div class="form-group mb-10px">
             <input asp-for="Input.Password" class="form-control form-control-user"
-                id="inputPassword" placeholder="Password" autocomplete="current-password">
+                id="inputPassword" placeholder="Password" autocomplete="new-password">
             <span asp-validation-for="Input.Password" class="text-danger small validation-message"></span>
             <ul class="text-muted small mt-1 pl-3" id="passwordRequirements">
                 <li id="req-length">At least 6 characters</li>
@@ -29,7 +29,7 @@
         </div>
         <div class="form-group mb-10px">
             <input asp-for="Input.ConfirmPassword" class="form-control form-control-user"
-            placeholder="Confirm Password" autocomplete="current-password">
+            placeholder="Confirm Password">
             <span asp-validation-for="Input.ConfirmPassword" class="text-danger small validation-message"></span>
         </div>
         <button type="submit" class="btn btn-primary btn-user btn-block">

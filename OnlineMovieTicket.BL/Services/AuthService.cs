@@ -58,9 +58,15 @@ namespace OnlineMovieTicket.BL.Services
             return (result, user);
         }
 
-        public async Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser? user)
+        public async Task<string> GenerateEmailConfirmationTokenAsync(ApplicationUser user)
         {
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+        }
+
+        public async Task<string> GeneratePasswordResetTokenAsync(ApplicationUser user)
+        {
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
         }
 
@@ -69,7 +75,7 @@ namespace OnlineMovieTicket.BL.Services
             return Task.FromResult(_userManager.Options.SignIn.RequireConfirmedAccount);
         }
 
-        public async Task SignInUserAsync(ApplicationUser? user)
+        public async Task SignInUserAsync(ApplicationUser user)
         {
             await _signInManager.SignInAsync(user, isPersistent: false);
         }
@@ -85,7 +91,7 @@ namespace OnlineMovieTicket.BL.Services
             return await _userManager.GetUserAsync(user);
         }
 
-        public async Task<IdentityResult> UpdateUserAsync(ApplicationUser? user, string firstName, string lastName, Gender gender, string? phoneNumber, string? address, DateTime? dateOfBirth)
+        public async Task<IdentityResult> UpdateUserAsync(ApplicationUser user, string firstName, string lastName, Gender gender, string? phoneNumber, string? address, DateTime? dateOfBirth)
         {
             user.FirstName = firstName;
             user.LastName = lastName;
@@ -104,14 +110,14 @@ namespace OnlineMovieTicket.BL.Services
 
         public async Task<(SignInResult Result, ApplicationUser? User)> ExternalLoginSignInAsync(ExternalLoginInfo info)
         {
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             var user = await _userManager.FindByEmailAsync(info.Principal.FindFirstValue(ClaimTypes.Email));
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             return (result, user);
         }
 
         public async Task<(IdentityResult Result, ApplicationUser? User)> RegisterExternalUserAsync(string email, ExternalLoginInfo info)
         {
-            var user = new ApplicationUser { UserName = email, Email = email };
+            var user = new ApplicationUser { UserName = email, Email = email, EmailConfirmed = true };
             var result = await _userManager.CreateAsync(user);
             
             if (result.Succeeded)
@@ -130,5 +136,26 @@ namespace OnlineMovieTicket.BL.Services
         {
             return _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
         }
+
+        public async Task<(IdentityResult Result, ApplicationUser user)> ConfirmEmailAsync(string userId, string token)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
+            return (result, user);
+        }
+        public async Task<(IdentityResult Result, ApplicationUser)> ResetPasswordAsync(string email, string token, string password)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            var decodeToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            var result = await _userManager.ResetPasswordAsync(user, decodeToken, password);
+            return (result, user);
+        }
+
+        public Task SignOutUserAsync()
+        {
+            return _signInManager.SignOutAsync();
+        }
+
     }
 }

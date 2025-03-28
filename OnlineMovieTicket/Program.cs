@@ -5,6 +5,8 @@ using OnlineMovieTicket.DAL.Models;
 using OnlineMovieTicket.DAL.SeedData;
 using OnlineMovieTicket.BL.Interfaces;
 using OnlineMovieTicket.BL.Services;
+using Microsoft.CodeAnalysis.Options;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +39,9 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     .AddDefaultTokenProviders();
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages().AddRazorPagesOptions(options =>{
+    options.Conventions.ConfigureFilter(new AutoValidateAntiforgeryTokenAttribute());
+});
 
 var googleAuth = builder.Configuration.GetSection("Authentication:Google");
 builder.Services.AddAuthentication()

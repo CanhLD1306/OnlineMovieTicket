@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
+using NuGet.Common;
 using OnlineMovieTicket.BL.Interfaces;
 using OnlineMovieTicket.DAL.Models;
 
@@ -60,7 +61,6 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
 
         public IActionResult OnPost(string provider, string? returnUrl = null)
         {
-            // Request a redirect to the external login provider.
             var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
             var properties = _authService.GetExternalAuthProperties(provider, redirectUrl);
             return new ChallengeResult(provider, properties);
@@ -71,24 +71,18 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
             if (remoteError != null)
             {
-                ErrorMessage = $"Error from external provider: {remoteError}";
                 return RedirectToPage("./Login", new {ReturnUrl = returnUrl });
             }
             var info = await _authService.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                ErrorMessage = "Error loading external login information.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
             var (result, user) = await _authService.ExternalLoginSignInAsync(info);
-            if(await _authService.IsAdminAsync(user))
-            {
-                return RedirectToPage("./Login", new {ReturnUrl = returnUrl });
-            }
             if (result.Succeeded)
             {
-                return LocalRedirect(returnUrl);
+                return RedirectToPage("./");
             }
             if (result.IsLockedOut)
             {
@@ -96,20 +90,11 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
             }
             else
             {
-                ReturnUrl = returnUrl;
-                ProviderDisplayName = info.ProviderDisplayName;
-                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
-                {
-                    Input = new InputModel
-                    {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
-                    };
-                }
-                return Page();
+                return RedirectToPage("./ExternalLogin", new { handler = "Confirmation", returnUrl });
             }
         }
-
-        public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
+    
+        public async Task<IActionResult> OnGetConfirmationAsync(string? returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             var info = await _authService.GetExternalLoginInfoAsync();
@@ -117,39 +102,20 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
             {
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
-
-            if (ModelState.IsValid)
+            var email = info.Principal?.FindFirstValue(ClaimTypes.Email);
+            var (result, user) = await _authService.RegisterExternalUserAsync(email, info);
+            if (result.Succeeded && user != null)
             {
-                var (result, user) = await _authService.RegisterExternalUserAsync(Input.Email, info);
-                if (result.Succeeded)
-                {
-                    var code = await _authService.GenerateEmailConfirmationTokenAsync(user);
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code },
-                        protocol: Request.Scheme);
-                    var placeholder = new Dictionary<string, string>
-                    {
-                        { "callbackUrl", callbackUrl }
-                    };
-                    await _emailService.SendEmailAsync(Input.Email, "Confirm your email","ConfirmEmail",placeholder);
-
-                    if (await _authService.IsEmailConfirmationRequiredAsync())
-                    {
-                        return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
-                    }
-
-                    await _authService.SignInUserAsync(user);
-
-                    return LocalRedirect(returnUrl);
-                }
-
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                var token = await _authService.GeneratePasswordResetTokenAsync(user);
+                return RedirectToPage("ResetPassword", new 
+                { 
+                    email = user.Email, 
+                    isExternalRegister = true,
+                    returnUrl = returnUrl, 
+                    token = token 
+                });
             }
+
             ProviderDisplayName = info.ProviderDisplayName;
             ReturnUrl = returnUrl;
             return Page();

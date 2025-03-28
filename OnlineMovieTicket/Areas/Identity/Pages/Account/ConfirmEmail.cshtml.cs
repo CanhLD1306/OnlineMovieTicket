@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using OnlineMovieTicket.BL.Interfaces;
 using OnlineMovieTicket.DAL.Models;
 using SQLitePCL;
 
@@ -16,39 +17,35 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class ConfirmEmailModel : PageModel
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IAuthService _authService;
         private readonly ILogger<ConfirmEmailModel> _logger;
 
-        public ConfirmEmailModel(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<ConfirmEmailModel> logger)
+        public ConfirmEmailModel(IAuthService authService, ILogger<ConfirmEmailModel> logger)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            _authService = authService;
             _logger = logger;
         }
 
         [TempData]
         public string? StatusMessage { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string userId, string code)
+        public async Task<IActionResult> OnGetAsync(string userId, string token, bool isExternalRegister)
         {
-            if (userId == null || code == null)
+            if (userId == null || token == null)
             {
                 return RedirectToPage("/Index");
             }
 
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{userId}'.");
+            var (result, user) = await _authService.ConfirmEmailAsync(userId, token);
+            if(result.Succeeded && user != null){
+                await _authService.SignInUserAsync(user);
+                if(isExternalRegister)
+                {
+                    return RedirectToPage("./ResetPassword");
+                }
+                return RedirectToPage("./ProfileSetup");
             }
-            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-            var result = await _userManager.ConfirmEmailAsync(user, code);
-            if(!result.Succeeded){
-                return BadRequest("Email confirmation failed.");
-            }
-            await _signInManager.SignInAsync(user, isPersistent: false);
-            return RedirectToPage("./ProfileSetup");
+            return Page();
         }
     }
 }

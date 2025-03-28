@@ -72,11 +72,16 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var code = await _authService.GenerateEmailConfirmationTokenAsync(user);
+                    var token = await _authService.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                        values: new { 
+                            area = "Identity", 
+                            userId = user.Id, 
+                            token = token, 
+                            returnUrl = returnUrl, 
+                            isExternalRegister = false },
                         protocol: Request.Scheme);
                     var placeholder = new Dictionary<string, string>
                     {
@@ -87,7 +92,7 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
 
                     if (await _authService.IsEmailConfirmationRequiredAsync())
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        return RedirectToPage("RegisterConfirmation");
                     }
                     else
                     {
