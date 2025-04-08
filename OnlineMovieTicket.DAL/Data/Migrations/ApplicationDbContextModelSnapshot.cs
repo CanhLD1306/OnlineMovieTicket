@@ -289,8 +289,6 @@ namespace OnlineMovieTicket.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CityId");
-
                     b.ToTable("Cinemas");
                 });
 
@@ -319,6 +317,11 @@ namespace OnlineMovieTicket.DAL.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -326,8 +329,6 @@ namespace OnlineMovieTicket.DAL.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
 
                     b.ToTable("Cities");
                 });
@@ -342,8 +343,8 @@ namespace OnlineMovieTicket.DAL.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -419,38 +420,6 @@ namespace OnlineMovieTicket.DAL.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("OnlineMovieTicket.DAL.Models.Cinema", b =>
-                {
-                    b.HasOne("OnlineMovieTicket.DAL.Models.City", "City")
-                        .WithMany("Cinemas")
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("City");
-                });
-
-            modelBuilder.Entity("OnlineMovieTicket.DAL.Models.City", b =>
-                {
-                    b.HasOne("OnlineMovieTicket.DAL.Models.Country", "Country")
-                        .WithMany("Cities")
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Country");
-                });
-
-            modelBuilder.Entity("OnlineMovieTicket.DAL.Models.City", b =>
-                {
-                    b.Navigation("Cinemas");
-                });
-
-            modelBuilder.Entity("OnlineMovieTicket.DAL.Models.Country", b =>
-                {
-                    b.Navigation("Cities");
                 });
 #pragma warning restore 612, 618
         }

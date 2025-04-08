@@ -15,7 +15,10 @@ namespace OnlineMovieTicket.DAL.Models
         public long CountryId { get; set; }
         [Required]
         [MaxLength(255)]
-        public string? Name { get; set; }
+        public string Name { get; set; } = string.Empty;
+        [Required]
+        [MaxLength(255)]
+        public string PostalCode { get; set; } = string.Empty;
         [Required]
         public DateTime CreatedAt { get; set; }
         [Required]
@@ -25,10 +28,6 @@ namespace OnlineMovieTicket.DAL.Models
         [Required]
         public Guid UpdatedBy { get; set; }
         public bool IsDeleted { get; set; }
-        public virtual Country? Country { get; set; }
-
-        public virtual ICollection<Cinema>? Cinemas { get; set; }
-
 
     }
 }

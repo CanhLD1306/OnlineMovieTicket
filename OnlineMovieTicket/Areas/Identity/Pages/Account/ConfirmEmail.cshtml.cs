@@ -38,11 +38,11 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
 
             var (result, user) = await _authService.ConfirmEmailAsync(userId, token);
             if(result.Succeeded && user != null){
-                await _authService.SignInUserAsync(user);
                 if(isExternalRegister)
                 {
                     return RedirectToPage("./ResetPassword");
                 }
+                await _authService.SignInUserAsync(user);
                 return RedirectToPage("./ProfileSetup");
             }
             return Page();

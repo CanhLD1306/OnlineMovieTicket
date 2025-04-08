@@ -37,7 +37,7 @@
         </button>
         <hr>
     </form>
-    @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+    @if (Model.ExternalLogins != null)
     {
         <form asp-page="./ExternalLogin" method="post" class="user">
             @foreach (var provider in Model.ExternalLogins)

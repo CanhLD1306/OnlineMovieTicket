@@ -13,10 +13,10 @@ namespace OnlineMovieTicket.DAL.Models
         public long Id { get; set; }
         [Required]
         [MaxLength(255)]
-        public string? Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         [Required]
-        [MaxLength(255)]
-        public string? Code { get; set; }
+        [MaxLength(50)]
+        public string Code { get; set; } = string.Empty;
         [Required]
         public DateTime CreatedAt { get; set; }
         [Required]
@@ -27,6 +27,5 @@ namespace OnlineMovieTicket.DAL.Models
         public Guid UpdatedBy { get; set; }
         public bool IsDeleted { get; set; }
 
-        public virtual ICollection<City>? Cities { get; set; }
     }
 }

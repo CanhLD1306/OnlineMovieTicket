@@ -9,21 +9,20 @@
     <div class="text-center">
         <h1 class="h4 text-gray-900 mb-4">Login</h1>
     </div>
-    <form id="account" method="post" class="user">
+    <form id="loginForm" method="post" class="user">
         <div class="form-group mb-10px">
-            <input asp-for="Input.Email" class="form-control form-control-user"
-                aria-describedby="emailHelp"
+            <input asp-for="Input.Email" class="form-control form-control-user" aria-describedby="emailHelp"
                 placeholder="Enter Email Address..." autocomplete="username">
             <span asp-validation-for="Input.Email" class="text-danger small validation-message"></span>
         </div>
         <div class="form-group mb-10px">
-            <input asp-for="Input.Password" class="form-control form-control-user"
-                placeholder="Password" autocomplete="current-password">
+            <input asp-for="Input.Password" class="form-control form-control-user" placeholder="Password"
+                autocomplete="current-password">
             <span asp-validation-for="Input.Password" class="text-danger small validation-message"></span>
         </div>
         <div class="form-group">
             <div class="custom-control custom-checkbox small">
-                <input asp-for="Input.RememberMe" class="custom-control-input">
+                <input asp-for="Input.RememberMe" id="customCheck" class="custom-control-input">
                 <label class="custom-control-label" for="customCheck">
                     Remember Me
                 </label>
@@ -34,7 +33,7 @@
         </button>
         <hr>
     </form>
-    @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+    @if (Model.ExternalLogins != null)
     {
         <form asp-page="./ExternalLogin" method="post" class="user">
             @foreach (var provider in Model.ExternalLogins)
@@ -53,7 +52,37 @@
         <a class="small" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Create an Account!</a>
     </div>
 </div>
-                
+
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial"/>
+    <script>
+    $(document).ready(function () {
+            $("#loginForm").submit(function (event) {
+                event.preventDefault();
+                if (!$(this).valid()) {
+                    return;
+                }
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: $(this).attr("action"),
+                    type: "POST",
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            setTimeout(function () {
+                                window.location.href = response.data;
+                            }, 2000);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function () {
+                        toastr.error("An error occurred. Please try again!");
+                    }
+                });
+            });
+        });
+    </script>
 }

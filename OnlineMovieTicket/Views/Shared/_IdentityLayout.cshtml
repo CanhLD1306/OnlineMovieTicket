@@ -14,10 +14,11 @@
     <link href="~/Admin/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" asp-append-version="true">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
           rel="stylesheet">
+    
     <link href="~/Admin/css/Admin.min.css" rel="stylesheet" asp-append-version="true">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/OnlineMovieTicket.styles.css" asp-append-version="true" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 
 <body class="bg-gradient-primary">
@@ -44,7 +45,9 @@
     <script src="~/Admin/vendor/jquery/jquery.min.js" asp-append-version="true"></script>
     <script src="~/Admin/vendor/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <script src="~/Admin/vendor/jquery-easing/jquery.easing.min.js" asp-append-version="true"></script>
-    <script src="~/Admin/js/Admin.min.js" asp-append-version="true"></script>
+    <script src="~/Admin/js/sb-admin-2.min.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="~/js/notification.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 

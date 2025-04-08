@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace OnlineMovieTicket.Areas.Admin.Controllers
 {
-    [Area("Admin")]
-    [Authorize(Roles = "Admin")]
-    public class DashboardController : Controller
+    public class DashboardController : BaseController
     {
+        
         public IActionResult Index()
         {
             return View();

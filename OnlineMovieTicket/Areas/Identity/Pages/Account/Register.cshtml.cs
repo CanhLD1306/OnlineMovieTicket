@@ -86,16 +86,7 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
                     };
 
                     await _emailService.SendEmailAsync(Input.Email, "Confirm your email","ConfirmEmail",placeholder);
-
-                    if (await _authService.IsEmailConfirmationRequiredAsync())
-                    {
-                        return RedirectToPage("RegisterConfirmation");
-                    }
-                    else
-                    {
-                        await _authService.SignInUserAsync(user);
-                        return LocalRedirect(returnUrl);
-                    }
+                    return RedirectToPage("RegisterConfirmation");
                 }
                 foreach (var error in result.Errors)
                 {

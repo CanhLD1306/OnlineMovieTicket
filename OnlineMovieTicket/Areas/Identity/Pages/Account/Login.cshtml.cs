@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using OnlineMovieTicket.BL.Interfaces;
+using OnlineMovieTicket.BL.DTOs;
 
 namespace OnlineMovieTicket.Areas.Identity.Pages.Account
 {
@@ -68,36 +69,27 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _authService.GetExternalAuthSchemesAsync()).ToList();
-        
+
             if (ModelState.IsValid)
             {
-                var (result, user) = await _authService.LoginAsync(Input.Email, Input.Password, Input.RememberMe);
+                var (result, user) = await _authService.LoginEmailAsync(Input.Email, Input.Password, Input.RememberMe);
                 if (result.Succeeded && user != null)
                 {
-                    if(await _authService.IsAdminAsync(user))
-                    {
-                        _logger.LogInformation("Admin logged in.");
-                        return RedirectToAction("Dashboard", "Admin");
-                    }
-                    _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
-                }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    var redirectUrl = await _authService.IsAdminAsync(user) 
+                    ? Url.Action("Index", "Dashboard", new { area = "Admin" }, protocol: Request.Scheme)
+                    : returnUrl;
+                    return new JsonResult(new Response<string>(true, "Login successful!", redirectUrl));
                 }
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
+                    return new JsonResult(new Response<string>(false, "Your account is lockout. Please try again!"));
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
+                    return new JsonResult(new Response<string>(false, "Invalid email or password!"));
                 }
             }
-            return Page();
+            return new JsonResult(new Response<string>(false, "Invalid email or password!"));
         }
     }
 }

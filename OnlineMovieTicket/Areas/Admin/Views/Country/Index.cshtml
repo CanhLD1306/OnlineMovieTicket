@@ -1,0 +1,63 @@
+@{
+    ViewData["Title"] = "Country Management";
+}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Country Management</h1>
+    <a id="addBtn" class="btn btn-primary btn-icon-split btn-sm cursor-pointer">
+        <span class="icon text-white">
+            <i class="fas fa-plus"></i>
+        </span>
+        <span class="text">Add New Country</span>
+    </a>
+</div>
+<div class="mb-3 w-25">
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">
+                <i class="fas fa-search"></i>
+            </span>
+        </div>
+        <input type="text" id="searchTerm" class="form-control" placeholder="Search by Name or Code">
+    </div>
+</div>
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="countriesTable" class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="sort-header" data-sort="Name">
+                            Name <i class="fas fa-sort" id="sort-icon-Name"></i>
+                        </th>
+                        <th class="sort-header" data-sort="Code">
+                            Code <i class="fas fa-sort" id="sort-icon-Code"></i>
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="modalPlaceholder">
+    <div class="modal fade" id="countryModal" tabindex="-1" role="dialog" aria-labelledby="countryModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        const urlGetCountries = '@Url.Action("GetCountries", "Country", new { area = "Admin" })';
+        const urlAdd = '@Url.Action("Add", "Country", new { area = "Admin" })';
+        const urlEdit = '@Url.Action("Edit", "Country", new { area = "Admin" })';
+        const urlDelete = '@Url.Action("Delete", "Country", new { area = "Admin" })';
+        const urlDeleteConfirm = '@Url.Action("DeleteConfirm", "Country", new { area = "Admin" })';
+    </script>
+    <script src="~/Admin/js/Country.js"></script>
+}

@@ -7,6 +7,11 @@ using OnlineMovieTicket.BL.Interfaces;
 using OnlineMovieTicket.BL.Services;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.AspNetCore.Mvc;
+using OnlineMovieTicket.DAL.Interfaces;
+using OnlineMovieTicket.DAL.Repositories;
+using OnlineMovieTicket.BL.Mapping;
+using Microsoft.Extensions.Options;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,11 +70,34 @@ builder.Services.AddAuthentication()
         };
     });
 
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowSpecific", policy =>{
+        policy.WithOrigins("https://localhost:7019")
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddScoped<RoleSeeder>();
 builder.Services.AddScoped<UserSeeder>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICinemaRepository, CinemaRepository>();
+builder.Services.AddScoped<ICinemaService, CinemaService>();
+builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<ICityRepository, CityRepository>();
+builder.Services.AddScoped<ICityService, CityService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
+
+
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("RequireUserRole", policy => policy.RequireRole("User"));
+});
 
 var app = builder.Build();
 
@@ -106,6 +134,7 @@ else
     app.UseHsts();
 }
 
+app.UseCors("AllowSpecific");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
