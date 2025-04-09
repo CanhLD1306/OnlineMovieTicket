@@ -21,24 +21,31 @@ namespace OnlineMovieTicket.BL.Services
             _authService = authService;
             _mapper = mapper;
         }
-            public async Task<CountriesList> GetCountriesAsync(CountryQueryDTO queryDTO)
-            {
-                var (Countries, totalCount, filterCount) = await _countryRepository.GetCountriesAsync(
-                                                                        queryDTO.SearchTerm,
-                                                                        queryDTO.PageNumber,
-                                                                        queryDTO.PageSize,
-                                                                        queryDTO.SortBy,
-                                                                        queryDTO.IsDescending
-                                                                    );
-                var countriesDTO = _mapper.Map<IEnumerable<CountryDTO>>(Countries);
 
-                return new CountriesList
-                {
-                    Countries = countriesDTO,
-                    TotalCount = totalCount,
-                    FilterCount = filterCount
-                };
-            }
+        public async Task<IEnumerable<CountryDTO>> GetAllCountriesAsync()
+        {
+            var countries = await _countryRepository.GetAllCountriesAsync();
+            return _mapper.Map<IEnumerable<CountryDTO>>(countries);
+        }
+
+        public async Task<CountriesList> GetCountriesAsync(CountryQueryDTO queryDTO)
+        {
+            var (countries, totalCount, filterCount) = await _countryRepository.GetCountriesAsync(
+                                                                    queryDTO.SearchTerm,
+                                                                    queryDTO.PageNumber,
+                                                                    queryDTO.PageSize,
+                                                                    queryDTO.SortBy,
+                                                                    queryDTO.IsDescending
+                                                                );
+            var countriesDTO = _mapper.Map<IEnumerable<CountryDTO>>(countries);
+
+            return new CountriesList
+            {
+                Countries = countriesDTO,
+                TotalCount = totalCount,
+                FilterCount = filterCount
+            };
+        }
 
         public async Task<Response<CountryDTO>> GetCountryByIdAsync(long id)
         {
@@ -138,7 +145,7 @@ namespace OnlineMovieTicket.BL.Services
                     return new Response(false, "Delete country fail " + ex.Message);
                 }
             }
-        }        
+        }
     }
 }
 

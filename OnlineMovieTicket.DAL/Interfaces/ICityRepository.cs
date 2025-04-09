@@ -3,13 +3,16 @@ namespace OnlineMovieTicket.DAL.Interfaces
 {
     public interface ICityRepository
     {
-        Task<(IEnumerable<City>, int TotalCount)> GetCityAsync(
+        Task<(IEnumerable<City>, int TotalCount, int FilterCount)> GetCitiesAsync(
             string? searchTerm, 
+            long CountryId,
             int pageNumber, 
             int pageSize, 
-            string? sortBy, 
+            string sortBy, 
             bool isDescending);
         Task<City?> GetCityByIdAsync(long id);
+        Task<City?> GetCityByNameAsync(long id, string name);
+        Task<City?> GetCityByPostalCodeAsync(long id, string postalCode);
         Task AddCityAsync(City city);
         Task UpdateCityAsync(City city);
     }

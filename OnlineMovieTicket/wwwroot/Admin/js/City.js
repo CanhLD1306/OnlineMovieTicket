@@ -1,24 +1,25 @@
 $(document).ready(function () {
 
-    // List, search, filter and sort country in table
+    // List, search, filter and sort city in table
 
     let sortBy = "CreatedAt";
     let isDescending = true;
     let isAdjustingPage = false;
 
-    $('#countriesTable').DataTable({
+    $('#citiesTable').DataTable({
         processing: true,
         serverSide: true,
         searching: false,
         ordering: false,
         lengthMenu: [5,10,25,50],
         ajax: {
-            url: urlGetCountries,
+            url: urlGetCities,
             type: 'POST',
             data: function (d) {
                 return {
                     Draw: d.draw,
                     SearchTerm: $('#searchTerm').val(),
+                    CountryId: $('#countryFilter').val(),
                     PageNumber: (d.start / d.length) + 1,
                     PageSize: d.length,
                     SortBy: sortBy,
@@ -28,14 +29,15 @@ $(document).ready(function () {
         },  
         columns: [
             { "data": 'name' },
-            { "data": 'code' },
+            { "data": 'postalCode' },
+            { "data": 'countryName' },
             {
                 "data": null,
                 "render": function (data, type, row) {
-                    return `<a class='btn btn-sm btn-info btn-edit-country' title='Edit' data-id='${row.id}'>
+                    return `<a class='btn btn-sm btn-info btn-edit-city' title='Edit' data-id='${row.id}'>
                                 <i class='fas fa-edit'></i>
                             </a>
-                            <a class='btn btn-sm btn-danger ml-1 btn-delete-country' title='Delete' data-id='${row.id}'>
+                            <a class='btn btn-sm btn-danger ml-1 btn-delete-city' title='Delete' data-id='${row.id}'>
                                 <i class='fas fa-trash'></i>
                             </a>`;
                 }
@@ -48,7 +50,7 @@ $(document).ready(function () {
     });
 
     $('#searchTerm').on('input', function (e) {
-        $('#countriesTable').DataTable().ajax.reload();
+        $('#citiesTable').DataTable().ajax.reload();
     });
 
     function toggleSort(clickedSortBy) {
@@ -59,8 +61,10 @@ $(document).ready(function () {
             isDescending = true;
         }
         updateSortIcons();
-        $('#countriesTable').DataTable().ajax.reload();
+        $('#citiesTable').DataTable().ajax.reload();
     }
+
+
 
     function updateSortIcons() {
         $('.sort-header i').removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
@@ -79,7 +83,12 @@ $(document).ready(function () {
         toggleSort(clickedSort);
     });
 
-    // Add new Country
+    $('#countryFilter').on('change', function () {
+        const selectedCountryId = $(this).val();
+        $('#citiesTable').DataTable().ajax.reload();
+    });
+
+    // Add new City
 
     $('#addBtn').click(function(e) {
         e.preventDefault();
@@ -87,9 +96,9 @@ $(document).ready(function () {
             url: urlAdd,
             type: 'GET',
             success: function (response) {
-                $('#countryModal .modal-content').html(response);
-                $.validator.unobtrusive.parse('#addCountryForm');
-                $('#countryModal').modal('show');
+                $('#cityModal .modal-content').html(response);
+                $.validator.unobtrusive.parse('#addCityForm');
+                $('#cityModal').modal('show');
             },
             error: function (xhr, status, error) {
                 toastr.error('There was an error processing your request: ' + error);
@@ -97,9 +106,9 @@ $(document).ready(function () {
         });
     });
 
-    $(document).on('submit', '#addCountryForm', function (e) {
+    $(document).on('submit', '#addCityForm', function (e) {
         e.preventDefault();
-        if (!$('#addCountryForm').valid()) {
+        if (!$('#addCityForm').valid()) {
             return;
         }
         var token = $('input[name="__RequestVerificationToken"]').val();
@@ -114,8 +123,8 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.success) {
                     toastr.success(response.message);
-                    $('#countryModal').modal('hide');
-                    $('#countriesTable').DataTable().ajax.reload(null, false);
+                    $('#cityModal').modal('hide');
+                    $('#citiesTable').DataTable().ajax.reload(null, false);
                 } else {
                     toastr.error(response.message);
                 }
@@ -126,9 +135,9 @@ $(document).ready(function () {
         });
     });
 
-    // Edit country
+    // Edit city
 
-    $(document).on('click', '.btn-edit-country', function (e) {
+    $(document).on('click', '.btn-edit-city', function (e) {
         e.preventDefault();
         var id = $(this).data('id');
         $.ajax({
@@ -137,9 +146,9 @@ $(document).ready(function () {
             data: { id: id },           
             success: function (response) {
                 if (response) {
-                    $('#countryModal .modal-content').html(response);
-                    $.validator.unobtrusive.parse('#editCountryForm');
-                    $('#countryModal').modal('show');
+                    $('#cityModal .modal-content').html(response);
+                    $.validator.unobtrusive.parse('#editCityForm');
+                    $('#cityModal').modal('show');
                 } else {
                     toastr.error(response.message);
                 }
@@ -150,7 +159,7 @@ $(document).ready(function () {
         });
     });
 
-    $(document).on('submit', '#editCountryForm', function (e) {
+    $(document).on('submit', '#editCityForm', function (e) {
         e.preventDefault();
         if (!$(this).valid()) {
             return;
@@ -167,8 +176,8 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.success) {
                     toastr.success(response.message);
-                    $('#countryModal').modal('hide');
-                    $('#countriesTable').DataTable().ajax.reload(null, false);
+                    $('#cityModal').modal('hide');
+                    $('#citiesTable').DataTable().ajax.reload(null, false);
                 } else {
                     toastr.error(response.message);
                 }
@@ -179,8 +188,8 @@ $(document).ready(function () {
         });
     });
 
-    // Delete country
-    $(document).on('click', '.btn-delete-country', function (e) {
+    // Delete city
+    $(document).on('click', '.btn-delete-city', function (e) {
         e.preventDefault();
         var id = $(this).data('id');
         $.ajax({
@@ -189,8 +198,8 @@ $(document).ready(function () {
             data: { id: id },           
             success: function (response) {
                 if (response) {
-                    $('#countryModal .modal-content').html(response);
-                    $('#countryModal').modal('show');
+                    $('#cityModal .modal-content').html(response);
+                    $('#cityModal').modal('show');
                 } else {
                     toastr.error(response.message);
                 }
@@ -201,7 +210,7 @@ $(document).ready(function () {
         });
     });
 
-    $(document).on('submit', '#deleteCountryForm', function (e) {
+    $(document).on('submit', '#deleteCityForm', function (e) {
         e.preventDefault();
         if (!$(this).valid()) {
             return;
@@ -218,8 +227,8 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.success) {
                     toastr.success(response.message);
-                    $('#countryModal').modal('hide');
-                    $('#countriesTable').DataTable().ajax.reload(null, false);
+                    $('#cityModal').modal('hide');
+                    $('#citiesTable').DataTable().ajax.reload(null, false);
                 } else {
                     toastr.error(response.message);
                 }
@@ -233,16 +242,16 @@ $(document).ready(function () {
     // another
 
     $(document).on('hidden.bs.modal', '.modal', function () {
-        $('#countryModal .modal-content').html('');
+        $('#cityModal .modal-content').html('');
     });
 
-    $('#countriesTable').on('draw.dt', function () {
+    $('#citiesTable').on('draw.dt', function () {
         if (isAdjustingPage) {
             isAdjustingPage = false;
             return;
         }
 
-        let table = $('#countriesTable').DataTable();
+        let table = $('#citiesTable').DataTable();
         let pageInfo = table.page.info();
         let currentPage = pageInfo.page;
         let currentPageRowCount = table.rows({ page: 'current' }).count();

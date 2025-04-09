@@ -13,6 +13,15 @@ namespace OnlineMovieTicket.DAL.Repositories
         {
             _context = context;
         }
+
+        public async Task<IEnumerable<Country>> GetAllCountriesAsync()
+        {
+            var countries = await _context.Countries
+                                            .Where(c => !c.IsDeleted)
+                                            .ToListAsync();
+            return (countries);
+        }
+
         public async Task<(IEnumerable<Country> countries, int totalCount, int filterCount)> GetCountriesAsync(
             string? searchTerm,
             int pageNumber, 

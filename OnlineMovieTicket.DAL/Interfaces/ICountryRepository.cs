@@ -1,8 +1,10 @@
+using System.Collections;
 using OnlineMovieTicket.DAL.Models;
 namespace OnlineMovieTicket.DAL.Interfaces
 {
     public interface ICountryRepository
     {
+        Task<IEnumerable<Country>> GetAllCountriesAsync();
         Task<(IEnumerable<Country> countries, int totalCount, int filterCount)> GetCountriesAsync(
             string? searchTerm, 
             int pageNumber, 
