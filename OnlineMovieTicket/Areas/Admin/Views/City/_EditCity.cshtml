@@ -8,21 +8,21 @@
         </button>
     </div>
     <div class="modal-body">
-        <input type="hidden" name="Id" id="editCityId" value="@Model.Id" />
+        <input type="hidden" asp-for="@Model.Id" value="@Model.Id" />
         <div class="form-group">
-            <label for="name">City Name<span class="text-danger">*</span></label>
-            <input asp-for="@Model.Name" id="name" type="text" class="form-control">
+            <label asp-for="@Model.Name">City Name<span class="text-danger">*</span></label>
+            <input asp-for="@Model.Name" type="text" class="form-control">
             <span asp-validation-for="@Model.Name" class="text-danger small validation-message"></span>
         </div>
         <div class="form-group">
-            <label for="code">Postal Code<span class="text-danger">*</span></label>
-            <input asp-for="@Model.PostalCode" id="code" type="text" class="form-control">
+            <label asp-for="@Model.PostalCode">Postal Code<span class="text-danger">*</span></label>
+            <input asp-for="@Model.PostalCode" type="text" class="form-control">
             <span asp-validation-for="@Model.PostalCode" class="text-danger small validation-message"></span>
         </div>
         <div class="form-group">    
             <label asp-for="@Model.CountryId">Country</label>
-            <select asp-for="@Model.CountryId" class="form-control" asp-items="@ViewBag.Countries">
-                <option value="0">-- Select Country --</option>
+            <select asp-for="@Model.CountryId" id="editCountrySelected" class="form-control" data-selected="@Model.CountryId">
+                <option value="">-- Select Country --</option>
             </select>
             <span asp-validation-for="@Model.CountryId" class="text-danger small validation-message"></span>
         </div>

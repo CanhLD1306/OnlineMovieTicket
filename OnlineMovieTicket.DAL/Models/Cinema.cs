@@ -31,5 +31,6 @@ namespace OnlineMovieTicket.DAL.Models
         [Required]
         public Guid UpdatedBy { get; set; }
         public bool IsDeleted { get; set; }
+        public City? City { get; set; }
     }
 }

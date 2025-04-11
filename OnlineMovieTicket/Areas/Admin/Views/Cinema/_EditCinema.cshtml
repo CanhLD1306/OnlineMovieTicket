@@ -1,0 +1,47 @@
+@model OnlineMovieTicket.BL.DTOs.Cinema.CinemaDTO
+<form id="editCinemaForm">
+    @Html.AntiForgeryToken()
+    <div class="modal-header">
+        <h5 class="modal-title" id="editCinemaModalLabel">Edit Cinema</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <input type="hidden" asp-for="@Model.Id" value="@Model.Id" />
+        <div class="form-group">
+            <label asp-for="@Model.Name">Cinema Name<span class="text-danger"> *</span></label>
+            <input asp-for="@Model.Name" type="text" class="form-control">
+            <span asp-validation-for="@Model.Name" class="text-danger small validation-message"></span>
+        </div>
+        <div class="form-group">    
+            <label asp-for="@Model.CountryId">Country <span class="text-danger"> *</span></label>
+            <select asp-for="@Model.CountryId" id="editCountrySelected" class="form-control" data-selected="@Model.CountryId">
+                <option value="">-- Select Country --</option>
+            </select>
+            <span asp-validation-for="@Model.CountryId" class="text-danger small validation-message"></span>
+        </div>
+        <div class="form-group">    
+            <label asp-for="@Model.CityId">City <span class="text-danger"> *</span></label>
+            <select asp-for="@Model.CityId" id="editCitySelected" class="form-control" data-selected="@Model.CityId" disabled>
+                <option value="">-- Select City --</option>
+            </select>
+            <span asp-validation-for="@Model.CityId" class="text-danger small validation-message"></span>
+        </div>
+        <div class="form-group">
+            <label for="code">Address</label>
+            <input asp-for="@Model.Address" type="text" class="form-control">
+            <span asp-validation-for="@Model.Address" class="text-danger small validation-message"></span>
+        </div>
+        <input type="hidden" asp-for="@Model.TotalRooms" value="@Model.TotalRooms" />
+        <input type="hidden" asp-for="@Model.IsAvailable" value="@Model.IsAvailable" />
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>
+
+
+

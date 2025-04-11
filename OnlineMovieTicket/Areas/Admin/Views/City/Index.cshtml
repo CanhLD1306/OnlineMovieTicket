@@ -21,13 +21,9 @@
             <input type="text" id="searchTerm" class="form-control" placeholder="Search by Name or PostalCode">
         </div>  
     </div>
-    <div class="mb-3 w-25 ml-3">
+    <div class="w-25 ml-3">
         <select id="countryFilter" class="form-control">
-            <option value="0">All Countries</option>
-            @foreach (var country in (List<CountryDTO>)ViewBag.Countries)
-            {
-                <option value="@country.Id">@country.Name</option>
-            }
+            <option value="">All Countries</option>
         </select>
     </div>
 </div> 
@@ -47,7 +43,7 @@
                         <th>
                             Country
                         </th>
-                        <th>Action</th>
+                        <th></th>
                     </tr>
                 </thead>
             </table>
@@ -67,11 +63,12 @@
 
 @section Scripts {
     <script>
+        const urlGetAllCountries = '@Url.Action("GetAllCountries", "Country", new { area = "Admin" })';
         const urlGetCities = '@Url.Action("GetCities", "City", new { area = "Admin" })';
         const urlAdd = '@Url.Action("Add", "City", new { area = "Admin" })';
         const urlEdit = '@Url.Action("Edit", "City", new { area = "Admin" })';
         const urlDelete = '@Url.Action("Delete", "City", new { area = "Admin" })';
         const urlDeleteConfirm = '@Url.Action("DeleteConfirm", "City", new { area = "Admin" })';
     </script>
-    <script src="~/Admin/js/City.js"></script>
+    <script src="~/Admin/js/City.js" asp-append-version="true"></script>
 }

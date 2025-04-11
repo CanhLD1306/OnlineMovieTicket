@@ -22,7 +22,11 @@ namespace OnlineMovieTicket.BL.Services
             _mapper = mapper;
         }
 
-        
+        public async Task<IEnumerable<CityDTO>> GetAllCitiesAsync(long? id)
+        {
+            var cities = await _cityRepository.GetALlCitiesByCountryAsync(id);
+            return _mapper.Map<IEnumerable<CityDTO>>(cities);
+        }
 
         public async Task<CitiesList> GetCitiesAsync(CityQueryDTO queryDTO)
         {
@@ -143,7 +147,5 @@ namespace OnlineMovieTicket.BL.Services
                 }
             }
         }
-
-        
     }
 }

@@ -14,9 +14,22 @@ namespace OnlineMovieTicket.DAL.Repositories
         {
             _context = context;
         }
+
+        public async Task<IEnumerable<City>?> GetALlCitiesByCountryAsync(long? countryId)
+        {
+            var query = _context.Cities
+                                .Where(c => !c.IsDeleted)
+                                .AsQueryable();
+            if(countryId.HasValue && countryId != 0)
+                query = query.Where(c => c.CountryId == countryId);
+            
+            var cities = await query.ToListAsync();
+            return cities;
+        }
+
         public async Task<(IEnumerable<City>, int TotalCount, int FilterCount)> GetCitiesAsync(
             string? searchTerm,
-            long CountryId,
+            long? CountryId,
             int pageNumber, 
             int pageSize, 
             string sortBy, 
@@ -31,7 +44,7 @@ namespace OnlineMovieTicket.DAL.Repositories
         
             if (!string.IsNullOrWhiteSpace(searchTerm))
                 query = query.Where(c => c.Name.Contains(searchTerm) || c.PostalCode.Contains(searchTerm));
-            if (CountryId != 0){
+            if (CountryId.HasValue && CountryId != 0){
                 query = query.Where(c => c.CountryId == CountryId);
             }
 
@@ -100,5 +113,4 @@ namespace OnlineMovieTicket.DAL.Repositories
             await _context.SaveChangesAsync();
         }
     }
-
 }

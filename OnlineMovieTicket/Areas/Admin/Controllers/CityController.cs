@@ -21,10 +21,17 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
         }
 
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            ViewBag.Countries = await _countryService.GetAllCountriesAsync();
             return View();
+        }
+
+        [HttpGet]
+        [Route("GetAllCities")]  
+        public async Task<IActionResult> GetAllCities(long id)
+        {
+            var cities = await _cityService.GetAllCitiesAsync(id);
+            return Json(cities);
         }
 
         [HttpPost]
@@ -43,10 +50,9 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
 
         [HttpGet]
         [Route("Add")]
-        public async Task<IActionResult> Add()
+        public IActionResult Add()
         {
             var city = new CityDTO();
-            ViewBag.Countries = new SelectList(await _countryService.GetAllCountriesAsync(), "Id", "Name");
             return PartialView("_AddNewCity", city);
         }
 
@@ -75,7 +81,6 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             if(!result.Success){
                 return Json(new {success = false, message = result.Message});
             }
-            ViewBag.Countries = new SelectList(await _countryService.GetAllCountriesAsync(), "Id", "Name");
             return PartialView("_EditCity", result.Data);
         }
 
@@ -103,7 +108,7 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             if(!result.Success){
                 return Json(new {success = false, message = result.Message});
             }
-            return PartialView("_deleteCity", result.Data);
+            return PartialView("_DeleteCity", result.Data);
         }
 
         [HttpPost]

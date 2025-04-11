@@ -21,6 +21,15 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             return View();
         }
 
+        [HttpGet]
+        [Route("GetAllCountries")]  
+        public async Task<IActionResult> GetAllCountries()
+        {
+            var countries = await _countryService.GetAllCountriesAsync();
+            return Json(countries);
+        }
+
+
         [HttpPost]
         [Route("GetCountries")]  
         public async Task<IActionResult> GetCountries([FromForm] CountryQueryDTO queryModel)

@@ -1,0 +1,87 @@
+@{
+    ViewData["Title"] = "Cinema Management";
+}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Cinema Management</h1>
+    <a id="addBtn" class="btn btn-primary btn-icon-split btn-sm cursor-pointer">
+        <span class="icon text-white">
+            <i class="fas fa-plus"></i>
+        </span>
+        <span class="text">Add New Cinema</span>
+    </a>
+</div>
+
+<div class="d-flex mb-3">
+    <div class="w-25">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+            <input type="text" id="searchTerm" class="form-control" placeholder="Search by Name">
+        </div>  
+    </div>
+    <div class="w-25 ml-3">
+        <select id="countryFilter" class="form-control">
+            <option value="">All Countries</option>
+        </select>
+    </div>
+    <div class="w-25 ml-3">
+        <select id="cityFilter" class="form-control">
+            <option value="">All Cities</option>
+        </select>
+    </div>
+    <div class="w-25 ml-3">
+        <select id="statusFilter" class="form-control">
+            <option value="">All Status</option>
+            <option value="true">Available</option>
+            <option value="false">Unavailable</option>
+        </select>
+    </div>
+</div> 
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="cinemasTable" class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="sort-header" data-sort="Name">
+                            Name <i class="fas fa-sort" id="sort-icon-Name"></i>
+                        </th>
+                        <th>Country</th>
+                        <th>City</th>
+                        <th class="text-center">Room</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="modalPlaceholder">
+    <div class="modal fade" id="cinemaModal" tabindex="-1" role="dialog" aria-labelledby="cinemaModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const urlGetAllCountries = '@Url.Action("GetAllCountries", "Country", new { area = "Admin" })';
+        const urlGetAllCities = '@Url.Action("GetAllCities", "City", new { area = "Admin" })';
+        const urlGetCinemas = '@Url.Action("GetCinemas", "Cinema", new { area = "Admin" })';
+        const urlAdd = '@Url.Action("Add", "Cinema", new { area = "Admin" })';
+        const urlEdit = '@Url.Action("Edit", "Cinema", new { area = "Admin" })';
+        const urlDelete = '@Url.Action("Delete", "Cinema", new { area = "Admin" })';
+        const urlDeleteConfirm = '@Url.Action("DeleteConfirm", "Cinema", new { area = "Admin" })';
+        const urlChangeStatus = '@Url.Action("ChangeStatus", "Cinema", new { area = "Admin" })';
+    </script>
+    <script src="~/Admin/js/Cinema.js" asp-append-version="true"></script>
+}

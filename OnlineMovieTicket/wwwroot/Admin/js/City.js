@@ -5,6 +5,10 @@ $(document).ready(function () {
     let sortBy = "CreatedAt";
     let isDescending = true;
     let isAdjustingPage = false;
+    const searchTerm = $('#searchTerm');
+    const countrySelected = $('#countryFilter');
+
+    loadCountries(countrySelected);
 
     $('#citiesTable').DataTable({
         processing: true,
@@ -18,8 +22,8 @@ $(document).ready(function () {
             data: function (d) {
                 return {
                     Draw: d.draw,
-                    SearchTerm: $('#searchTerm').val(),
-                    CountryId: $('#countryFilter').val(),
+                    SearchTerm: searchTerm.val(),
+                    CountryId: countrySelected.val(),
                     PageNumber: (d.start / d.length) + 1,
                     PageSize: d.length,
                     SortBy: sortBy,
@@ -64,8 +68,6 @@ $(document).ready(function () {
         $('#citiesTable').DataTable().ajax.reload();
     }
 
-
-
     function updateSortIcons() {
         $('.sort-header i').removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
         const iconId = `#sort-icon-${sortBy}`;
@@ -99,6 +101,11 @@ $(document).ready(function () {
                 $('#cityModal .modal-content').html(response);
                 $.validator.unobtrusive.parse('#addCityForm');
                 $('#cityModal').modal('show');
+                setTimeout(() => {
+                    const addCountrySelected = $('#addCountrySelected');
+                    const countryId = addCountrySelected.val();
+                    loadCountries(addCountrySelected);
+                }, 100);
             },
             error: function (xhr, status, error) {
                 toastr.error('There was an error processing your request: ' + error);
@@ -149,6 +156,9 @@ $(document).ready(function () {
                     $('#cityModal .modal-content').html(response);
                     $.validator.unobtrusive.parse('#editCityForm');
                     $('#cityModal').modal('show');
+                    const editCountrySelected = $('#editCountrySelected');
+                    const countryId = editCountrySelected.data('selected');
+                    loadCountries(editCountrySelected, countryId);
                 } else {
                     toastr.error(response.message);
                 }
@@ -239,7 +249,7 @@ $(document).ready(function () {
         });
     });
 
-    // another
+    // Another, Funtion
 
     $(document).on('hidden.bs.modal', '.modal', function () {
         $('#cityModal .modal-content').html('');
@@ -263,4 +273,23 @@ $(document).ready(function () {
             }, 0);
         }
     });
+    
+    function loadCountries(selectElement, countryId = null){
+        $.ajax({
+            url: urlGetAllCountries,
+            type: 'GET',
+            success: function (data) {
+                $.each(data, function (i, country) {
+                    selectElement.append($('<option>', {
+                        value: country.id,
+                        text: country.name,
+                        selected: country.id == countryId
+                    }));
+                });
+            },
+            error: function (xhr, status, error) {
+                toastr.error('Failed to load countries.');
+            }
+        });
+    }
 });

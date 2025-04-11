@@ -5,8 +5,8 @@ namespace OnlineMovieTicket.BL.DTOs.City
     public class CityDTO
     {
         public long Id {get; set;}
-        [Range(1, long.MaxValue, ErrorMessage = "Please select country")]
-        public long CountryId {get; set;}
+        [Required(ErrorMessage = "Please select country")]
+        public long? CountryId {get; set;}
         public string? CountryName {get; set;}
         [Required(ErrorMessage = "Name is require")]
         [StringLength(255)]
