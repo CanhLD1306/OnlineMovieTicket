@@ -16,5 +16,6 @@ namespace OnlineMovieTicket.DAL.Interfaces
         Task<Country?> GetCountryByCodeAsync(long id, string code);
         Task<long> AddCountryAsync(Country country);
         Task<long> UpdateCountryAsync(Country country);
+        bool HasAnyCity(long id);
     }
 }

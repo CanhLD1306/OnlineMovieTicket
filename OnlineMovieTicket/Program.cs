@@ -5,12 +5,11 @@ using OnlineMovieTicket.DAL.Models;
 using OnlineMovieTicket.DAL.SeedData;
 using OnlineMovieTicket.BL.Interfaces;
 using OnlineMovieTicket.BL.Services;
-using Microsoft.CodeAnalysis.Options;
 using Microsoft.AspNetCore.Mvc;
 using OnlineMovieTicket.DAL.Interfaces;
 using OnlineMovieTicket.DAL.Repositories;
 using OnlineMovieTicket.BL.Mapping;
-using Microsoft.Extensions.Options;
+using OnlineMovieTicket.DAL.Configurations;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -78,6 +77,8 @@ builder.Services.AddCors(options => {
     });
 });
 
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+
 builder.Services.AddScoped<RoleSeeder>();
 builder.Services.AddScoped<UserSeeder>();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -88,6 +89,7 @@ builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<ICityRepository, CityRepository>();
 builder.Services.AddScoped<ICityService, CityService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddTransient<ICloudinaryService, CloudinaryService>();
 
 
 builder.Services.AddHttpContextAccessor();

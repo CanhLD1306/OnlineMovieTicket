@@ -1,27 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OnlineMovieTicket.DAL.Models
 {
-    public class Cinema
+    public class Showtime
     {
         [Key]
         public long Id { get; set; }
         [Required]
-        [MaxLength(255)]
-        public string Name { get; set; } = string.Empty;
-        [MaxLength(500)]
-        public string? Address { get; set; }
-        public int TotalRooms { get; set; }
+        public long MovieId { get; set; }
         [Required]
-        [ForeignKey(nameof(City))]
-        public long CityId { get; set; }
-        public bool IsAvailable { get; set; }
+        public long RoomId { get; set; }
+        [Required]
+        public DateTime StartTime { get; set; }
+        [Required]
+        public DateTime EndTime { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }
         [Required]
@@ -30,7 +27,9 @@ namespace OnlineMovieTicket.DAL.Models
         public DateTime UpdatedAt { get; set; }
         [Required]
         public Guid UpdatedBy { get; set; }
+        [Required]
         public bool IsDeleted { get; set; }
-        public City City { get; set; } = new City();
+        public Movie Movie { get; set; } = new Movie();
+        public Room Room { get; set; } = new Room();
     }
 }

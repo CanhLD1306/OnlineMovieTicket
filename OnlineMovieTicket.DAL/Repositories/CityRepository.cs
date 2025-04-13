@@ -112,5 +112,10 @@ namespace OnlineMovieTicket.DAL.Repositories
             _context.Cities.Update(city);
             await _context.SaveChangesAsync();
         }
+
+        public bool HasAnyCinema(long id)
+        {
+            return _context.Cinemas.Any(c => c.CityId == id && !c.IsDeleted);
+        }
     }
 }

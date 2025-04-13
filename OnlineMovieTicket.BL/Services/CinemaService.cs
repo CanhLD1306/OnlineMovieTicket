@@ -147,6 +147,9 @@ namespace OnlineMovieTicket.BL.Services
                     if(cinema == null){
                         return new Response(false, "Cinema not found");
                     }
+                    if(cinema.TotalRooms > 0){
+                        return new Response(false, "Cannot delete Cinema because Room is still in use!");
+                    }
 
                     cinema.IsAvailable = !cinema.IsAvailable;
                     cinema.UpdatedAt = DateTime.UtcNow;

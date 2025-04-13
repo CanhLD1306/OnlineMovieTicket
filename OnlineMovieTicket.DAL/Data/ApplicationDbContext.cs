@@ -14,5 +14,12 @@ namespace OnlineMovieTicket.DAL.Data
         public DbSet<Cinema> Cinemas { get; set; } = null!;
         public DbSet<City> Cities { get; set; } = null!;
         public DbSet<Country> Countries { get; set; } = null!;
+        public DbSet<Movie> Movies { get; set; } = null!;
+        public DbSet<Room> Rooms { get; set; } = null!;
+        public DbSet<Seat> Seats { get; set; } = null!;
+        public DbSet<SeatType> SeatTypes { get; set; } = null!;
+        public DbSet<Showtime> Showtime { get; set; } = null!;
+        public DbSet<ShowtimeSeat> ShowtimeSeats { get; set; } = null!;
+        public DbSet<Review> Reviews { get; set; } = null!;
     }
 }

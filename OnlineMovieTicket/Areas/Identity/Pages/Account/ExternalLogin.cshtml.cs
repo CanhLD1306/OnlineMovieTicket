@@ -42,7 +42,7 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
 
         public string ProviderDisplayName { get; set; } = string.Empty;
 
-        public string? ReturnUrl { get; set; }
+        public string ReturnUrl { get; set; } = string.Empty;
 
         [TempData]
         public string? ErrorMessage { get; set; }
@@ -61,7 +61,7 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
 
         public IActionResult OnPost(string provider, string? returnUrl = null)
         {
-            var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
+            var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl })!;
             var properties = _authService.GetExternalAuthProperties(provider, redirectUrl);
             return new ChallengeResult(provider, properties);
         }
@@ -102,7 +102,7 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
             {
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
-            var email = info.Principal?.FindFirstValue(ClaimTypes.Email);
+            var email = info.Principal?.FindFirstValue(ClaimTypes.Email)!;
             var (result, user) = await _authService.RegisterExternalUserAsync(email, info);
             if (result.Succeeded && user != null)
             {

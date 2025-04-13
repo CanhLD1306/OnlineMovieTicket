@@ -56,7 +56,7 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial"/>
     <script>
-    $(document).ready(function () {
+        $(document).ready(function () {
             $("#loginForm").submit(function (event) {
                 event.preventDefault();
                 if (!$(this).valid()) {
@@ -73,7 +73,7 @@
                             toastr.success(response.message);
                             setTimeout(function () {
                                 window.location.href = response.data;
-                            }, 2000);
+                            }, 1000);
                         } else {
                             toastr.error(response.message);
                         }

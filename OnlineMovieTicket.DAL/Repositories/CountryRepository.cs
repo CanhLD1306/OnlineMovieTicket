@@ -101,6 +101,11 @@ namespace OnlineMovieTicket.DAL.Repositories
             await _context.SaveChangesAsync();
             return country.Id;
         }
+
+        public bool HasAnyCity(long id)
+        {
+            return _context.Cities.Any(c => c.CountryId == id && !c.IsDeleted);
+        }
     }
 
 }

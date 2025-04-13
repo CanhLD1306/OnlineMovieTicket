@@ -56,6 +56,29 @@ namespace OnlineMovieTicket.DAL.SeedData
                     _logger.LogError("Failed to create admin user.");
                 }
             }
+            else
+            {
+                adminUser.UserName = adminConfig.UserName;
+                adminUser.Email = adminConfig.Email;
+                adminUser.NormalizedEmail = adminConfig.Email.ToUpper();
+                adminUser.EmailConfirmed = true;
+
+                var updateResult = await _userManager.UpdateAsync(adminUser);
+                if (updateResult.Succeeded)
+                {
+                    _logger.LogInformation($"Admin user '{adminConfig.Email}' updated successfully!");
+                }
+                else
+                {
+                    _logger.LogError($"Failed to update admin user: {string.Join(", ", updateResult.Errors.Select(e => e.Description))}");
+                }
+                var roles = await _userManager.GetRolesAsync(adminUser);
+                if (!roles.Contains("Admin"))
+                {
+                    await _userManager.AddToRoleAsync(adminUser, "Admin");
+                    _logger.LogInformation($"Admin user '{adminConfig.Email}' added to 'Admin' role.");
+                }
+            }
         }
     }
 }

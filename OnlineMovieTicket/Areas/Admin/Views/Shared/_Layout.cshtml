@@ -8,7 +8,7 @@
     <link href="~/Admin/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet" asp-append-version="true">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
           rel="stylesheet">
-    <link href="~/Admin/css/Admin.min.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/Admin/css/sb-admin-2.min.css" rel="stylesheet" asp-append-version="true">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 <body id="page-top">
@@ -22,29 +22,60 @@
                     <div class="sidebar-brand-text mx-3">OMT Admin</div>
                 </a>
             </li>
-            <li class="nav-item active">
+            <li class="nav-item">
                 <a class="nav-link" href="@Url.Action("Index", "Dashboard", new { area = "Admin" })">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="@Url.Action("Index", "Country", new { area = "Admin" })">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Country</span>
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#locationsMenu" aria-expanded="true" aria-controls="locationsMenu">
+                    <i class="fas fa-fw fa-map-marker-alt"></i>
+                    <span>Locations</span>
                 </a>
+                <div id="locationsMenu" class="collapse" aria-labelledby="headingLocations" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="@Url.Action("Index", "Country", new { area = "Admin" })">Country</a>
+                        <a class="collapse-item" href="@Url.Action("Index", "City", new { area = "Admin" })">City</a>
+                    </div>
+                </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="@Url.Action("Index", "City", new { area = "Admin" })">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>City</span>
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#cinemaMgmtMenu" aria-expanded="true" aria-controls="cinemaMgmtMenu">
+                    <i class="fas fa-fw fa-cogs"></i>
+                    <span>Cinema Management</span>
                 </a>
+                <div id="cinemaMgmtMenu" class="collapse" aria-labelledby="headingCinemaMgmt" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="@Url.Action("Index", "Cinema", new { area = "Admin" })">Cinema</a>
+                        <a class="collapse-item" href="@Url.Action("Index", "Room", new { area = "Admin" })">Room</a>
+                        <a class="collapse-item" href="@Url.Action("Index", "SeatType", new { area = "Admin" })">Seat Type</a>
+                    </div>
+                </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="@Url.Action("Index", "Cinema", new { area = "Admin" })">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Cinema</span>
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#moviesScheduleMenu" aria-expanded="true" aria-controls="moviesScheduleMenu">
+                    <i class="fas fa-fw fa-film"></i>
+                    <span>Movies & Scheduling</span>
                 </a>
+                <div id="moviesScheduleMenu" class="collapse" aria-labelledby="headingMoviesSchedule" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="@Url.Action("Index", "Movie", new { area = "Admin" })">Movie</a>
+                        <a class="collapse-item" href="@Url.Action("Index", "Showtime", new { area = "Admin" })">Showtime</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#customerMgmtMenu" aria-expanded="true" aria-controls="customerMgmtMenu">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Customer Management</span>
+                </a>
+                <div id="customerMgmtMenu" class="collapse" aria-labelledby="headingCustomerMgmt" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" href="@Url.Action("Index", "Order", new { area = "Admin" })">Order</a>
+                        <a class="collapse-item" href="@Url.Action("Index", "User", new { area = "Admin" })">User Account</a>
+                    </div>
+                </div>
             </li>
             <li class="d-flex align-items-center justify-content-center">
                 <div class="text-center d-none d-md-inline">
@@ -72,7 +103,7 @@
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
-                                <form id="logout-form"asp-area="Identity" asp-page="/Account/Logout"
+                                <form id="logout-form"asp-area="Identity" method="post" asp-page="/Account/Logout"
                                     asp-route-returnUrl="@Url.Page("/Account/Login", new { area = "Identity" })" style="display: none;">
                                 </form>
                             </div>
@@ -97,8 +128,8 @@
     <script src="~/Admin/vendor/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <script src="~/Admin/vendor/jquery-easing/jquery.easing.min.js" asp-append-version="true"></script>
 
-
-    <script src="~/Admin/js/sb-admin-2.min.js"></script>
+    <script src="~/Admin/js/navigation.js" asp-append-version="true"></script>
+    <script src="~/Admin/js/sb-admin-2.js" asp-append-version="true"></script>
 
 
     <script src="~/Admin/vendor/datatables/jquery.dataTables.min.js" asp-append-version="true"></script>

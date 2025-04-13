@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace OnlineMovieTicket.Areas.Admin.Controllers
 {
-    public class DashboardController : BaseController
+    public class SeatTypeController : BaseController
     {
         
         public IActionResult Index()

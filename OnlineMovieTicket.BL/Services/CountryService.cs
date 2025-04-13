@@ -11,13 +11,19 @@ namespace OnlineMovieTicket.BL.Services
     public class CountryService : ICountryService
     {
         private readonly ICountryRepository _countryRepository;
+        private readonly ICityService _cityService;
         private readonly IAuthService _authService;
         private readonly IMapper _mapper;
 
-        public CountryService(ICountryRepository countryRepository, IAuthService authService, IMapper mapper
+        public CountryService(
+            ICountryRepository countryRepository, 
+            ICityService cityService,
+            IAuthService authService, 
+            IMapper mapper
 )
         {
             _countryRepository = countryRepository;
+            _cityService = cityService;
             _authService = authService;
             _mapper = mapper;
         }
@@ -131,6 +137,9 @@ namespace OnlineMovieTicket.BL.Services
                     if(country == null){
                         return new Response(false, "Country not found");
                     }
+                    if(_countryRepository.HasAnyCity(id)){
+                        return new Response(false, "Cannot delete Country because City is still in use!");
+                    }
 
                     country.IsDeleted = true;
                     country.UpdatedAt = DateTime.UtcNow;
@@ -148,16 +157,3 @@ namespace OnlineMovieTicket.BL.Services
         }
     }
 }
-
-//Transaction:
-// using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-// {
-//     try
-//     {
-        
-//     }
-//     catch (Exception)
-//     {
-        
-//     }
-// }
