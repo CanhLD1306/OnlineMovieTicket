@@ -248,6 +248,7 @@ $(document).ready(function () {
     });
 
     // Delete cinema
+    
     $(document).on('click', '.btn-delete-cinema', function (e) {
         e.preventDefault();
         var id = $(this).data('id');
@@ -354,6 +355,7 @@ $(document).ready(function () {
             type: 'GET',
             data: { id: countryId },
             success: function (data) {
+                selectElement.find('option').not('[value=""]').remove();
                 $.each(data, function (i, city) {
                     selectElement.append($('<option>', {
                         value: city.id,

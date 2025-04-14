@@ -15,7 +15,7 @@ namespace OnlineMovieTicket.DAL.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<City>?> GetALlCitiesByCountryAsync(long? countryId)
+        public async Task<IEnumerable<City>?> GetAllCitiesByCountryAsync(long? countryId)
         {
             var query = _context.Cities
                                 .Where(c => !c.IsDeleted)
@@ -27,9 +27,9 @@ namespace OnlineMovieTicket.DAL.Repositories
             return cities;
         }
 
-        public async Task<(IEnumerable<City>, int TotalCount, int FilterCount)> GetCitiesAsync(
+        public async Task<(IEnumerable<City>? cities, int totalCount, int filterCount)> GetCitiesAsync(
             string? searchTerm,
-            long? CountryId,
+            long? countryId,
             int pageNumber, 
             int pageSize, 
             string sortBy, 
@@ -44,15 +44,15 @@ namespace OnlineMovieTicket.DAL.Repositories
         
             if (!string.IsNullOrWhiteSpace(searchTerm))
                 query = query.Where(c => c.Name.Contains(searchTerm) || c.PostalCode.Contains(searchTerm));
-            if (CountryId.HasValue && CountryId != 0){
-                query = query.Where(c => c.CountryId == CountryId);
+            if (countryId.HasValue && countryId != 0){
+                query = query.Where(c => c.CountryId == countryId);
             }
 
             query = isDescending
                 ? query.OrderByDescending(c => EF.Property<object>(c, sortBy))
                 : query.OrderBy(c => EF.Property<object>(c, sortBy));
 
-            int filterCount = await query.CountAsync();
+            var filterCount = await query.CountAsync();
             var cities = await query
                                 .Skip((pageNumber - 1) * pageSize)
                                 .Take(pageSize)
@@ -60,19 +60,19 @@ namespace OnlineMovieTicket.DAL.Repositories
             return (cities, totalCount, filterCount);
         }
 
-        public async Task<City?> GetCityByIdAsync(long id)
+        public async Task<City?> GetCityByIdAsync(long cityId)
         {
-            return await _context.Cities.FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
+            return await _context.Cities.FirstOrDefaultAsync(c => c.Id == cityId && !c.IsDeleted);
         }
 
-        public async Task<City?> GetCityByNameAsync(long id, string name)
+        public async Task<City?> GetCityByNameAsync(long cityId, string name)
         {
-            if(id != 0)
+            if(cityId != 0)
             {
                 return await _context.Cities
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync(
-                                            c => c.Id != id 
+                                            c => c.Id != cityId 
                                             && c.Name == name 
                                             && !c.IsDeleted);
             }
@@ -83,14 +83,14 @@ namespace OnlineMovieTicket.DAL.Repositories
                                             && !c.IsDeleted);
         }
 
-        public async Task<City?> GetCityByPostalCodeAsync(long id, string postalCode)
+        public async Task<City?> GetCityByPostalCodeAsync(long cityId, string postalCode)
         {
-            if(id != 0)
+            if(cityId != 0)
             {
                 return await _context.Cities
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync(
-                                            c => c.Id != id 
+                                            c => c.Id != cityId 
                                             && c.PostalCode == postalCode 
                                             && !c.IsDeleted);
             }
@@ -112,10 +112,9 @@ namespace OnlineMovieTicket.DAL.Repositories
             _context.Cities.Update(city);
             await _context.SaveChangesAsync();
         }
-
-        public bool HasAnyCinema(long id)
+        public bool HasAnyCity(long id)
         {
-            return _context.Cinemas.Any(c => c.CityId == id && !c.IsDeleted);
+            return _context.Cities.Any(c => c.CountryId == id && !c.IsDeleted);
         }
     }
 }

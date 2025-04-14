@@ -11,12 +11,18 @@ namespace OnlineMovieTicket.BL.Services
     public class CityService : ICityService
     {
         private readonly ICityRepository _cityRepository;
+        private readonly ICinemaRepository _cinemaRepository;
         private readonly IAuthService _authService;
         private readonly IMapper _mapper;
 
-        public CityService(ICityRepository cityRepository, IAuthService authService, IMapper mapper
+        public CityService(
+            ICityRepository cityRepository,
+            ICinemaRepository cinemaRepository,
+            IAuthService authService, 
+            IMapper mapper
 )
         {
+            _cinemaRepository = cinemaRepository;
             _cityRepository = cityRepository;
             _authService = authService;
             _mapper = mapper;
@@ -24,7 +30,7 @@ namespace OnlineMovieTicket.BL.Services
 
         public async Task<IEnumerable<CityDTO>> GetAllCitiesAsync(long? id)
         {
-            var cities = await _cityRepository.GetALlCitiesByCountryAsync(id);
+            var cities = await _cityRepository.GetAllCitiesByCountryAsync(id);
             return _mapper.Map<IEnumerable<CityDTO>>(cities);
         }
 
@@ -132,7 +138,7 @@ namespace OnlineMovieTicket.BL.Services
                     if(city == null){
                         return new Response(false, "City not found");
                     }
-                    if(_cityRepository.HasAnyCinema(id)){
+                    if(_cinemaRepository.HasAnyCinema(id)){
                         return new Response(false, "Cannot delete City because Cinema is still in use!");
                     }
 

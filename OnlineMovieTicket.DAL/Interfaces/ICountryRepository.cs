@@ -11,11 +11,10 @@ namespace OnlineMovieTicket.DAL.Interfaces
             int pageSize, 
             string sortBy, 
             bool isDescending);
-        Task<Country?> GetCountryByIdAsync(long id);
-        Task<Country?> GetCountryByNameAsync(long id, string name);
-        Task<Country?> GetCountryByCodeAsync(long id, string code);
+        Task<Country?> GetCountryByIdAsync(long countryId);
+        Task<Country?> GetCountryByNameAsync(long countryId, string name);
+        Task<Country?> GetCountryByCodeAsync(long countryId, string code);
         Task<long> AddCountryAsync(Country country);
         Task<long> UpdateCountryAsync(Country country);
-        bool HasAnyCity(long id);
     }
 }

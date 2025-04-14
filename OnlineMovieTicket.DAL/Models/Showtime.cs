@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,7 +30,8 @@ namespace OnlineMovieTicket.DAL.Models
         public Guid UpdatedBy { get; set; }
         [Required]
         public bool IsDeleted { get; set; }
-        public Movie Movie { get; set; } = new Movie();
-        public Room Room { get; set; } = new Room();
+
+        public Movie Movie { get; set; } = null!;
+        public Room Room { get; set; } = null!;
     }
 }

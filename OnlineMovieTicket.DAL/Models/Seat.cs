@@ -29,7 +29,7 @@ namespace OnlineMovieTicket.DAL.Models
         [Required]
         public bool IsDeleted { get; set; }
 
-        public Room Room { get; set; } = new Room();
-        public SeatType SeatType { get; set; } = new SeatType();
+        public Room Room { get; set; } = null!;
+        public SeatType SeatType { get; set; } = null!;
     }
 }

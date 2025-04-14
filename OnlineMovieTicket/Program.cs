@@ -10,6 +10,7 @@ using OnlineMovieTicket.DAL.Interfaces;
 using OnlineMovieTicket.DAL.Repositories;
 using OnlineMovieTicket.BL.Mapping;
 using OnlineMovieTicket.DAL.Configurations;
+using OnlineMovieTicket.DAL.SeedDatas;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -79,8 +80,10 @@ builder.Services.AddCors(options => {
 
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
+builder.Services.AddScoped<SeedManager>();
 builder.Services.AddScoped<RoleSeeder>();
 builder.Services.AddScoped<UserSeeder>();
+builder.Services.AddScoped<SeatTypeSeeder>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICinemaRepository, CinemaRepository>();
 builder.Services.AddScoped<ICinemaService, CinemaService>();
@@ -88,7 +91,21 @@ builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<ICityRepository, CityRepository>();
 builder.Services.AddScoped<ICityService, CityService>();
-builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+builder.Services.AddScoped<IMovieService, MovieService>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<ISeatRepository, SeatRepository>();
+builder.Services.AddScoped<ISeatService, SeatService>();
+builder.Services.AddScoped<ISeatTypeRepository, SeatTypeRepository>();
+builder.Services.AddScoped<ISeatTypeService, SeatTypeService>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IShowtimeRepository, ShowtimeRepository>();
+builder.Services.AddTransient<IShowtimeService, ShowtimeService>();
+builder.Services.AddScoped<IShowtimeSeatRepository, ShowtimeSeatRepository>();
+builder.Services.AddScoped<IShowtimeSeatService, ShowtimeSeatService>();
 builder.Services.AddTransient<ICloudinaryService, CloudinaryService>();
 
 
@@ -106,22 +123,8 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope()) 
 {
     var services = scope.ServiceProvider;
-    var logger = services.GetRequiredService<ILogger<Program>>();
-
-    try
-    {
-        var roleSeeder = services.GetRequiredService<RoleSeeder>();
-        var userSeeder = services.GetRequiredService<UserSeeder>();
-
-        await roleSeeder.SeedRoleAsync();
-        await userSeeder.SeedAdminUser();
-
-        logger.LogInformation("Seeding completed successfully!");
-    }
-    catch (Exception ex)
-    {
-        logger.LogError($"Error during seeding: {ex.Message}");
-    }
+    var seedManager = services.GetRequiredService<SeedManager>();
+    await seedManager.SeedAsync();
 }
 
 // Configure the HTTP request pipeline.

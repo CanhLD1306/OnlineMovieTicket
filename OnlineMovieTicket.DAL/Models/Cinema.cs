@@ -19,7 +19,6 @@ namespace OnlineMovieTicket.DAL.Models
         public string? Address { get; set; }
         public int TotalRooms { get; set; }
         [Required]
-        [ForeignKey(nameof(City))]
         public long CityId { get; set; }
         public bool IsAvailable { get; set; }
         [Required]
@@ -31,6 +30,6 @@ namespace OnlineMovieTicket.DAL.Models
         [Required]
         public Guid UpdatedBy { get; set; }
         public bool IsDeleted { get; set; }
-        public City City { get; set; } = new City();
+        public City City { get; set; } = null!;
     }
 }

@@ -62,7 +62,7 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
                         email = Input.Email, 
                         token = token , 
                         isExternalRegister = false},
-                    protocol: Request.Scheme);
+                    protocol: Request.Scheme)!;
 
                 var placeholder = new Dictionary<string, string>
                     {

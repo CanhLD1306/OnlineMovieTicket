@@ -30,6 +30,6 @@ namespace OnlineMovieTicket.DAL.Models
         [Required]
         public bool IsDeleted { get; set; }
         
-        public Cinema Cinema { get; set; } = new Cinema();
+        public Cinema Cinema { get; set; } = null!;
     }
 }

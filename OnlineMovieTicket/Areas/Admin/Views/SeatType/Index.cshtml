@@ -1,1 +1,174 @@
-﻿<h1>SeatType</h1>
+﻿@{
+    ViewData["Title"] = "SeatType Management";
+}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">SeatType Management</h1>
+</div>
+<div class="d-flex mb-3">
+    <div class="w-25">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+            <input type="text" id="searchTerm" class="form-control" placeholder="Search by Name">
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="seatTypesTable" class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="sort-header" data-sort="Name">
+                            Name <i class="fas fa-sort" id="sort-icon-Name"></i>
+                        </th>
+                        <th class="text-center">
+                            Price Multiplier
+                        </th>
+                        <th class="text-center">
+                            Color
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="modalPlaceholder">
+    <div class="modal fade" id="seatTypeModal" tabindex="-1" role="dialog" aria-labelledby="seatTypeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const urlGetSeatType = '@Url.Action("GetSeatTypes", "SeatType", new { area = "Admin" })';
+        const urlEdit = '@Url.Action("Edit", "SeatType", new { area = "Admin" })';
+
+        $(document).ready(function () {
+            let sortBy = "CreatedAt";
+            let isDescending = true;
+            let isAdjustingPage = false;
+            const searchTerm = $('#searchTerm');
+
+            // List, search, filter and sort SeatType in table
+
+            $('#seatTypesTable').DataTable({
+                processing: true,
+                serverSide: true,
+                searching: false,
+                ordering: false,
+                lengthMenu: [5,10,25,50],
+                ajax: {
+                    url: urlGetSeatType,
+                    type: 'POST',
+                    data: function (d) {
+                        return {
+                            Draw: d.draw,
+                            SearchTerm: searchTerm.val(),
+                            PageNumber: (d.start / d.length) + 1,
+                            PageSize: d.length,
+                            SortBy: sortBy,
+                            IsDescending: isDescending
+                        };
+                    }
+                },
+                columns: [
+                    { "data": 'name' },
+                    { "data": 'priceMultiplier', className: "text-center" },
+                    { "data": 'color',
+                        className: "text-center",
+                        "render": function (data, type, row) {
+                            return `<span style="display:inline-block;width:20px;height:20px;background-color:${data};"></span>`;
+                        }
+                    },
+                    {
+                        "data": null,
+                        className: "text-center",
+                        "render": function (data, type, row) {
+                            return `<a class='btn btn-sm btn-info btn-edit-seatType' title='Edit' data-id='${row.id}'>
+                                        <i class='fas fa-edit'></i>
+                                    </a>`;
+                        }
+                    }
+                ],
+                language: {
+                    emptyTable: "No data available in table",
+                    infoFiltered: "",
+                }
+            });
+
+            $('#searchTerm').on('input', function (e) {
+                $('#seatTypesTable').DataTable().ajax.reload();
+            });
+        });
+
+        // Edit SeatType
+
+        $(document).on('click', '.btn-edit-seatType', function (e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            $.ajax({
+                url: urlEdit,
+                type: 'GET',
+                data: { seatTypeId: id },           
+                success: function (response) {
+                    if (response) {
+                        $('#seatTypeModal .modal-content').html(response);
+                        $.validator.unobtrusive.parse('#editSeatTypeForm');
+                        $('#seatTypeModal').modal('show');
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('There was an error processing your request: ' + error);
+                }
+            });
+        });
+
+        $(document).on('submit', '#editSeatTypeForm', function (e) {
+            e.preventDefault();
+            if (!$(this).valid()) {
+                return;
+            }
+            var token = $('input[name="__RequestVerificationToken"]').val();
+            var formData = $(this).serialize();
+            $.ajax({
+                url: urlEdit,
+                type: 'POST',
+                data: formData,
+                headers: {
+                    'RequestVerificationToken': token
+                },
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        $('#seatTypeModal').modal('hide');
+                        $('#seatTypesTable').DataTable().ajax.reload(null, false);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('There was an error processing your request: ' + error);
+                }
+            });
+        });
+
+        // Another, Funtion
+
+        $(document).on('hidden.bs.modal', '.modal', function () {
+            $('#seatTypeModal .modal-content').html('');
+        });
+    </script>
+}

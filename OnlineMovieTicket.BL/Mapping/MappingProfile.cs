@@ -3,6 +3,8 @@ using OnlineMovieTicket.BL.DTOs;
 using OnlineMovieTicket.BL.DTOs.Cinema;
 using OnlineMovieTicket.BL.DTOs.City;
 using OnlineMovieTicket.BL.DTOs.Country;
+using OnlineMovieTicket.BL.DTOs.Room;
+using OnlineMovieTicket.BL.DTOs.SeatType;
 using OnlineMovieTicket.DAL.Models;
 
 namespace OnlineMovieTicket.BL.Mapping
@@ -22,10 +24,22 @@ namespace OnlineMovieTicket.BL.Mapping
             CreateMap<Cinema, CinemaDTO>()
                 .ForMember(dest => dest.CityName, opt => opt.MapFrom(src => src.City != null ? src.City.Name : string.Empty))
                 .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.City != null && src.City.Country != null ? src.City.Country.Name : string.Empty))
-                .ForMember(dest => dest.CountryId, opt => opt.MapFrom(src => src.City != null ? (long?)src.City.CountryId : null));
+                .ForMember(dest => dest.CountryId, opt => opt.MapFrom(src => src.City != null ? src.City.CountryId : (long?)null));
             
             CreateMap<CinemaDTO, Cinema>()
-                .ForMember(dest => dest.City, opt => opt.Ignore()); 
+                .ForMember(dest => dest.City, opt => opt.Ignore());
+
+            CreateMap<Room, RoomDTO>()
+                .ForMember(dest => dest.CinemaName, opt => opt.MapFrom(src => src.Cinema != null ? src.Cinema.Name : string.Empty))
+                .ForMember(dest => dest.CityId, opt => opt.MapFrom(src => src.Cinema != null && src.Cinema.City != null ? src.Cinema.City.Id : (long?)null))
+                .ForMember(dest => dest.CityName, opt => opt.MapFrom(src => src.Cinema != null && src.Cinema.City != null ? src.Cinema.City.Name : string.Empty))
+                .ForMember(dest => dest.CountryId, opt => opt.MapFrom(src => src.Cinema != null && src.Cinema.City != null && src.Cinema.City.Country != null ? src.Cinema.City.Country.Id : (long?)null))
+                .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Cinema != null && src.Cinema.City != null && src.Cinema.City.Country != null ? src.Cinema.City.Country.Name : string.Empty));
+
+            CreateMap<RoomDTO, Room>()
+                .ForMember(dest => dest.Cinema, opt => opt.Ignore());
+
+            CreateMap<SeatType, SeatTypeDTO>().ReverseMap();
         }
     }
 }

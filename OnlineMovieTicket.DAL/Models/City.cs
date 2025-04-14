@@ -29,6 +29,6 @@ namespace OnlineMovieTicket.DAL.Models
         public Guid UpdatedBy { get; set; }
         public bool IsDeleted { get; set; }
 
-        public Country Country { get; set; } = new Country();
+        public Country Country { get; set; } = null!;
     }
 }

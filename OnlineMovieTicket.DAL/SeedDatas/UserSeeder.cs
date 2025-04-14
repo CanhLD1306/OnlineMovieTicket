@@ -24,14 +24,14 @@ namespace OnlineMovieTicket.DAL.SeedData
             _logger = logger;
         }
 
-        public async Task SeedAdminUser()
+        public async Task<Guid?> SeedAdminUser()
         {
             var adminConfig = _configuration.GetSection("Admin").Get<AdminConfig>();
 
             if (adminConfig == null)
             {
                 _logger.LogError("Admin user configuration not found!");
-                return;
+                return null;
             }
 
             var adminUser = await _userManager.FindByEmailAsync(adminConfig.Email);
@@ -50,10 +50,12 @@ namespace OnlineMovieTicket.DAL.SeedData
                 {
                     await _userManager.AddToRoleAsync(adminUser, "Admin");
                     _logger.LogInformation($"Admin user '{adminConfig.Email}' created successfully!");
+                    return Guid.Parse(adminUser.Id);
                 }
                 else
                 {
                     _logger.LogError("Failed to create admin user.");
+                    return null;
                 }
             }
             else
@@ -77,6 +79,16 @@ namespace OnlineMovieTicket.DAL.SeedData
                 {
                     await _userManager.AddToRoleAsync(adminUser, "Admin");
                     _logger.LogInformation($"Admin user '{adminConfig.Email}' added to 'Admin' role.");
+                }
+
+                if (Guid.TryParse(adminUser.Id, out Guid userId))
+                {
+                    return userId;
+                }
+                else
+                {
+                    _logger.LogWarning("Failed to parse Admin user's ID to Guid.");
+                    return null;
                 }
             }
         }

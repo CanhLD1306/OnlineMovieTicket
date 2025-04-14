@@ -28,7 +28,7 @@ namespace OnlineMovieTicket.DAL.Models
         [Required]
         public bool IsDeleted { get; set; }
 
-        public Showtime Showtime { get; set; } = new Showtime();
-        public Seat Seat { get; set; } = new Seat();
+        public Showtime Showtime { get; set; } = null!;
+        public Seat Seat { get; set; } = null!;
     }
 }

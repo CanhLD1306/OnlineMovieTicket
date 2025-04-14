@@ -79,7 +79,7 @@ namespace OnlineMovieTicket.Areas.Identity.Pages.Account
                             userId = user.Id, 
                             token = token, 
                             returnUrl = returnUrl},
-                        protocol: Request.Scheme);
+                        protocol: Request.Scheme)!;
                     var placeholder = new Dictionary<string, string>
                     {
                         { "callbackUrl", callbackUrl }
