@@ -35,7 +35,7 @@ namespace OnlineMovieTicket.DAL.Repositories
             var totalCount = await query.CountAsync();
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                query = query.Where(m => m.Title.Contains(searchTerm));
+                query = query.Where(m => m.Title.Replace(" ", "").ToLower().Contains(searchTerm.Replace(" ", "").ToLower()));
             }
 
             if (startDate.HasValue)
@@ -74,13 +74,13 @@ namespace OnlineMovieTicket.DAL.Repositories
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync(
                                             m => m.Id != movieId 
-                                            && m.Title == title 
+                                            && m.Title.Replace(" ", "").ToLower() == title.Replace(" ", "").ToLower()
                                             && !m.IsDeleted);
             }
             return await _context.Movies
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync(
-                                            m => m.Title == title 
+                                            m => m.Title.Replace(" ", "").ToLower() == title.Replace(" ", "").ToLower()
                                             && !m.IsDeleted);
         }
 

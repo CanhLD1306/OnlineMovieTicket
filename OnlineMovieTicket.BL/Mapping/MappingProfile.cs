@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using OnlineMovieTicket.BL.DTOs.Banner;
 using OnlineMovieTicket.BL.DTOs.Cinema;
 using OnlineMovieTicket.BL.DTOs.City;
 using OnlineMovieTicket.BL.DTOs.Country;
+using OnlineMovieTicket.BL.DTOs.Movie;
 using OnlineMovieTicket.BL.DTOs.Room;
 using OnlineMovieTicket.BL.DTOs.Seat;
 using OnlineMovieTicket.BL.DTOs.SeatType;
@@ -15,6 +17,8 @@ namespace OnlineMovieTicket.BL.Mapping
         {
             CreateMap<Country, CountryDTO>().ReverseMap();
             CreateMap<SeatType, SeatTypeDTO>().ReverseMap();
+            CreateMap<Banner,BannerDTO>().ReverseMap();
+            CreateMap<Movie, MovieDTO>().ReverseMap();
 
             CreateMap<City, CityDTO>()
                 .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country != null ? src.Country.Name : null));

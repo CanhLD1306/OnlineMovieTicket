@@ -1,0 +1,355 @@
+@{
+    ViewData["Title"] = "Banner Management";
+}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Banner Management</h1>
+    <a id="addBtn" class="btn btn-primary btn-icon-split btn-sm cursor-pointer">
+        <span class="icon text-white">
+            <i class="fas fa-plus"></i>
+        </span>
+        <span class="text">Add New Banner</span>
+    </a>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-3">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+            <input type="text" id="searchTerm" class="form-control" placeholder="Search by Title">
+        </div>  
+    </div>
+    <div class="col-md-2">
+        <select id="statusFilter" class="form-control">
+            <option value="">All Status</option>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+        </select>
+    </div>
+</div> 
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="bannersTable" class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Title</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="modalPlaceholder">
+    <div class="modal fade" id="bannerModal" tabindex="-1" role="dialog" aria-labelledby="bannerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const urlGetBanners = '@Url.Action("GetBanners", "Banner", new { area = "Admin" })';
+        const urlCreate = '@Url.Action("Create", "Banner", new { area = "Admin" })';
+        const urlEdit = '@Url.Action("Edit", "Banner", new { area = "Admin" })';
+        const urlDelete = '@Url.Action("Delete", "Banner", new { area = "Admin" })';
+        const urlChangeStatus = '@Url.Action("ChangeStatus", "Banner", new { area = "Admin" })';
+
+        @* $(document).ready(function () {
+            let sortBy = "CreatedAt";
+            let pageSize = 5;
+            let isDescending = true;
+            let isAdjustingPage = false;
+
+            // Banner Table
+
+            $('#bannersTable').DataTable({
+                processing: true,
+                serverSide: true,
+                searching: false,
+                ordering: false,
+                paging: false,
+                lengthMenu: false,
+                ajax: {
+                    url: urlGetBanners,
+                    type: 'POST',
+                    data: function (d) {
+                        return {
+                            Draw: d.draw,
+                            SearchTerm: $('#searchTerm').val(),
+                            IsActive: $('#statusFilter').val(),
+                            PageNumber: 1,
+                            PageSize: pageSize,
+                            SortBy: sortBy,
+                            IsDescending: isDescending
+                        };
+                    }
+                },  
+                columns: [
+                    { "data": 'imageUrl',
+                        "render": function (data, type, row) {
+                            return `<img src="${data}" alt="Banner Image" style="width: 250px; height: auto;">`;
+                        }
+                    },
+                    { "data": 'title' },
+                    { "data": 'isActive',
+                        className: "text-center",
+                        "render": function (data, type, row) {
+                            const checked = data ? 'checked' : '';
+                            return `
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input toggle-status" id="switch-${row.id}" data-id="${row.id}" ${checked}>
+                                    <label class="custom-control-label" for="switch-${row.id}"></label>
+                                </div>`;    
+                        }
+                    },
+                    {
+                        "data": null,
+                        className: "text-center",
+                        "render": function (data, type, row) {
+                            return `<a class='btn btn-sm btn-info btn-edit-banner' title='Edit' data-id='${row.id}'>
+                                        <i class='fas fa-edit'></i>
+                                    </a>
+                                    <a class='btn btn-sm btn-danger ml-1 btn-delete-banner' title='Delete' data-id='${row.id}'>
+                                        <i class='fas fa-trash'></i>
+                                    </a>`;
+                        }
+                    }
+                ],
+                language: {
+                    emptyTable: "No data available in table",
+                    infoFiltered: "",
+                }
+            });
+
+            $('#searchTerm').on('input', function (e) {
+                $('#bannersTable').DataTable().ajax.reload();
+            });
+
+            $('#statusFilter').on('change', function () {
+                $('#bannersTable').DataTable().ajax.reload();
+            });
+
+            // Add New Banner
+
+            $('#addBtn').click(function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: urlCreate,
+                    type: 'GET',
+                    success: function (response) {
+                        $('#bannerModal .modal-content').html(response);
+                        $.validator.unobtrusive.parse('#addBannerForm');
+                        $('#bannerModal').modal('show');
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('There was an error processing your request: ' + error);
+                    }
+                });
+            });
+
+            $(document).on('submit', '#addBannerForm', function (e) {
+                e.preventDefault();
+                if (!$('#addBannerForm').valid()) {
+                    return;
+                }
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                var form = $('#addBannerForm')[0];
+                var formData = new FormData(form);
+                $.ajax({
+                    url: urlCreate,
+                    type: 'POST',
+                    contentType: false,
+                    processData: false,
+                    data: formData,
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            $('#bannerModal').modal('hide');
+                            $('#bannersTable').DataTable().ajax.reload(null, false);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('There was an error processing your request: ' + error);
+                    }
+                });
+            });
+
+            // Edit Banner
+
+            $(document).on('click', '.btn-edit-banner', function (e) {
+                e.preventDefault();
+                var id = $(this).data('id');
+                $.ajax({
+                    url: urlEdit,
+                    type: 'GET',
+                    data: { bannerId: id },           
+                    success: function (response) {
+                        if (response) {
+                            $('#bannerModal .modal-content').html(response);
+                            $.validator.unobtrusive.parse('#editBannerForm');
+                            $('#bannerModal').modal('show');
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('There was an error processing your request: ' + error);
+                    }
+                });
+            });
+
+            $(document).on('submit', '#editBannerForm', function (e) {
+                e.preventDefault();
+                if (!$(this).valid()) {
+                    return;
+                }
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                var form = $('#editBannerForm')[0];
+                var formData = new FormData(form);
+                $.ajax({
+                    url: urlEdit,
+                    type: 'POST',
+                    contentType: false,
+                    processData: false,
+                    data: formData,
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            $('#bannerModal').modal('hide');
+                            $('#bannersTable').DataTable().ajax.reload(null, false);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('There was an error processing your request: ' + error);
+                    }
+                });
+            });
+
+            // Change Status
+
+            $(document).on('focusin', '.toggle-status', function () {
+                const currentChecked = $(this).prop('checked');
+                $(this).data('prev', currentChecked);
+            });
+
+            $(document).on('change', '.toggle-status', function () {
+                const $checkbox = $(this);
+                const bannerId = $checkbox.data('id');
+                $.ajax({
+                    url: urlChangeStatus,
+                    type: 'POST',
+                    data: {bannerId : bannerId},
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            $('#bannersTable').DataTable().ajax.reload(null, false);
+                        } else {
+                            toastr.error(response.message);
+                            $checkbox.prop('checked', $checkbox.data('prev'));
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('There was an error processing your request: ' + error);
+                        $checkbox.prop('checked', $checkbox.data('prev'));
+                    }
+                });
+            });
+
+            // Delete Banner
+
+            $(document).on('click', '.btn-delete-banner', function (e) {
+                e.preventDefault();
+                var bannerId = $(this).data('id');
+                $.ajax({
+                    url: urlDelete,
+                    type: 'GET',
+                    data: { bannerId: bannerId },           
+                    success: function (response) {
+                        if (response) {
+                            $('#bannerModal .modal-content').html(response);
+                            $('#bannerModal').modal('show');
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('There was an error processing your request: ' + error);
+                    }
+                });
+            });
+
+            $(document).on('submit', '#deleteBannerForm', function (e) {
+                e.preventDefault();
+                if (!$(this).valid()) {
+                    return;
+                }
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                var formData = $(this).serialize();
+                $.ajax({
+                    url: urlDelete,
+                    type: 'POST',
+                    data: formData,
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            $('#bannerModal').modal('hide');
+                            $('#bannersTable').DataTable().ajax.reload(null, false);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('There was an error processing your request: ' + error);
+                    }
+                });
+            });
+
+            // Anothetr
+        });
+
+        function previewImage(event) {
+            const input = event.target;
+            const preview = document.getElementById('imagePreview');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.src = '#';
+                preview.style.display = 'none';
+            }
+        } *@
+    </script>
+    <script src="~/Admin/js/Banner.js" asp-append-version="true"></script>
+}

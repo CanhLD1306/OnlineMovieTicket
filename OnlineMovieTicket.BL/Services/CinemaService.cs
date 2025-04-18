@@ -22,9 +22,9 @@ namespace OnlineMovieTicket.BL.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<CinemaDTO>?> GetCinemasByCityAsync(long? countryId)
+        public async Task<IEnumerable<CinemaDTO>?> GetCinemasByCityAsync(long? cityId)
         {
-            var cinemas = await _cinemaRepository.GetCinemasByCityAsync(countryId);
+            var cinemas = await _cinemaRepository.GetCinemasByCityAsync(cityId);
             return _mapper.Map<IEnumerable<CinemaDTO>>(cinemas);
         }
 
@@ -50,9 +50,9 @@ namespace OnlineMovieTicket.BL.Services
             };
         }
 
-        public async Task<Response<CinemaDTO>> GetCinemaByIdAsync(long countryId)
+        public async Task<Response<CinemaDTO>> GetCinemaByIdAsync(long cinemaId)
         {
-            var cinema = await _cinemaRepository.GetCinemaByIdAsync(countryId);
+            var cinema = await _cinemaRepository.GetCinemaByIdAsync(cinemaId);
             if(cinema != null){
                 var cinemaDTO = _mapper.Map<CinemaDTO>(cinema);
                 return new Response<CinemaDTO>(true, null,cinemaDTO);
@@ -117,13 +117,13 @@ namespace OnlineMovieTicket.BL.Services
                 }
             }
         }
-        public async Task<Response> DeleteCinemaAsync(long countryId)
+        public async Task<Response> DeleteCinemaAsync(long cinemaId)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {
-                    var cinema = await _cinemaRepository.GetCinemaByIdAsync(countryId);
+                    var cinema = await _cinemaRepository.GetCinemaByIdAsync(cinemaId);
                     if(cinema == null){
                         return new Response(false, "Cinema not found");
                     }

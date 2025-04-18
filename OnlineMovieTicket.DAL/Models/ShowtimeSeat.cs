@@ -28,7 +28,9 @@ namespace OnlineMovieTicket.DAL.Models
         public Guid UpdatedBy { get; set; }
         [Required]
         public bool IsDeleted { get; set; }
+        
         public Showtime Showtime { get; set; } = null!;
+        
         public Seat Seat { get; set; } = null!;
     }
 }

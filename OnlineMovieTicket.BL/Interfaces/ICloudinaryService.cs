@@ -10,6 +10,9 @@ namespace OnlineMovieTicket.BL.Interfaces
 {
     public interface ICloudinaryService
     {
-        Task<Response<string>> UploadImageAsync(IFormFile file, string folder);
+        Task<Response<string>> UploadBannerAsync(IFormFile file);
+        Task<Response<string>> UploadMovieBannerAsync(IFormFile file);
+        Task<Response<string>> UploadMoviePosterAsync(IFormFile file);
+        Task<Response<string>> UploadProfileAsync(IFormFile file);
     }
 }

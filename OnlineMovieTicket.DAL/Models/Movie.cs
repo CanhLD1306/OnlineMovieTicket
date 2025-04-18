@@ -36,7 +36,6 @@ namespace OnlineMovieTicket.DAL.Models
         [Required]
         [MaxLength(1000)]
         public string BannerURL { get; set; } = string.Empty;
-        public bool IsBanner { get; set; }
         [Required]
         [MaxLength(1000)]
         public string TrailerURL { get; set; } = string.Empty;

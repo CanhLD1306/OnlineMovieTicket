@@ -21,5 +21,6 @@ namespace OnlineMovieTicket.DAL.Data
         public DbSet<Showtime> Showtime { get; set; } = null!;
         public DbSet<ShowtimeSeat> ShowtimeSeats { get; set; } = null!;
         public DbSet<Review> Reviews { get; set; } = null!;
+        public DbSet<Banner> Banners { get; set; } = null!;
     }
 }
