@@ -8,9 +8,9 @@ namespace OnlineMovieTicket.BL.Interfaces
     {
         Task<IEnumerable<CountryDTO>> GetAllCountriesAsync();
         Task<CountriesList> GetCountriesAsync(CountryQueryDTO queryDTO);
-        Task<Response<CountryDTO>> GetCountryByIdAsync(long id);
-        Task<Response> AddCountryAsync(CountryDTO countryDTO);
+        Task<Response<CountryDTO>> GetCountryByIdAsync(long countryid);
+        Task<Response> CreateCountryAsync(CountryDTO countryDTO);
         Task<Response> UpdateCountryAsync(CountryDTO countryDTO);
-        Task<Response> DeleteCountryAsync(long id);
+        Task<Response> DeleteCountryAsync(long countryid);
     }
 }

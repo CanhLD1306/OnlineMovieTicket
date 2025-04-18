@@ -35,7 +35,7 @@ namespace OnlineMovieTicket.DAL.Repositories
             return reviews;
         }
 
-        public async Task AddReviewAsync(Review review)
+        public async Task CreateReviewAsync(Review review)
         {
             _context.Reviews.Add(review);
             await _context.SaveChangesAsync();

@@ -54,10 +54,9 @@
 @section Scripts {
     <script>
         const urlGetCountries = '@Url.Action("GetCountries", "Country", new { area = "Admin" })';
-        const urlAdd = '@Url.Action("Add", "Country", new { area = "Admin" })';
+        const urlCreate = '@Url.Action("Create", "Country", new { area = "Admin" })';
         const urlEdit = '@Url.Action("Edit", "Country", new { area = "Admin" })';
         const urlDelete = '@Url.Action("Delete", "Country", new { area = "Admin" })';
-        const urlDeleteConfirm = '@Url.Action("DeleteConfirm", "Country", new { area = "Admin" })';
     </script>
     <script src="~/Admin/js/Country.js" asp-append-version="true"></script>
 }

@@ -6,11 +6,12 @@ namespace OnlineMovieTicket.BL.Interfaces
 {
     public interface ICinemaService 
     {
+        Task<IEnumerable<CinemaDTO>?> GetCinemasByCityAsync(long? cityId);
         Task<CinemasList> GetCinemasAsync(CinemaQueryDTO queryDTO);
-        Task<Response<CinemaDTO>> GetCinemaByIdAsync(long id);
-        Task<Response> AddCinemaAsync(CinemaDTO cinema);
+        Task<Response<CinemaDTO>> GetCinemaByIdAsync(long cinemaId);
+        Task<Response> CreateCinemaAsync(CinemaDTO cinema);
         Task<Response> UpdateCinemaAsync(CinemaDTO cinema);
-        Task<Response> DeleteCinemaAsync(long id);
-        Task<Response> ChangeStatusAsync(long id);
+        Task<Response> DeleteCinemaAsync(long cinemaId);
+        Task<Response> ChangeStatusAsync(long cinemaId);
     }
 }

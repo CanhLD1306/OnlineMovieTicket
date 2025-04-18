@@ -19,7 +19,7 @@ namespace OnlineMovieTicket.DAL.Interfaces
             bool isDescending);
         Task<Movie?> GetMovieByIdAsync(long movieId);
         Task<Movie?> GetMovieByTitleAsync(long movieId, string title);
-        Task AddMovieAsync(Movie movie);
+        Task CreateMovieAsync(Movie movie);
         Task UpdateMovieAsync(Movie movie);
     }
 }

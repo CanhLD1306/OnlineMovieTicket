@@ -75,12 +75,11 @@
 @section Scripts {
     <script>
         const urlGetAllCountries = '@Url.Action("GetAllCountries", "Country", new { area = "Admin" })';
-        const urlGetAllCities = '@Url.Action("GetAllCities", "City", new { area = "Admin" })';
+        const urlGetAllCities = '@Url.Action("GetCitiesByCountry", "City", new { area = "Admin" })';
         const urlGetCinemas = '@Url.Action("GetCinemas", "Cinema", new { area = "Admin" })';
-        const urlAdd = '@Url.Action("Add", "Cinema", new { area = "Admin" })';
+        const urlCreate = '@Url.Action("Create", "Cinema", new { area = "Admin" })';
         const urlEdit = '@Url.Action("Edit", "Cinema", new { area = "Admin" })';
         const urlDelete = '@Url.Action("Delete", "Cinema", new { area = "Admin" })';
-        const urlDeleteConfirm = '@Url.Action("DeleteConfirm", "Cinema", new { area = "Admin" })';
         const urlChangeStatus = '@Url.Action("ChangeStatus", "Cinema", new { area = "Admin" })';
     </script>
     <script src="~/Admin/js/Cinema.js" asp-append-version="true"></script>

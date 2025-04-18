@@ -20,7 +20,7 @@ namespace OnlineMovieTicket.DAL.Interfaces
             bool isDescending);
         
         Task<Showtime?> GetShowtimeByIdAsync(long showtimeId);
-        Task AddShowtimeAsync(Showtime showtime);
+        Task CreateShowtimeAsync(Showtime showtime);
         Task UpdateShowtimeAsync(Showtime showtime);
         
     }

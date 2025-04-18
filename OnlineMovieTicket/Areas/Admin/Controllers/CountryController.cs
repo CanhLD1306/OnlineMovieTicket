@@ -15,14 +15,12 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             _logger = logger;
         }
 
-
         public IActionResult Index()
         {
             return View();
         }
 
-        [HttpGet]
-        [Route("GetAllCountries")]  
+        [HttpGet("GetAllCountries")]
         public async Task<IActionResult> GetAllCountries()
         {
             var countries = await _countryService.GetAllCountriesAsync();
@@ -30,8 +28,7 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
         }
 
 
-        [HttpPost]
-        [Route("GetCountries")]  
+        [HttpPost("GetCountries")]
         public async Task<IActionResult> GetCountries([FromForm] CountryQueryDTO queryModel)
         {
             var result = await _countryService.GetCountriesAsync(queryModel);
@@ -44,24 +41,22 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             });
         }
 
-        [HttpGet]
-        [Route("Add")]
-        public IActionResult Add()
+        [HttpGet("Create")]
+        public IActionResult Create()
         {
             var country = new CountryDTO();
-            return PartialView("_AddNewCountry", country);
+            return PartialView("_CreateNewCountry", country);
         }
 
-        [HttpPost] 
-        [Route("Add")]
+        [HttpPost("Create")] 
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add([FromForm] CountryDTO country)
+        public async Task<IActionResult> Create([FromForm] CountryDTO country)
         {
             if(!ModelState.IsValid){
                 return Json(new {success = false, message = "Invalid input data."});
             }
 
-            var result = await _countryService.AddCountryAsync(country);
+            var result = await _countryService.CreateCountryAsync(country);
             if(!result.Success){
                 return Json(new {success = false, message = result.Message});
             }
@@ -69,19 +64,17 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             return Json(new {success = true, message = result.Message});
         }
 
-        [HttpGet]
-        [Route("Edit")]
-        public async Task<IActionResult> Edit(long id)
+        [HttpGet("Edit")]
+        public async Task<IActionResult> Edit(long countryId)
         {
-            var result = await _countryService.GetCountryByIdAsync(id);
+            var result = await _countryService.GetCountryByIdAsync(countryId);
             if(!result.Success){
                 return Json(new {success = false, message = result.Message});
             }
             return PartialView("_EditCountry", result.Data);
         }
 
-        [HttpPost]
-        [Route("Edit")]
+        [HttpPost("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromForm] CountryDTO country)
         {
@@ -96,21 +89,19 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             return Json(new {success = true, message = result.Message});
         }
 
-        [HttpGet]
-        [Route("Delete")]
-        public async Task<IActionResult> Delete(long id)
+        [HttpGet("Delete")]
+        public async Task<IActionResult> Delete(long countryId)
         {
-            var result = await _countryService.GetCountryByIdAsync(id);
+            var result = await _countryService.GetCountryByIdAsync(countryId);
             if(!result.Success){
                 return Json(new {success = false, message = result.Message});
             }
-            return PartialView("_deleteCountry", result.Data);
+            return PartialView("_DeleteCountry", result.Data);
         }
 
-        [HttpPost]
-        [Route("Delete")]
+        [HttpPost("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirm([FromForm] CountryDTO country)
+        public async Task<IActionResult> Delete([FromForm] CountryDTO country)
         {
             var result = await _countryService.DeleteCountryAsync(country.Id);
 

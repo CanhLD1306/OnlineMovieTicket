@@ -19,6 +19,12 @@ namespace OnlineMovieTicket.DAL.Repositories
             _context = context;
         }
 
+        public async Task<IEnumerable<SeatType>?> GetAllSeatTypesAsync()
+        {
+            var seatTypes = await _context.SeatTypes.Where(s => !s.IsDeleted).ToListAsync();
+            return seatTypes;
+        }
+
         public async Task<(IEnumerable<SeatType>? seatTypes, int totalCount, int filterCount)> GetAllSeatTypesAsync(
             string? searchTerm,
             int pageNumber,

@@ -27,7 +27,7 @@ namespace OnlineMovieTicket.DAL.Repositories
             return ShowtimeSeats;
         }
 
-        public async Task AddShowtimeSeatsAsync(IEnumerable<ShowtimeSeat> showtimeSeatsseats)
+        public async Task CreateShowtimeSeatsAsync(IEnumerable<ShowtimeSeat> showtimeSeatsseats)
         {
             _context.ShowtimeSeats.AddRange(showtimeSeatsseats);
             await _context.SaveChangesAsync();
@@ -35,7 +35,7 @@ namespace OnlineMovieTicket.DAL.Repositories
 
         public async Task UpdateShowtimeSeatsAsync(IEnumerable<ShowtimeSeat> showtimeSeats)
         {
-            _context.ShowtimeSeats.AddRange(showtimeSeats);
+            _context.ShowtimeSeats.UpdateRange(showtimeSeats);
             await _context.SaveChangesAsync();
         }
     }

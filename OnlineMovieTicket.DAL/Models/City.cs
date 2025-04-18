@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +29,6 @@ namespace OnlineMovieTicket.DAL.Models
         [Required]
         public Guid UpdatedBy { get; set; }
         public bool IsDeleted { get; set; }
-
         public Country Country { get; set; } = null!;
     }
 }

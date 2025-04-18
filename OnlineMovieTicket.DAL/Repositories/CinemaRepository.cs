@@ -32,12 +32,12 @@ namespace OnlineMovieTicket.DAL.Repositories
             int totalCount = await query.CountAsync();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
-                query = query.Where(c => c.Name.Contains(searchTerm));
+                query = query.Where(c => c.Name.Replace(" ", "").ToLower().Contains(searchTerm.Replace(" ", "").ToLower()));
             
-            if(countryId.HasValue && countryId != 0)
+            if(countryId.HasValue && countryId > 0)
                 query = query.Where(c => c.City.CountryId == countryId);
 
-            if(cityId.HasValue && cityId != 0)
+            if(cityId.HasValue && cityId > 0)
                 query = query.Where(c => c.CityId == cityId);
             
             if(isAvailable.HasValue)
@@ -72,17 +72,17 @@ namespace OnlineMovieTicket.DAL.Repositories
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync(
                                             c => c.Id != id 
-                                            && c.Name == name 
+                                            && c.Name.Replace(" ", "").ToLower() == name.Replace(" ", "").ToLower()
                                             && !c.IsDeleted);
             }
             return await _context.Cinemas
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync(
-                                            c => c.Name == name 
+                                            c => c.Name.Replace(" ", "").ToLower() == name.Replace(" ", "").ToLower()
                                             && !c.IsDeleted);
         }
 
-        public async Task AddCinemaAsync(Cinema cinema)
+        public async Task CreateCinemaAsync(Cinema cinema)
         {
             _context.Cinemas.Add(cinema);
             await _context.SaveChangesAsync();
@@ -94,7 +94,19 @@ namespace OnlineMovieTicket.DAL.Repositories
         }
         public bool HasAnyCinema(long cityId)
         {
-            return _context.Cinemas.Any(c => c.Id == cityId && !c.IsDeleted);
+            return _context.Cinemas.Any(c => c.CityId == cityId && !c.IsDeleted);
+        }
+
+        public async Task<IEnumerable<Cinema>?> GetCinemasByCityAsync(long? cityId)
+        {
+            var query = _context.Cinemas
+                                .Where(c => !c.IsDeleted)
+                                .AsQueryable();
+            if(cityId.HasValue && cityId != 0)
+                query = query.Where(c => c.CityId == cityId);
+            
+            var cinemas = await query.ToListAsync();
+            return cinemas;
         }
     }
 }

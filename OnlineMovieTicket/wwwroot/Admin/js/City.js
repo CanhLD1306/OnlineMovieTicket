@@ -5,10 +5,8 @@ $(document).ready(function () {
     let sortBy = "CreatedAt";
     let isDescending = true;
     let isAdjustingPage = false;
-    const searchTerm = $('#searchTerm');
-    const countrySelected = $('#countryFilter');
 
-    loadCountries(countrySelected);
+    loadCountries($('#countryFilter'));
 
     $('#citiesTable').DataTable({
         processing: true,
@@ -22,8 +20,8 @@ $(document).ready(function () {
             data: function (d) {
                 return {
                     Draw: d.draw,
-                    SearchTerm: searchTerm.val(),
-                    CountryId: countrySelected.val(),
+                    SearchTerm: $('#searchTerm').val(),
+                    CountryId: $('#countryFilter').val(),
                     PageNumber: (d.start / d.length) + 1,
                     PageSize: d.length,
                     SortBy: sortBy,
@@ -37,6 +35,7 @@ $(document).ready(function () {
             { "data": 'countryName' },
             {
                 "data": null,
+                className: "text-center",
                 "render": function (data, type, row) {
                     return `<a class='btn btn-sm btn-info btn-edit-city' title='Edit' data-id='${row.id}'>
                                 <i class='fas fa-edit'></i>
@@ -57,28 +56,6 @@ $(document).ready(function () {
         $('#citiesTable').DataTable().ajax.reload();
     });
 
-    function toggleSort(clickedSortBy) {
-        if (sortBy === clickedSortBy) {
-            isDescending = !isDescending;
-        } else {
-            sortBy = clickedSortBy;
-            isDescending = true;
-        }
-        updateSortIcons();
-        $('#citiesTable').DataTable().ajax.reload();
-    }
-
-    function updateSortIcons() {
-        $('.sort-header i').removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
-        const iconId = `#sort-icon-${sortBy}`;
-        $(iconId).removeClass('fa-sort');
-        if (isDescending) {
-            $(iconId).addClass('fa-sort-down');
-        } else {
-            $(iconId).addClass('fa-sort-up');
-        }
-    }
-
     $(document).on('click', '.sort-header', function (e) {
         e.preventDefault();
         const clickedSort = $(this).data('sort');
@@ -95,7 +72,7 @@ $(document).ready(function () {
     $('#addBtn').click(function(e) {
         e.preventDefault();
         $.ajax({
-            url: urlAdd,
+            url: urlCreate,
             type: 'GET',
             success: function (response) {
                 $('#cityModal .modal-content').html(response);
@@ -121,7 +98,7 @@ $(document).ready(function () {
         var token = $('input[name="__RequestVerificationToken"]').val();
         var formData = $(this).serialize();
         $.ajax({
-            url: urlAdd,
+            url: urlCreate,
             type: 'POST',
             data: formData,
             headers: {
@@ -150,7 +127,7 @@ $(document).ready(function () {
         $.ajax({
             url: urlEdit,
             type: 'GET',
-            data: { id: id },           
+            data: { cityId: id },           
             success: function (response) {
                 if (response) {
                     $('#cityModal .modal-content').html(response);
@@ -205,7 +182,7 @@ $(document).ready(function () {
         $.ajax({
             url: urlDelete,
             type: 'GET',
-            data: { id: id },           
+            data: { cityId: id },           
             success: function (response) {
                 if (response) {
                     $('#cityModal .modal-content').html(response);
@@ -228,7 +205,7 @@ $(document).ready(function () {
         var token = $('input[name="__RequestVerificationToken"]').val();
         var formData = $(this).serialize();
         $.ajax({
-            url: urlDeleteConfirm,
+            url: urlDelete,
             type: 'POST',
             data: formData,
             headers: {
@@ -249,7 +226,7 @@ $(document).ready(function () {
         });
     });
 
-    // Another, Funtion
+    // Another
 
     $(document).on('hidden.bs.modal', '.modal', function () {
         $('#cityModal .modal-content').html('');
@@ -273,23 +250,47 @@ $(document).ready(function () {
             }, 0);
         }
     });
-    
-    function loadCountries(selectElement, countryId = null){
-        $.ajax({
-            url: urlGetAllCountries,
-            type: 'GET',
-            success: function (data) {
-                $.each(data, function (i, country) {
-                    selectElement.append($('<option>', {
-                        value: country.id,
-                        text: country.name,
-                        selected: country.id == countryId
-                    }));
-                });
-            },
-            error: function (xhr, status, error) {
-                toastr.error('Failed to load countries.');
-            }
-        });
-    }
 });
+
+// Functions
+
+function toggleSort(clickedSortBy) {
+    if (sortBy === clickedSortBy) {
+        isDescending = !isDescending;
+    } else {
+        sortBy = clickedSortBy;
+        isDescending = true;
+    }
+    updateSortIcons();
+    $('#citiesTable').DataTable().ajax.reload();
+}
+
+function updateSortIcons() {
+    $('.sort-header i').removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
+    const iconId = `#sort-icon-${sortBy}`;
+    $(iconId).removeClass('fa-sort');
+    if (isDescending) {
+        $(iconId).addClass('fa-sort-down');
+    } else {
+        $(iconId).addClass('fa-sort-up');
+    }
+}
+
+function loadCountries(selectElement, countryId = null){
+    $.ajax({
+        url: urlGetAllCountries,
+        type: 'GET',
+        success: function (data) {
+            $.each(data, function (i, country) {
+                selectElement.append($('<option>', {
+                    value: country.id,
+                    text: country.name,
+                    selected: country.id == countryId
+                }));
+            });
+        },
+        error: function (xhr, status, error) {
+            toastr.error('Failed to load countries.');
+        }
+    });
+}

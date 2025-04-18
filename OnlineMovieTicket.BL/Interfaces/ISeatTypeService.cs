@@ -11,6 +11,7 @@ namespace OnlineMovieTicket.BL.Interfaces
 {
     public interface ISeatTypeService
     {
+        Task<IEnumerable<SeatTypeDTO>?> GetAllSeatTypesAsync();
         Task<SeatTypeList> GetAllSeatTypesAsync(SeatTypeQueryDTO queryDTO);
         Task<Response<SeatTypeDTO>> GetSeatTypeByIdAsync(long seatTypeId);
         Task<Response> UpdateSeatTypeAsync(SeatTypeDTO seatType);

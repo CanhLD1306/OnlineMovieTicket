@@ -5,11 +5,8 @@ $(document).ready(function () {
     let sortBy = "CreatedAt";
     let isDescending = true;
     let isAdjustingPage = false;
-    const countrySelected = $('#countryFilter');
-    const citySelected = $('#cityFilter');
-    const statusSelected = $('#statusFilter');
 
-    loadCountries(countrySelected, citySelected);
+    loadCountries($('#countryFilter'), $('#cityFilter'));
 
     $('#cinemasTable').DataTable({
         processing: true,
@@ -24,9 +21,9 @@ $(document).ready(function () {
                 return {
                     Draw: d.draw,
                     SearchTerm: $('#searchTerm').val(),
-                    CountryId: countrySelected.val(),
-                    CityId: citySelected.val(),
-                    IsAvailable: statusSelected.val(),
+                    CountryId: $('#countryFilter').val(),
+                    CityId: $('#cityFilter').val(),
+                    IsAvailable: $('#statusFilter').val(),
                     PageNumber: (d.start / d.length) + 1,
                     PageSize: d.length,
                     SortBy: sortBy,
@@ -97,18 +94,18 @@ $(document).ready(function () {
         toggleSort(clickedSort);
     });
 
-    countrySelected.on('change', function () {
-        const countryId = countrySelected.val();
-        citySelected.val("")
-        loadCities(citySelected, countryId);
+    $('#countryFilter').on('change', function () {
+        const countryId = $('#countryFilter').val();
+        $('#cityFilter').val("")
+        loadCities($('#cityFilter'), countryId);
         $('#cinemasTable').DataTable().ajax.reload();
     });
 
-    citySelected.on('change', function () {
+    $('#cityFilter').on('change', function () {
         $('#cinemasTable').DataTable().ajax.reload();
     });
 
-    statusSelected.on('change', function () {
+    $('#statusFilter').on('change', function () {
         $('#cinemasTable').DataTable().ajax.reload();
     });
 
@@ -117,7 +114,7 @@ $(document).ready(function () {
     $('#addBtn').click(function(e) {
         e.preventDefault();
         $.ajax({
-            url: urlAdd,
+            url: urlCreate,
             type: 'GET',
             success: function (response) {
                 $('#cinemaModal .modal-content').html(response);
@@ -154,7 +151,7 @@ $(document).ready(function () {
         var token = $('input[name="__RequestVerificationToken"]').val();
         var formData = $(this).serialize();
         $.ajax({
-            url: urlAdd,
+            url: urlCreate,
             type: 'POST',
             data: formData,
             headers: {
@@ -183,7 +180,7 @@ $(document).ready(function () {
         $.ajax({
             url: urlEdit,
             type: 'GET',
-            data: { id: id },           
+            data: { cinemaId: id },           
             success: function (response) {
                 if (response) {
                     $('#cinemaModal .modal-content').html(response);
@@ -251,11 +248,11 @@ $(document).ready(function () {
     
     $(document).on('click', '.btn-delete-cinema', function (e) {
         e.preventDefault();
-        var id = $(this).data('id');
+        var cinemaId = $(this).data('id');
         $.ajax({
             url: urlDelete,
             type: 'GET',
-            data: { id: id },           
+            data: { cinemaId: cinemaId },           
             success: function (response) {
                 if (response) {
                     $('#cinemaModal .modal-content').html(response);
@@ -278,7 +275,7 @@ $(document).ready(function () {
         var token = $('input[name="__RequestVerificationToken"]').val();
         var formData = $(this).serialize();
         $.ajax({
-            url: urlDeleteConfirm,
+            url: urlDelete,
             type: 'POST',
             data: formData,
             headers: {
@@ -301,92 +298,121 @@ $(document).ready(function () {
 
     // Change Status
 
+    $(document).on('focusin', '.toggle-status', function () {
+        const currentChecked = $(this).prop('checked');
+        $(this).data('prev', currentChecked);
+    });
+
     $(document).on('change', '.toggle-status', function () {
-        const cinemaId = $(this).data('id');
+        const $checkbox = $(this);
+        const cinemaId = $checkbox.data('id');
         $.ajax({
             url: urlChangeStatus,
             type: 'POST',
-            data: {id : cinemaId},
+            data: {cinemaId : cinemaId},
             success: function (response) {
                 if (response.success) {
                     toastr.success(response.message);
                     $('#cinemasTable').DataTable().ajax.reload(null, false);
                 } else {
                     toastr.error(response.message);
+                    $checkbox.prop('checked', $checkbox.data('prev'));
                 }
             },
             error: function (xhr, status, error) {
                 toastr.error('There was an error processing your request: ' + error);
+                $checkbox.prop('checked', $checkbox.data('prev'));
             }
         });
     });
 
-    // Another, Funtion
+    // Another
 
     $(document).on('hidden.bs.modal', '.modal', function () {
         $('#cinemaModal .modal-content').html('');
     });
 
-    function toggleSort(clickedSortBy) {
-        if (sortBy === clickedSortBy) {
-            isDescending = !isDescending;
-        } else {
-            sortBy = clickedSortBy;
-            isDescending = true;
+    $('#cinemasTable').on('draw.dt', function () {
+        if (isAdjustingPage) {
+            isAdjustingPage = false;
+            return;
         }
-        updateSortIcons();
-        $('#cinemasTable').DataTable().ajax.reload();
-    }
 
-    function updateSortIcons() {
-        $('.sort-header i').removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
-        const iconId = `#sort-icon-${sortBy}`;
-        $(iconId).removeClass('fa-sort');
-        if (isDescending) {
-            $(iconId).addClass('fa-sort-down');
-        } else {
-            $(iconId).addClass('fa-sort-up');
+        let table = $('#cinemasTable').DataTable();
+        let pageInfo = table.page.info();
+        let currentPage = pageInfo.page;
+        let currentPageRowCount = table.rows({ page: 'current' }).count();
+
+        if (currentPageRowCount === 0 && currentPage > 0) {
+            isAdjustingPage = true;
+            setTimeout(() => {
+                table.page(currentPage - 1).draw(false);
+            }, 0);
         }
-    }
-
-    function loadCities(selectElement, countryId, CityId = null) {    
-        $.ajax({
-            url: urlGetAllCities,
-            type: 'GET',
-            data: { id: countryId },
-            success: function (data) {
-                selectElement.find('option').not('[value=""]').remove();
-                $.each(data, function (i, city) {
-                    selectElement.append($('<option>', {
-                        value: city.id,
-                        text: city.name,
-                        selected: city.id == CityId
-                    }));
-                });
-            },
-            error: function (xhr, status, error) {
-                toastr.error('Failed to load cities.');
-            }
-        });
-    }
-
-    function loadCountries(selectElement1, selectElement2, countryId = null, cityId = null){
-        $.ajax({
-            url: urlGetAllCountries,
-            type: 'GET',
-            success: function (data) {
-                $.each(data, function (i, country) {
-                    selectElement1.append($('<option>', {
-                        value: country.id,
-                        text: country.name,
-                        selected: country.id == countryId
-                    }));
-                });
-                loadCities(selectElement2, countryId, cityId);
-            },
-            error: function (xhr, status, error) {
-                toastr.error('Failed to load countries.');
-            }
-        });
-    }
+    });
 });
+
+// Function
+
+function toggleSort(clickedSortBy) {
+    if (sortBy === clickedSortBy) {
+        isDescending = !isDescending;
+    } else {
+        sortBy = clickedSortBy;
+        isDescending = true;
+    }
+    updateSortIcons();
+    $('#cinemasTable').DataTable().ajax.reload();
+}
+
+function updateSortIcons() {
+    $('.sort-header i').removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
+    const iconId = `#sort-icon-${sortBy}`;
+    $(iconId).removeClass('fa-sort');
+    if (isDescending) {
+        $(iconId).addClass('fa-sort-down');
+    } else {
+        $(iconId).addClass('fa-sort-up');
+    }
+}
+
+function loadCities(selectElement, countryId, CityId = null) {    
+    $.ajax({
+        url: urlGetAllCities,
+        type: 'GET',
+        data: { countryId: countryId },
+        success: function (data) {
+            selectElement.find('option').not('[value=""]').remove();
+            $.each(data, function (i, city) {
+                selectElement.append($('<option>', {
+                    value: city.id,
+                    text: city.name,
+                    selected: city.id == CityId
+                }));
+            });
+        },
+        error: function (xhr, status, error) {
+            toastr.error('Failed to load cities.');
+        }
+    });
+}
+
+function loadCountries(selectElement1, selectElement2, countryId = null, cityId = null){
+    $.ajax({
+        url: urlGetAllCountries,
+        type: 'GET',
+        success: function (data) {
+            $.each(data, function (i, country) {
+                selectElement1.append($('<option>', {
+                    value: country.id,
+                    text: country.name,
+                    selected: country.id == countryId
+                }));
+            });
+            loadCities(selectElement2, countryId, cityId);
+        },
+        error: function (xhr, status, error) {
+            toastr.error('Failed to load countries.');
+        }
+    });
+}

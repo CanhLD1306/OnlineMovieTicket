@@ -26,16 +26,14 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             return View();
         }
 
-        [HttpGet]
-        [Route("GetAllCities")]  
-        public async Task<IActionResult> GetAllCities(long id)
+        [HttpGet("GetAllCities")]
+        public async Task<IActionResult> GetCitiesByCountry(long countryId)
         {
-            var cities = await _cityService.GetAllCitiesAsync(id);
+            var cities = await _cityService.GetCitiesByCountryAsync(countryId);
             return Json(cities);
         }
 
-        [HttpPost]
-        [Route("GetCities")]  
+        [HttpPost("GetCities")]
         public async Task<IActionResult> GetCities([FromForm] CityQueryDTO queryModel)
         {
             var result = await _cityService.GetCitiesAsync(queryModel);
@@ -48,24 +46,22 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             });
         }
 
-        [HttpGet]
-        [Route("Add")]
-        public IActionResult Add()
+        [HttpGet("Create")]
+        public IActionResult Create()
         {
             var city = new CityDTO();
-            return PartialView("_AddNewCity", city);
+            return PartialView("_CreateNewCity", city);
         }
 
-        [HttpPost] 
-        [Route("Add")]
+        [HttpPost("Create")] 
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add([FromForm] CityDTO city)
+        public async Task<IActionResult> Create([FromForm] CityDTO city)
         {
             if(!ModelState.IsValid){
                 return Json(new {success = false, message = "Invalid input data."});
             }
 
-            var result = await _cityService.AddCityAsync(city);
+            var result = await _cityService.CreateCityAsync(city);
             if(!result.Success){
                 return Json(new {success = false, message = result.Message});
             }
@@ -73,19 +69,17 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             return Json(new {success = true, message = result.Message});
         }
 
-        [HttpGet]
-        [Route("Edit")]
-        public async Task<IActionResult> Edit(long id)
+        [HttpGet("Edit")]
+        public async Task<IActionResult> Edit(long cityId)
         {
-            var result = await _cityService.GetCityByIdAsync(id);
+            var result = await _cityService.GetCityByIdAsync(cityId);
             if(!result.Success){
                 return Json(new {success = false, message = result.Message});
             }
             return PartialView("_EditCity", result.Data);
         }
 
-        [HttpPost]
-        [Route("Edit")]
+        [HttpPost("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromForm] CityDTO city)
         {
@@ -100,21 +94,19 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             return Json(new {success = true, message = result.Message});
         }
 
-        [HttpGet]
-        [Route("Delete")]
-        public async Task<IActionResult> Delete(long id)
+        [HttpGet("Delete")]
+        public async Task<IActionResult> Delete(long cityId)
         {
-            var result = await _cityService.GetCityByIdAsync(id);
+            var result = await _cityService.GetCityByIdAsync(cityId);
             if(!result.Success){
                 return Json(new {success = false, message = result.Message});
             }
             return PartialView("_DeleteCity", result.Data);
         }
 
-        [HttpPost]
-        [Route("Delete")]
+        [HttpPost("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirm([FromForm] CityDTO city)
+        public async Task<IActionResult> Delete([FromForm] CityDTO city)
         {
             var result = await _cityService.DeleteCityAsync(city.Id);
 

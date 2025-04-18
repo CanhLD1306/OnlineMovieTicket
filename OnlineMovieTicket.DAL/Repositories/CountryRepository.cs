@@ -35,7 +35,8 @@ namespace OnlineMovieTicket.DAL.Repositories
             var totalCount = await query.CountAsync();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
-                query = query.Where(c => c.Name.Contains(searchTerm) || c.Code.Contains(searchTerm));
+                query = query.Where(c => c.Name.Replace(" ", "").ToLower().Contains(searchTerm.Replace(" ", "").ToLower()) 
+                                    || c.Code.Replace(" ", "").ToLower().Contains(searchTerm.Replace(" ", "").ToLower()));
             
             query = isDescending
                 ? query.OrderByDescending(c => EF.Property<object>(c, sortBy))
@@ -62,34 +63,34 @@ namespace OnlineMovieTicket.DAL.Repositories
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync(
                                             c => c.Id != id 
-                                            && c.Name == name 
+                                            && c.Name.Replace(" ", "").ToLower() == name.Replace(" ", "").ToLower()
                                             && !c.IsDeleted);
             }
             return await _context.Countries
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync(
-                                            c => c.Name == name 
+                                            c => c.Name.Replace(" ", "").ToLower() == name.Replace(" ", "").ToLower()
                                             && !c.IsDeleted);
         }
 
         public async Task<Country?> GetCountryByCodeAsync(long id, string code)
         {
-            if(id != 0)
+            if(id > 0)
             {
                 return await _context.Countries
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync(
                                             c => c.Id != id 
-                                            && c.Code == code 
+                                            && c.Code.Replace(" ", "").ToLower() == code.Replace(" ", "").ToLower()
                                             && !c.IsDeleted);
             }
             return await _context.Countries
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync(
-                                            c => c.Code == code 
+                                            c => c.Code.Replace(" ", "").ToLower() == code.Replace(" ", "").ToLower()
                                             && !c.IsDeleted);
         }
-        public async Task<long> AddCountryAsync(Country country)
+        public async Task<long> CreateCountryAsync(Country country)
         {
             _context.Countries.Add(country);
             await _context.SaveChangesAsync();

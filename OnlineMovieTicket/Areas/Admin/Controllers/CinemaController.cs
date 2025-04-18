@@ -34,12 +34,16 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             return View();
         }
 
-        [HttpPost]
-        [Route("GetCinemas")]  
+        [HttpGet("GetCinemasByCity")]
+        public async Task<IActionResult> GetCinemasByCity(long cityId)
+        {
+            var cinemas = await _cinemaService.GetCinemasByCityAsync(cityId);
+            return Json(cinemas);
+        }
+
+        [HttpPost("GetCinemas")]
         public async Task<IActionResult> GetCinemas([FromForm] CinemaQueryDTO queryModel)
         {
-            _logger.LogInformation("CountryId: " + queryModel.CountryId);
-            _logger.LogInformation("CityId: " + queryModel.CityId);
             var result = await _cinemaService.GetCinemasAsync(queryModel);
             return Json(new
             {
@@ -50,25 +54,22 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             });
         }
 
-        [HttpGet]
-        [Route("Add")]
-        public async Task<IActionResult> Add()
+        [HttpGet("Create")]
+        public IActionResult Create()
         {
             var cinema = new CinemaDTO();
-            ViewBag.Cities = new SelectList(await _cityService.GetAllCitiesAsync(0), "Id", "Name");
-            return PartialView("_AddNewCinema", cinema);
+            return PartialView("_CreateNewCinema", cinema);
         }
 
-        [HttpPost] 
-        [Route("Add")]
+        [HttpPost("Create")] 
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Add([FromForm] CinemaDTO cinema)
+        public async Task<IActionResult> Create([FromForm] CinemaDTO cinema)
         {
             if(!ModelState.IsValid){
                 return Json(new {success = false, message = "Invalid input data."});
             }
 
-            var result = await _cinemaService.AddCinemaAsync(cinema);
+            var result = await _cinemaService.CreateCinemaAsync(cinema);
             if(!result.Success){
                 return Json(new {success = false, message = result.Message});
             }
@@ -76,21 +77,17 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             return Json(new {success = true, message = result.Message});
         }
 
-        [HttpGet]
-        [Route("Edit")]
-        public async Task<IActionResult> Edit(long id)
+        [HttpGet("Edit")]
+        public async Task<IActionResult> Edit(long cinemaId)
         {
-            var result = await _cinemaService.GetCinemaByIdAsync(id);
+            var result = await _cinemaService.GetCinemaByIdAsync(cinemaId);
             if(!result.Success){
                 return Json(new {success = false, message = result.Message});
             }
-            ViewBag.Countries = new SelectList(await _countryService.GetAllCountriesAsync(), "Id", "Name");
-            ViewBag.Cities = new SelectList(await _cityService.GetAllCitiesAsync(0), "Id", "Name");
             return PartialView("_EditCinema", result.Data);
         }
 
-        [HttpPost]
-        [Route("Edit")]
+        [HttpPost("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([FromForm] CinemaDTO cinema)
         {
@@ -105,21 +102,19 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             return Json(new {success = true, message = result.Message});
         }
 
-        [HttpGet]
-        [Route("Delete")]
-        public async Task<IActionResult> Delete(long id)
+        [HttpGet("Delete")]
+        public async Task<IActionResult> Delete(long cinemaId)
         {
-            var result = await _cinemaService.GetCinemaByIdAsync(id);
+            var result = await _cinemaService.GetCinemaByIdAsync(cinemaId);
             if(!result.Success){
                 return Json(new {success = false, message = result.Message});
             }
             return PartialView("_deleteCinema", result.Data);
         }
 
-        [HttpPost]
-        [Route("DeleteConfirm")]
+        [HttpPost("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirm([FromForm] CinemaDTO cinema)
+        public async Task<IActionResult> Delete([FromForm] CinemaDTO cinema)
         {
             var result = await _cinemaService.DeleteCinemaAsync(cinema.Id);
 
@@ -129,11 +124,10 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             return Json(new {success = true, message = result.Message});
         }
 
-        [HttpPost]
-        [Route("ChangeStatus")]
-        public async Task<IActionResult> ChangeStatus(long id)
+        [HttpPost("ChangeStatus")]
+        public async Task<IActionResult> ChangeStatus(long cinemaId)
         {
-            var result = await _cinemaService.ChangeStatusAsync(id);
+            var result = await _cinemaService.ChangeStatusAsync(cinemaId);
 
             if(!result.Success){
                 return Json(new {success = false, message = result.Message});

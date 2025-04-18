@@ -1,1 +1,91 @@
-﻿<h1>Room</h1>
+﻿@{
+    ViewData["Title"] = "Room Management";
+}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Room Management</h1>
+    <a href="@Url.Action("Create", "Room", new { area = "Admin" })" class="btn btn-primary btn-icon-split btn-sm cursor-pointer">
+        <span class="icon text-white">
+            <i class="fas fa-plus"></i>
+        </span>
+        <span class="text">Add New Room</span>
+    </a>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-3">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+            <input type="text" id="searchTerm" class="form-control" placeholder="Search by Name">
+        </div>  
+    </div>
+    <div class="col-md-2">
+        <select id="countryFilter" class="form-control">
+            <option value="">All Countries</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select id="cityFilter" class="form-control" disabled>
+            <option value="">All Cities</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select id="cinemaFilter" class="form-control"disabled>
+            <option value="">All Cinemas</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select id="statusFilter" class="form-control">
+            <option value="">All Status</option>
+            <option value="true">Available</option>
+            <option value="false">Unavailable</option>
+        </select>
+    </div>
+</div> 
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="roomsTable" class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="sort-header" data-sort="Name">
+                            Room <i class="fas fa-sort" id="sort-icon-Name"></i>
+                        </th>
+                        <th>City</th>
+                        <th>Cinema</th>
+                        <th class="text-center">Capacity</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center"></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="modalPlaceholder">
+    <div class="modal fade" id="roomModal" tabindex="-1" role="dialog" aria-labelledby="roomModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const urlGetAllCountries = '@Url.Action("GetAllCountries", "Country", new { area = "Admin" })';
+        const urlGetCities = '@Url.Action("GetCitiesByCountry", "City", new { area = "Admin" })';
+        const urlGetCinemas = '@Url.Action("GetCinemasByCity", "Cinema", new { area = "Admin" })';
+        const urlGetRooms = '@Url.Action("GetRooms", "Room", new { area = "Admin" })';
+        const urlEdit = '@Url.Action("Edit", "Room", new { area = "Admin" })';
+        const urlDelete = '@Url.Action("Delete", "Room", new { area = "Admin" })';
+        const urlChangeStatus = '@Url.Action("ChangeStatus", "Room", new { area = "Admin" })';
+    </script>
+    <script src="~/Admin/js/Room.js" asp-append-version="true"></script>
+}

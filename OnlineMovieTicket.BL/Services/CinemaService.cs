@@ -22,6 +22,12 @@ namespace OnlineMovieTicket.BL.Services
             _mapper = mapper;
         }
 
+        public async Task<IEnumerable<CinemaDTO>?> GetCinemasByCityAsync(long? countryId)
+        {
+            var cinemas = await _cinemaRepository.GetCinemasByCityAsync(countryId);
+            return _mapper.Map<IEnumerable<CinemaDTO>>(cinemas);
+        }
+
         public async Task<CinemasList> GetCinemasAsync(CinemaQueryDTO queryDTO)
         {
             var(cinemas, totalCount, filterCount) = await _cinemaRepository.GetCinemaAsync(
@@ -44,9 +50,9 @@ namespace OnlineMovieTicket.BL.Services
             };
         }
 
-        public async Task<Response<CinemaDTO>> GetCinemaByIdAsync(long id)
+        public async Task<Response<CinemaDTO>> GetCinemaByIdAsync(long countryId)
         {
-            var cinema = await _cinemaRepository.GetCinemaByIdAsync(id);
+            var cinema = await _cinemaRepository.GetCinemaByIdAsync(countryId);
             if(cinema != null){
                 var cinemaDTO = _mapper.Map<CinemaDTO>(cinema);
                 return new Response<CinemaDTO>(true, null,cinemaDTO);
@@ -54,7 +60,7 @@ namespace OnlineMovieTicket.BL.Services
             return new Response<CinemaDTO>(false,"Cinema not found");
         }
 
-        public async Task<Response> AddCinemaAsync(CinemaDTO cinemaDTO)
+        public async Task<Response> CreateCinemaAsync(CinemaDTO cinemaDTO)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
@@ -73,13 +79,13 @@ namespace OnlineMovieTicket.BL.Services
                     cinema.UpdatedBy = (await _authService.GetUserId()).Data;
                     cinema.IsDeleted = false;
 
-                    await _cinemaRepository.AddCinemaAsync(cinema);
+                    await _cinemaRepository.CreateCinemaAsync(cinema);
                     scope.Complete();
                     return new Response(true, "Add new cinema successful!");
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    return new Response(false, "Add new cinema fail " + ex.Message);
+                    return new Response(false, "Add new cinema fail!");
                 }
             }
         }
@@ -105,21 +111,25 @@ namespace OnlineMovieTicket.BL.Services
                     scope.Complete();
                     return new Response(true, "Update cinema successful!");
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    return new Response(false, "Update cinema fail " + ex.Message);
+                    return new Response(false, "Update cinema fail!");
                 }
             }
         }
-        public async Task<Response> DeleteCinemaAsync(long id)
+        public async Task<Response> DeleteCinemaAsync(long countryId)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {
-                    var cinema = await _cinemaRepository.GetCinemaByIdAsync(id);
+                    var cinema = await _cinemaRepository.GetCinemaByIdAsync(countryId);
                     if(cinema == null){
                         return new Response(false, "Cinema not found");
+                    }
+
+                    if(cinema.TotalRooms > 0){
+                        return new Response(false, "Cannot delete this cinema because there are still rooms associated with it.");
                     }
 
                     cinema.IsDeleted = true;
@@ -130,25 +140,26 @@ namespace OnlineMovieTicket.BL.Services
                     scope.Complete();
                     return new Response(true, "Delete cinema successful!");
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    return new Response(false, "Delete cinema fail " + ex.Message);
+                    return new Response(false, "Delete cinema fail!");
                 }
             }
         }
 
-        public async Task<Response> ChangeStatusAsync(long id)
+        public async Task<Response> ChangeStatusAsync(long cinemaId)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {
-                    var cinema = await _cinemaRepository.GetCinemaByIdAsync(id);
+                    var cinema = await _cinemaRepository.GetCinemaByIdAsync(cinemaId);
                     if(cinema == null){
                         return new Response(false, "Cinema not found");
                     }
+
                     if(cinema.TotalRooms > 0){
-                        return new Response(false, "Cannot delete Cinema because Room is still in use!");
+                        return new Response(false, "Cannot change status this cinema because there are still rooms associated with it.");
                     }
 
                     cinema.IsAvailable = !cinema.IsAvailable;
@@ -157,11 +168,11 @@ namespace OnlineMovieTicket.BL.Services
 
                     await _cinemaRepository.UpdateCinemaAsync(cinema);
                     scope.Complete();
-                    return new Response(true, "Status updated successfully.");
+                    return new Response(true, "Update status successfully.");
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    return new Response(false, "Status updated fail." + ex.Message);
+                    return new Response(false, "Update status fail!");
                 }
             }
         }

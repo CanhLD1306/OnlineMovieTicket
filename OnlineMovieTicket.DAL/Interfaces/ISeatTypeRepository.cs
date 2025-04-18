@@ -9,6 +9,7 @@ namespace OnlineMovieTicket.DAL.Interfaces
 {
     public interface ISeatTypeRepository
     {
+        Task<IEnumerable<SeatType>?> GetAllSeatTypesAsync();
         Task<(IEnumerable<SeatType>? seatTypes, int totalCount, int filterCount)> GetAllSeatTypesAsync(
             string? searchTerm,
             int pageNumber,

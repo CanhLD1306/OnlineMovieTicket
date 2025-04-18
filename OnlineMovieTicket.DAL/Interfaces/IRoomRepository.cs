@@ -22,7 +22,7 @@ namespace OnlineMovieTicket.DAL.Interfaces
         
         Task<Room?> GetRoomByIdAsync(long CinemaId);
         Task<Room?> GetRoomByNameAsync(long CinemaId, long RoomId, string name);
-        Task AddRoomAsync(Room room);
+        Task<long> CreateRoomAsync(Room room);
         Task UpdateRoomAsync(Room room);
 
     }

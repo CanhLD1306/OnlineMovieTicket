@@ -14,7 +14,7 @@ namespace OnlineMovieTicket.DAL.Interfaces
         Task<Country?> GetCountryByIdAsync(long countryId);
         Task<Country?> GetCountryByNameAsync(long countryId, string name);
         Task<Country?> GetCountryByCodeAsync(long countryId, string code);
-        Task<long> AddCountryAsync(Country country);
+        Task<long> CreateCountryAsync(Country country);
         Task<long> UpdateCountryAsync(Country country);
     }
 }

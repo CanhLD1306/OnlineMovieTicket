@@ -42,6 +42,12 @@ namespace OnlineMovieTicket.BL.Services
             };
         }
 
+        public async Task<IEnumerable<SeatTypeDTO>?> GetAllSeatTypesAsync()
+        {
+            var seatTypes = await _seatTypeRepository.GetAllSeatTypesAsync();
+            return _mapper.Map<IEnumerable<SeatTypeDTO>>(seatTypes);
+        }
+
         public async Task<Response<SeatTypeDTO>> GetSeatTypeByIdAsync(long seatTypeId)
         {
             var seatType = await _seatTypeRepository.GetSeatTypeByIdAsync(seatTypeId);

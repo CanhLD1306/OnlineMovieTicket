@@ -21,14 +21,18 @@ body {
   margin-bottom: 10px !important;
 }
 
+.h-70px {
+  height: 70px !important;
+}
+
 .object-fit-cover {
   object-fit: cover;
 }
 
 .validation-message{
+  position: absolute;
   display: block;
-  min-height: 20px;
-  margin-top: 3px;
+  font-size: 0.875rem;
 }
 
 .card-identity{
@@ -38,5 +42,53 @@ body {
   background: white;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.seat {
+  color: white;
+  max-width: 40px;
+  max-height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border: 1px solid #ddd;
+  margin: 0 auto;
+}
+.seat.selected {
+  border: 2px solid red;
+  color: white;
+}
+.seats-container {
+  justify-items: center;
+  align-items: center;
+}
+.seats-grid-container{
+  max-width: 100%;
+  overflow-y: hidden;
+  overflow-x: auto;
+  display: grid;
+  gap: 2px;
+}
+.screen {
+  background-color: #444;
+  color: white;
+  text-align: center;
+  padding: 8px;
+  font-weight: bold;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}   
+
+.generate-btn {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.readonly-select {
+  pointer-events: none;
+  background-color: #f8f9fa;
 }
 

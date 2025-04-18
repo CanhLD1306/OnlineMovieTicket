@@ -31,6 +31,7 @@ $(document).ready(function () {
             { "data": 'code' },
             {
                 "data": null,
+                className: "text-center",
                 "render": function (data, type, row) {
                     return `<a class='btn btn-sm btn-info btn-edit-country' title='Edit' data-id='${row.id}'>
                                 <i class='fas fa-edit'></i>
@@ -51,28 +52,6 @@ $(document).ready(function () {
         $('#countriesTable').DataTable().ajax.reload();
     });
 
-    function toggleSort(clickedSortBy) {
-        if (sortBy === clickedSortBy) {
-            isDescending = !isDescending;
-        } else {
-            sortBy = clickedSortBy;
-            isDescending = true;
-        }
-        updateSortIcons();
-        $('#countriesTable').DataTable().ajax.reload();
-    }
-
-    function updateSortIcons() {
-        $('.sort-header i').removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
-        const iconId = `#sort-icon-${sortBy}`;
-        $(iconId).removeClass('fa-sort');
-        if (isDescending) {
-            $(iconId).addClass('fa-sort-down');
-        } else {
-            $(iconId).addClass('fa-sort-up');
-        }
-    }
-
     $(document).on('click', '.sort-header', function (e) {
         e.preventDefault();
         const clickedSort = $(this).data('sort');
@@ -84,7 +63,7 @@ $(document).ready(function () {
     $('#addBtn').click(function(e) {
         e.preventDefault();
         $.ajax({
-            url: urlAdd,
+            url: urlCreate,
             type: 'GET',
             success: function (response) {
                 $('#countryModal .modal-content').html(response);
@@ -105,7 +84,7 @@ $(document).ready(function () {
         var token = $('input[name="__RequestVerificationToken"]').val();
         var formData = $(this).serialize();
         $.ajax({
-            url: urlAdd,
+            url: urlCreate,
             type: 'POST',
             data: formData,
             headers: {
@@ -134,7 +113,7 @@ $(document).ready(function () {
         $.ajax({
             url: urlEdit,
             type: 'GET',
-            data: { id: id },           
+            data: { countryId: id },           
             success: function (response) {
                 if (response) {
                     $('#countryModal .modal-content').html(response);
@@ -186,7 +165,7 @@ $(document).ready(function () {
         $.ajax({
             url: urlDelete,
             type: 'GET',
-            data: { id: id },           
+            data: { countryId: id },           
             success: function (response) {
                 if (response) {
                     $('#countryModal .modal-content').html(response);
@@ -209,7 +188,7 @@ $(document).ready(function () {
         var token = $('input[name="__RequestVerificationToken"]').val();
         var formData = $(this).serialize();
         $.ajax({
-            url: urlDeleteConfirm,
+            url: urlDelete,
             type: 'POST',
             data: formData,
             headers: {
@@ -230,7 +209,7 @@ $(document).ready(function () {
         });
     });
 
-    // another
+    // Another, Function
 
     $(document).on('hidden.bs.modal', '.modal', function () {
         $('#countryModal .modal-content').html('');
@@ -255,3 +234,27 @@ $(document).ready(function () {
         }
     });
 });
+
+// Functions
+
+function toggleSort(clickedSortBy) {
+    if (sortBy === clickedSortBy) {
+        isDescending = !isDescending;
+    } else {
+        sortBy = clickedSortBy;
+        isDescending = true;
+    }
+    updateSortIcons();
+    $('#countriesTable').DataTable().ajax.reload();
+}
+
+function updateSortIcons() {
+    $('.sort-header i').removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
+    const iconId = `#sort-icon-${sortBy}`;
+    $(iconId).removeClass('fa-sort');
+    if (isDescending) {
+        $(iconId).addClass('fa-sort-down');
+    } else {
+        $(iconId).addClass('fa-sort-up');
+    }
+}

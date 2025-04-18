@@ -6,11 +6,11 @@ namespace OnlineMovieTicket.BL.Interfaces
 {
     public interface ICityService 
     {
-        Task<IEnumerable<CityDTO>> GetAllCitiesAsync(long? id);
+        Task<IEnumerable<CityDTO>> GetCitiesByCountryAsync(long? countryId);
         Task<CitiesList> GetCitiesAsync(CityQueryDTO queryDTO);
-        Task<Response<CityDTO>> GetCityByIdAsync(long id);
-        Task<Response> AddCityAsync(CityDTO city);
+        Task<Response<CityDTO>> GetCityByIdAsync(long cityId);
+        Task<Response> CreateCityAsync(CityDTO city);
         Task<Response> UpdateCityAsync(CityDTO city);
-        Task<Response> DeleteCityAsync(long id);
+        Task<Response> DeleteCityAsync(long cityId);
     }
 }

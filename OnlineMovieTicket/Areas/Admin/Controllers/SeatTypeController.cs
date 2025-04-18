@@ -20,6 +20,15 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             return View();
         }
 
+        [HttpGet]
+        [Route("GetAllSeatTypes")]
+        public async Task<IActionResult> GetAllSeatTypes()
+        {
+            var seatTypes = await _seatTypeService.GetAllSeatTypesAsync();
+            return Json(seatTypes);
+        }
+
+
         [HttpPost]
         [Route("GetSeatTypes")]
         public async Task<IActionResult> GetSeatTypes([FromForm] SeatTypeQueryDTO queryModel)

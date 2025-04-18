@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,8 +17,9 @@ namespace OnlineMovieTicket.DAL.Models
         [Required]
         public long SeatTypeId { get; set; }
         [Required]
-        [MaxLength(255)]
-        public string Name { get; set; } = string.Empty;
+        public int RowIndex { get; set; }
+        [Required]
+        public int ColumnIndex { get; set; }
         [Required]
         public DateTime CreatedAt { get; set; }
         [Required]
@@ -28,7 +30,6 @@ namespace OnlineMovieTicket.DAL.Models
         public Guid UpdatedBy { get; set; }
         [Required]
         public bool IsDeleted { get; set; }
-
         public Room Room { get; set; } = null!;
         public SeatType SeatType { get; set; } = null!;
     }

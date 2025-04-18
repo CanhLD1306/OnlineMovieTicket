@@ -78,14 +78,16 @@ namespace OnlineMovieTicket.DAL.Repositories
             return (showtimes, totalCount, filterCount);
         }
 
-        public Task AddShowtimeAsync(Showtime showtime)
+        public async Task CreateShowtimeAsync(Showtime showtime)
         {
-            throw new NotImplementedException();
+            _context.Showtime.Add(showtime);
+            await _context.SaveChangesAsync();
         }
 
-        public Task UpdateShowtimeAsync(Showtime showtime)
+        public async Task UpdateShowtimeAsync(Showtime showtime)
         {
-            throw new NotImplementedException();
+            _context.Showtime.Update(showtime);
+            await _context.SaveChangesAsync();
         }
     }
 }

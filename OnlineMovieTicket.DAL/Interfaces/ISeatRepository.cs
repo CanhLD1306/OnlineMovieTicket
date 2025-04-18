@@ -9,8 +9,9 @@ namespace OnlineMovieTicket.DAL.Interfaces
 {
     public interface ISeatRepository
     {
-        Task<IEnumerable<Seat>?> GetAllSeatsByRoomAsync(long? roomId);
-        Task AddSeatsAsync(IEnumerable<Seat> seats);
+        Task<IEnumerable<Seat>?> GetAllSeatsByRoomAsync(long roomId);
+        Task<Seat?> GetSeatById(long seatId);
+        Task CreateSeatsAsync(IEnumerable<Seat> seats);
         Task UpdateSeatsAsync(IEnumerable<Seat> seats);
     }
 }

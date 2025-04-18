@@ -40,7 +40,7 @@ namespace OnlineMovieTicket.DAL.Repositories
             var totalCount = await query.CountAsync();
         
             if (!string.IsNullOrWhiteSpace(searchTerm))
-                query = query.Where(c => c.Name.Contains(searchTerm));
+                query = query.Where(c => c.Name.Replace(" ", "").ToLower().Contains(searchTerm.Replace(" ", "").ToLower()));
             if (countryId.HasValue && countryId > 0){
                 query = query.Where(c => c.Cinema.City.Country.Id == countryId);
             }
@@ -68,7 +68,11 @@ namespace OnlineMovieTicket.DAL.Repositories
 
         public async Task<Room?> GetRoomByIdAsync(long roomId)
         {
-            return await _context.Rooms.FirstOrDefaultAsync(r => r.Id == roomId && !r.IsDeleted);
+            return await _context.Rooms
+                                    .Include(c => c.Cinema)
+                                    .ThenInclude(Cinema => Cinema.City)
+                                    .ThenInclude(City => City.Country)
+                                    .FirstOrDefaultAsync(r => r.Id == roomId && !r.IsDeleted);
         }
 
         public async Task<Room?> GetRoomByNameAsync(long CinemaId, long RoomId, string name)
@@ -80,21 +84,22 @@ namespace OnlineMovieTicket.DAL.Repositories
                                         .FirstOrDefaultAsync(
                                             c => c.Id != RoomId
                                             && c.CinemaId == CinemaId 
-                                            && c.Name == name 
+                                            && c.Name.Replace(" ", "").ToLower() == name.Replace(" ", "").ToLower()
                                             && !c.IsDeleted);
             }
             return await _context.Rooms
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync(
-                                            c => c.Name == name 
+                                            c => c.Name.Replace(" ", "").ToLower() == name.Replace(" ", "").ToLower()
                                             && c.CinemaId == CinemaId 
                                             && !c.IsDeleted);
         }
         
-        public async Task AddRoomAsync(Room room)
+        public async Task<long> CreateRoomAsync(Room room)
         {
             _context.Rooms.Add(room);
             await _context.SaveChangesAsync();
+            return room.Id;
         }
 
         public async Task UpdateRoomAsync(Room room)

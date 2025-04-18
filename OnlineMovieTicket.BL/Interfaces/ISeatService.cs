@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OnlineMovieTicket.BL.DTOs;
+using OnlineMovieTicket.BL.DTOs.Seat;
 
 namespace OnlineMovieTicket.BL.Interfaces
 {
     public interface ISeatService
     {
+        Task<IEnumerable<SeatDTO>?> GetAllSeatsByRoomAsync(long roomId);
+        Task<Response> CreateSeatsAsync(IEnumerable<SeatDTO> seatsDTO, long roomId);
+        Task<Response> UpdateSeatsAsync(IEnumerable<SeatDTO> seatsDTO, long roomId);
+
+        Task<Response> DeleteSeatsByRoomAsync(long roomId);
     }
 }

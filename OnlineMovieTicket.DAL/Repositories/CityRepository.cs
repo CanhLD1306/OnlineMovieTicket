@@ -15,12 +15,12 @@ namespace OnlineMovieTicket.DAL.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<City>?> GetAllCitiesByCountryAsync(long? countryId)
+        public async Task<IEnumerable<City>?> GetCitiesByCountryAsync(long? countryId)
         {
             var query = _context.Cities
                                 .Where(c => !c.IsDeleted)
                                 .AsQueryable();
-            if(countryId.HasValue && countryId != 0)
+            if(countryId.HasValue && countryId > 0)
                 query = query.Where(c => c.CountryId == countryId);
             
             var cities = await query.ToListAsync();
@@ -43,8 +43,9 @@ namespace OnlineMovieTicket.DAL.Repositories
             var totalCount = await query.CountAsync();
         
             if (!string.IsNullOrWhiteSpace(searchTerm))
-                query = query.Where(c => c.Name.Contains(searchTerm) || c.PostalCode.Contains(searchTerm));
-            if (countryId.HasValue && countryId != 0){
+                query = query.Where(c => c.Name.Replace(" ", "").ToLower().Contains(searchTerm.Replace(" ", "").ToLower()) 
+                                || c.PostalCode.Replace(" ", "").ToLower().Contains(searchTerm.Replace(" ", "").ToLower()));
+            if (countryId.HasValue && countryId > 0){
                 query = query.Where(c => c.CountryId == countryId);
             }
 
@@ -67,19 +68,19 @@ namespace OnlineMovieTicket.DAL.Repositories
 
         public async Task<City?> GetCityByNameAsync(long cityId, string name)
         {
-            if(cityId != 0)
+            if(cityId > 0)
             {
                 return await _context.Cities
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync(
                                             c => c.Id != cityId 
-                                            && c.Name == name 
+                                            && c.Name.Replace(" ", "").ToLower() == name.Replace(" ", "").ToLower()
                                             && !c.IsDeleted);
             }
             return await _context.Cities
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync(
-                                            c => c.Name == name 
+                                            c => c.Name.Replace(" ", "").ToLower() == name.Replace(" ", "").ToLower()
                                             && !c.IsDeleted);
         }
 
@@ -91,17 +92,17 @@ namespace OnlineMovieTicket.DAL.Repositories
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync(
                                             c => c.Id != cityId 
-                                            && c.PostalCode == postalCode 
+                                            && c.PostalCode.Replace(" ", "").ToLower() == postalCode.Replace(" ", "").ToLower()
                                             && !c.IsDeleted);
             }
             return await _context.Cities
                                         .AsNoTracking()
                                         .FirstOrDefaultAsync(
-                                            c => c.PostalCode == postalCode 
+                                            c => c.PostalCode.Replace(" ", "").ToLower() == postalCode.Replace(" ", "").ToLower()
                                             && !c.IsDeleted);
         }
 
-        public async Task AddCityAsync(City city)
+        public async Task CreateCityAsync(City city)
         {
             _context.Cities.Add(city);
             await _context.SaveChangesAsync();
@@ -112,9 +113,9 @@ namespace OnlineMovieTicket.DAL.Repositories
             _context.Cities.Update(city);
             await _context.SaveChangesAsync();
         }
-        public bool HasAnyCity(long id)
+        public bool HasAnyCity(long countryId)
         {
-            return _context.Cities.Any(c => c.CountryId == id && !c.IsDeleted);
+            return _context.Cities.Any(c => c.CountryId == countryId && !c.IsDeleted);
         }
     }
 }

@@ -19,15 +19,16 @@ namespace OnlineMovieTicket.DAL.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Seat>?> GetAllSeatsByRoomAsync(long? roomId)
+        public async Task<IEnumerable<Seat>?> GetAllSeatsByRoomAsync(long roomId)
         {
             var seats = await _context.Seats
+                                        .Include(s => s.SeatType)
                                         .Where(s => s.RoomId == roomId && !s.IsDeleted)
                                         .ToListAsync();
             return seats;
         }
 
-        public async Task AddSeatsAsync(IEnumerable<Seat> seats)
+        public async Task CreateSeatsAsync(IEnumerable<Seat> seats)
         {
             _context.Seats.AddRange(seats);
             await _context.SaveChangesAsync();
@@ -37,6 +38,11 @@ namespace OnlineMovieTicket.DAL.Repositories
         {
             _context.Seats.UpdateRange(seats);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Seat?> GetSeatById(long seatId)
+        {
+            return await _context.Seats.FirstOrDefaultAsync(c => c.Id == seatId && !c.IsDeleted);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace OnlineMovieTicket.DAL.Interfaces
     {
         Task<Review?> GetReviewByUserAsync(Guid userId);
         Task<IEnumerable<Review>?> GetReviewsAsync(long movieId, int maxRecord);
-        Task AddReviewAsync(Review review);
+        Task CreateReviewAsync(Review review);
         Task UpdateReviewAsync(Review review);
     }
 }

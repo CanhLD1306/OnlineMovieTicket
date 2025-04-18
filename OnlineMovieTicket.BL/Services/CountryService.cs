@@ -53,9 +53,9 @@ namespace OnlineMovieTicket.BL.Services
             };
         }
 
-        public async Task<Response<CountryDTO>> GetCountryByIdAsync(long id)
+        public async Task<Response<CountryDTO>> GetCountryByIdAsync(long countryid)
         {
-            var country = await _countryRepository.GetCountryByIdAsync(id);
+            var country = await _countryRepository.GetCountryByIdAsync(countryid);
 
             if(country != null){
                 var countryDTO = _mapper.Map<CountryDTO>(country);
@@ -64,7 +64,7 @@ namespace OnlineMovieTicket.BL.Services
             return new Response<CountryDTO>(false,"Country not found", null);
         }
 
-        public async Task<Response> AddCountryAsync(CountryDTO countryDTO)
+        public async Task<Response> CreateCountryAsync(CountryDTO countryDTO)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
@@ -85,13 +85,13 @@ namespace OnlineMovieTicket.BL.Services
                     country.UpdatedBy = (await _authService.GetUserId()).Data;
                     country.IsDeleted = false;
 
-                    await _countryRepository.AddCountryAsync(country);
+                    await _countryRepository.CreateCountryAsync(country);
                     scope.Complete();
                     return new Response(true, "Add new country successful!");
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    return new Response(false, "Add new country fail " + ex.Message);
+                    return new Response(false, "Add new country fail!");
                 }
             }
         }
@@ -121,24 +121,24 @@ namespace OnlineMovieTicket.BL.Services
                     scope.Complete();
                     return new Response(true, "Update country successful!");
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    return new Response(false, "Update country fail " + ex.Message);
+                    return new Response(false, "Update country fail!");
                 }
             }
         }
-        public async Task<Response> DeleteCountryAsync(long id)
+        public async Task<Response> DeleteCountryAsync(long countryId)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {
-                    var country = await _countryRepository.GetCountryByIdAsync(id);
+                    var country = await _countryRepository.GetCountryByIdAsync(countryId);
                     if(country == null){
                         return new Response(false, "Country not found");
                     }
-                    if(_cityRepository.HasAnyCity(id)){
-                        return new Response(false, "Cannot delete Country because City is still in use!");
+                    if(_cityRepository.HasAnyCity(countryId)){
+                        return new Response(false, "Cannot delete this country because there are still cities associated with it.");
                     }
 
                     country.IsDeleted = true;
@@ -149,9 +149,9 @@ namespace OnlineMovieTicket.BL.Services
                     scope.Complete();
                     return new Response(true, "Delete country successful!");
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    return new Response(false, "Delete country fail " + ex.Message);
+                    return new Response(false, "Delete country fail!");
                 }
             }
         }

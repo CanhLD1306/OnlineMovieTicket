@@ -28,9 +28,9 @@ namespace OnlineMovieTicket.BL.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<CityDTO>> GetAllCitiesAsync(long? id)
+        public async Task<IEnumerable<CityDTO>> GetCitiesByCountryAsync(long? countryId)
         {
-            var cities = await _cityRepository.GetAllCitiesByCountryAsync(id);
+            var cities = await _cityRepository.GetCitiesByCountryAsync(countryId);
             return _mapper.Map<IEnumerable<CityDTO>>(cities);
         }
 
@@ -54,9 +54,9 @@ namespace OnlineMovieTicket.BL.Services
                 };
         }
 
-        public async Task<Response<CityDTO>> GetCityByIdAsync(long id)
+        public async Task<Response<CityDTO>> GetCityByIdAsync(long cityId)
         {
-            var city = await _cityRepository.GetCityByIdAsync(id);
+            var city = await _cityRepository.GetCityByIdAsync(cityId);
 
             if(city != null){
                 var cityDTO = _mapper.Map<CityDTO>(city);
@@ -65,7 +65,7 @@ namespace OnlineMovieTicket.BL.Services
             return new Response<CityDTO>(false,"City not found", null);
         }
 
-        public async Task<Response> AddCityAsync(CityDTO cityDTO)
+        public async Task<Response> CreateCityAsync(CityDTO cityDTO)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
@@ -85,13 +85,13 @@ namespace OnlineMovieTicket.BL.Services
                     city.UpdatedBy = (await _authService.GetUserId()).Data;
                     city.IsDeleted = false;
 
-                    await _cityRepository.AddCityAsync(city);
+                    await _cityRepository.CreateCityAsync(city);
                     scope.Complete();
                     return new Response(true, "Add new city successful!");
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    return new Response(false, "Add new city fail " + ex.Message);
+                    return new Response(false, "Add new city fail!");
                 }
             }
         }
@@ -121,25 +121,25 @@ namespace OnlineMovieTicket.BL.Services
                     scope.Complete();
                     return new Response(true, "Update city successful!");
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    return new Response(false, "Update city fail " + ex.Message);
+                    return new Response(false, "Update city fail!");
                 }
             }
         }
 
-        public async Task<Response> DeleteCityAsync(long id)
+        public async Task<Response> DeleteCityAsync(long cityId)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {
-                    var city = await _cityRepository.GetCityByIdAsync(id);
+                    var city = await _cityRepository.GetCityByIdAsync(cityId);
                     if(city == null){
                         return new Response(false, "City not found");
                     }
-                    if(_cinemaRepository.HasAnyCinema(id)){
-                        return new Response(false, "Cannot delete City because Cinema is still in use!");
+                    if(_cinemaRepository.HasAnyCinema(cityId)){
+                        return new Response(false, "Cannot delete this city because there are still cinemas associated with it.");
                     }
 
                     city.IsDeleted = true;
@@ -150,11 +150,24 @@ namespace OnlineMovieTicket.BL.Services
                     scope.Complete();
                     return new Response(true, "Delete city successful!");
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    return new Response(false, "Delete city fail " + ex.Message);
+                    return new Response(false, "Delete city fail!");
                 }
             }
         }
     }
 }
+
+
+// using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+// {
+//     try
+//     {
+        
+//     }
+//     catch (Exception)
+//     {
+        
+//     }
+// }

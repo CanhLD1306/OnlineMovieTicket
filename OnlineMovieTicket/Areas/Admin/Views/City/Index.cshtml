@@ -37,8 +37,8 @@
                         <th class="sort-header" data-sort="Name">
                             Name <i class="fas fa-sort" id="sort-icon-Name"></i>
                         </th>
-                        <th class="sort-header" data-sort="Code">
-                            PostalCode <i class="fas fa-sort" id="sort-icon-PostalCode"></i>
+                        <th>
+                            PostalCode</i>
                         </th>
                         <th>
                             Country
@@ -65,10 +65,9 @@
     <script>
         const urlGetAllCountries = '@Url.Action("GetAllCountries", "Country", new { area = "Admin" })';
         const urlGetCities = '@Url.Action("GetCities", "City", new { area = "Admin" })';
-        const urlAdd = '@Url.Action("Add", "City", new { area = "Admin" })';
+        const urlCreate = '@Url.Action("Create", "City", new { area = "Admin" })';
         const urlEdit = '@Url.Action("Edit", "City", new { area = "Admin" })';
         const urlDelete = '@Url.Action("Delete", "City", new { area = "Admin" })';
-        const urlDeleteConfirm = '@Url.Action("DeleteConfirm", "City", new { area = "Admin" })';
     </script>
     <script src="~/Admin/js/City.js" asp-append-version="true"></script>
 }

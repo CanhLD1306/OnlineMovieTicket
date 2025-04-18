@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using OnlineMovieTicket.BL.DTOs;
 using OnlineMovieTicket.BL.DTOs.Cinema;
 using OnlineMovieTicket.BL.DTOs.City;
 using OnlineMovieTicket.BL.DTOs.Country;
 using OnlineMovieTicket.BL.DTOs.Room;
+using OnlineMovieTicket.BL.DTOs.Seat;
 using OnlineMovieTicket.BL.DTOs.SeatType;
 using OnlineMovieTicket.DAL.Models;
 
@@ -14,6 +14,7 @@ namespace OnlineMovieTicket.BL.Mapping
         public MappingProfile()
         {
             CreateMap<Country, CountryDTO>().ReverseMap();
+            CreateMap<SeatType, SeatTypeDTO>().ReverseMap();
 
             CreateMap<City, CityDTO>()
                 .ForMember(dest => dest.CountryName, opt => opt.MapFrom(src => src.Country != null ? src.Country.Name : null));
@@ -38,8 +39,13 @@ namespace OnlineMovieTicket.BL.Mapping
 
             CreateMap<RoomDTO, Room>()
                 .ForMember(dest => dest.Cinema, opt => opt.Ignore());
-
-            CreateMap<SeatType, SeatTypeDTO>().ReverseMap();
+            
+            CreateMap<Seat, SeatDTO>()
+                .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.SeatType != null ? src.SeatType.Color : string.Empty));
+            
+            CreateMap<SeatDTO, Seat>()
+                .ForMember(dest => dest.SeatType, opt => opt.Ignore())
+                .ForMember(dest => dest.Room, opt => opt.Ignore());
         }
     }
 }

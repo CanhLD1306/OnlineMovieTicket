@@ -84,7 +84,7 @@ namespace OnlineMovieTicket.DAL.Repositories
                                             && !m.IsDeleted);
         }
 
-        public async Task AddMovieAsync(Movie movie)
+        public async Task CreateMovieAsync(Movie movie)
         {
             _context.Movies.Add(movie);
             await _context.SaveChangesAsync();

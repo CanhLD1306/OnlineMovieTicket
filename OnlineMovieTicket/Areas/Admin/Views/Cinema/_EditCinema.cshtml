@@ -7,21 +7,21 @@
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div class="modal-body">
+    <div class="modal-body mb-4">
         <input type="hidden" asp-for="@Model.Id" value="@Model.Id" />
         <div class="form-group">
             <label asp-for="@Model.Name">Cinema Name<span class="text-danger"> *</span></label>
             <input asp-for="@Model.Name" type="text" class="form-control">
             <span asp-validation-for="@Model.Name" class="text-danger small validation-message"></span>
         </div>
-        <div class="form-group">    
+        <div class="form-group mb-4">    
             <label asp-for="@Model.CountryId">Country <span class="text-danger"> *</span></label>
             <select asp-for="@Model.CountryId" id="editCountrySelected" class="form-control" data-selected="@Model.CountryId">
                 <option value="">-- Select Country --</option>
             </select>
             <span asp-validation-for="@Model.CountryId" class="text-danger small validation-message"></span>
         </div>
-        <div class="form-group">    
+        <div class="form-group mb-4">    
             <label asp-for="@Model.CityId">City <span class="text-danger"> *</span></label>
             <select asp-for="@Model.CityId" id="editCitySelected" class="form-control" data-selected="@Model.CityId" disabled>
                 <option value="">-- Select City --</option>
