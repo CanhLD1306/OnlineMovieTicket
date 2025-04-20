@@ -13,10 +13,6 @@ html {
   min-height: 100%;
 }
 
-body {
-  margin-bottom: 60px;
-}
-
 .mb-10px {
   margin-bottom: 10px !important;
 }
@@ -92,3 +88,48 @@ body {
   background-color: #f8f9fa;
 }
 
+.preview-poster {
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  display: none;
+}
+
+.preview-banner {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  display: none;
+}
+
+.edit-preview-poster {
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  display: block;
+}
+
+.edit-preview-banner {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  display: block;
+}
+
+.trailer-preview-sm {
+  width: 100% !important;
+}
+
+.trailer-preview-container {
+  display: none;
+}
+
+.edit-trailer-preview-container {
+  display: block;
+}
+
+
+.scrollable-right-column {
+  max-height: 700px; 
+  overflow-y: auto;
+}

@@ -50,6 +50,7 @@ namespace OnlineMovieTicket.BL.Mapping
             CreateMap<SeatDTO, Seat>()
                 .ForMember(dest => dest.SeatType, opt => opt.Ignore())
                 .ForMember(dest => dest.Room, opt => opt.Ignore());
+
         }
     }
 }

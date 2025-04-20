@@ -112,13 +112,19 @@
                         </li>
                     </ul>
                 </nav>
-                <div class="container-fluid mb-5">
+                <div class="container-fluid">
                     <main role="main">
                         @RenderBody()
                     </main>
-
                 </div>
             </div>
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>&copy; @DateTime.Now.Year - Online Movie Ticket Admin</span>
+                    </div>
+                </div>
+            </footer>
         </div>
     </div>
 

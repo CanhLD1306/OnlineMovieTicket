@@ -5,6 +5,7 @@ namespace OnlineMovieTicket.BL.Interfaces
 {
     public interface IBannerService
     {
+        Task<IEnumerable<BannerDTO>?> GetActiveBannersAsync();
         Task<BannersList> GetBannersAsync(BannerQueryDTO queryDTO);
         Task<Response<BannerDTO>> GetBannerByIdAsync(long bannerId);
         Task<Response> CreateBannerAsync(BannerDTO bannerDTO);

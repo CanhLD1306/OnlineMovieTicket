@@ -2,7 +2,40 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Banner quảng cáo phim hot -->
+<div id="banner-placeholder"></div>
+
+
+<!-- Danh sách phim đang chiếu -->
+<section class="my-4">
+    <h2 class="mb-3">Phim Đang Chiếu</h2>
+</section>
+
+
+<!-- Danh sách phim sắp chiếu -->
+<section class="my-4">
+    <h2 class="mb-3">Phim Sắp Chiếu</h2>
+</section>
+
+@section Scripts {
+    <script>
+        const urlGetBanners = '@Url.Action("GetBanners", "Home")';
+
+        $(document).ready(function () {
+            loadBanners();
+        });
+
+        function loadBanners() {
+            $.ajax({
+                url: urlGetBanners,
+                type: 'GET',
+                success: function (data) {
+                    $('#banner-placeholder').html(data);
+                },
+                error: function (error) {
+                    console.error("Error loading banners:", error);
+                }
+            });
+        }
+    </script>
+}

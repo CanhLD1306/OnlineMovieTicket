@@ -105,10 +105,12 @@ builder.Services.AddScoped<ISeatTypeRepository, SeatTypeRepository>();
 builder.Services.AddScoped<ISeatTypeService, SeatTypeService>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IShowtimeRepository, ShowtimeRepository>();
-builder.Services.AddTransient<IShowtimeService, ShowtimeService>();
+builder.Services.AddScoped<IShowtimeService, ShowtimeService>();
 builder.Services.AddScoped<IShowtimeSeatRepository, ShowtimeSeatRepository>();
 builder.Services.AddScoped<IShowtimeSeatService, ShowtimeSeatService>();
+builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddTransient<ICloudinaryService, CloudinaryService>();
+builder.Services.AddTransient<IFileUploadService, FileUploadService>();
 
 
 builder.Services.AddHttpContextAccessor();

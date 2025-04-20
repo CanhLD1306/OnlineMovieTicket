@@ -1,1 +1,82 @@
-<h1>Movie</h1>
+@{
+    ViewData["Title"] = "Movie Management";
+}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Movie Management</h1>
+    <a href="@Url.Action("Create", "Movie", new { area = "Admin" })" class="btn btn-primary btn-icon-split btn-sm cursor-pointer">
+        <span class="icon text-white">
+            <i class="fas fa-plus"></i>
+        </span>
+        <span class="text">Add New Movie</span>
+    </a>
+</div>
+<div class="row mb-3">
+    <div class="col-md-3">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+            <input type="text" id="searchTerm" class="form-control" placeholder="Search by Title">
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="fas fa-calendar-alt"></i>
+                </span>
+            </div>
+            <input type="date" id="startDate" class="form-control" placeholder="Start Date">
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="fas fa-calendar-alt"></i>
+                </span>
+            </div>
+            <input type="date" id="endDate" class="form-control" placeholder="End Date">
+        </div>
+    </div>    
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="moviesTable" class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th class="text-center">Duration (m)</th>
+                        <th class="text-center">Price ($)</th>
+                        <th class="text-center">Release Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="modalPlaceholder">
+    <div class="modal fade" id="movieModal" tabindex="-1" role="dialog" aria-labelledby="movieModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const urlGetMovies = '@Url.Action("GetMovies", "Movie", new { area = "Admin" })';
+        const urlCreate = '@Url.Action("Create", "Movie", new { area = "Admin" })';
+        const urlEdit = '@Url.Action("Edit", "Movie", new { area = "Admin" })';
+        const urlDelete = '@Url.Action("Delete", "Movie", new { area = "Admin" })';
+    </script>
+    <script src="~/Admin/js/Movie.js" asp-append-version="true"></script>
+}

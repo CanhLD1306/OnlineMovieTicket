@@ -12,16 +12,19 @@ namespace OnlineMovieTicket.BL.Services
     {
         private readonly IBannerRepository _bannerRepository;
         private readonly ICloudinaryService _cloudinaryService;
+        private readonly IFileUploadService _fileUploadService;
         private readonly IAuthService _authService;
         private readonly IMapper _mapper;
 
         public BannerService(
             IBannerRepository bannerRepository,
+            IFileUploadService fileUploadService,
             ICloudinaryService cloudinaryService,
             IMapper mapper, 
             IAuthService authService)
         {
             _bannerRepository = bannerRepository;
+            _fileUploadService = fileUploadService;
             _cloudinaryService = cloudinaryService;
             _authService = authService;
             _mapper = mapper;
@@ -73,6 +76,14 @@ namespace OnlineMovieTicket.BL.Services
                     {
                         return new Response(false, "Please upload image!");
                     }
+
+                    var validateBannerResult = await _fileUploadService.ValidateImageFile(bannerDTO.Image);
+
+                    if(!validateBannerResult.Success)
+                    {
+                        return new Response(false, validateBannerResult.Message);
+                    }
+
                     var banners = await _bannerRepository.GetAllBannersAsync();
                     if (banners != null && banners.Count() >= 5)
                     {
@@ -130,6 +141,12 @@ namespace OnlineMovieTicket.BL.Services
             }
         }
 
+        public async Task<IEnumerable<BannerDTO>?> GetActiveBannersAsync()
+        {
+            var banners = await _bannerRepository.GetBannersActiveAsync();
+            return _mapper.Map<IEnumerable<BannerDTO>>(banners);
+        }
+
         public async Task<Response<BannerDTO>> GetBannerByIdAsync(long bannerId)
         {
             var banner = await _bannerRepository.GetBannerByIdAsync(bannerId);
@@ -175,6 +192,12 @@ namespace OnlineMovieTicket.BL.Services
 
                     if (bannerDTO.Image != null)
                     {
+                        var validateBannerResult = await _fileUploadService.ValidateImageFile(bannerDTO.Image);
+
+                        if(!validateBannerResult.Success)
+                        {
+                            return new Response(false, validateBannerResult.Message);
+                        }
                         var result = await _cloudinaryService.UploadBannerAsync(bannerDTO.Image!);
                         if (!result.Success)
                         {

@@ -40,12 +40,12 @@ namespace OnlineMovieTicket.DAL.Repositories
 
             if (startDate.HasValue)
             {
-                query = query.Where(m => m.ReleaseDate >= startDate.Value);
+                query = query.Where(m => m.ReleaseDate >= startDate);
             }
 
             if (endDate.HasValue)
             {
-                query = query.Where(m => m.ReleaseDate <= endDate.Value);
+                query = query.Where(m => m.ReleaseDate <= endDate);
             }
 
             query = isDescending
