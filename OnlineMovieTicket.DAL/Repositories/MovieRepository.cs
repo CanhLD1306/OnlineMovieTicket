@@ -95,5 +95,67 @@ namespace OnlineMovieTicket.DAL.Repositories
             _context.Movies.Update(movie);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<Movie>?> GetAllMoviesAsync()
+        {
+            return await _context.Movies
+                                .Where(m => !m.IsDeleted)
+                                .ToListAsync();
+        }
+
+        public async Task<(IEnumerable<Movie>? movies, int totalCount, int filterCount)> GetMoviesForUserAsync(
+            string? searchTerm, 
+            DateTime? startDate, 
+            DateTime? endDate, 
+            bool? IsComingSoon, 
+            int pageNumber, 
+            int pageSize, 
+            string sortBy, 
+            bool isDescending)
+        {
+            var query = _context.Movies
+                                .Where(m => !m.IsDeleted)
+                                .AsQueryable();
+
+            var totalCount = await query.CountAsync();              
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(m => m.Title.Replace(" ", "").ToLower().Contains(searchTerm.Replace(" ", "").ToLower()));
+            }
+
+            if (startDate.HasValue)
+            {
+                query = query.Where(m => m.ReleaseDate >= startDate);
+            }
+
+            if (endDate.HasValue)
+            {
+                query = query.Where(m => m.ReleaseDate <= endDate);
+            }
+
+            if (IsComingSoon.HasValue)
+            {
+                if(IsComingSoon.Value)
+                {
+                    query = query.Where(m => m.ReleaseDate > DateTime.Now);
+                }
+                else
+                {
+                    query = query.Where(m => m.ReleaseDate <= DateTime.Now);
+                }
+            }
+            var filterCount = await query.CountAsync();
+
+            query = isDescending
+                ? query.OrderByDescending(c => EF.Property<object>(c, sortBy))
+                : query.OrderBy(c => EF.Property<object>(c, sortBy));
+
+
+            var movies = await query
+                                .Skip((pageNumber - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToListAsync();
+            return (movies, totalCount, filterCount);
+        }
     }
 }

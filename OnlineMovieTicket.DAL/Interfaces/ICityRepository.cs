@@ -16,6 +16,6 @@ namespace OnlineMovieTicket.DAL.Interfaces
         Task<City?> GetCityByPostalCodeAsync(long cityId, string postalCode);
         Task CreateCityAsync(City city);
         Task UpdateCityAsync(City city);
-        bool HasAnyCity(long countryId);
+        Task<bool> CountryHasAnyCity(long countryId);
     }
 }

@@ -37,6 +37,23 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             });
         }
 
+        [HttpGet("GetRoomByCinema")]
+        public async Task<IActionResult> GetRoomByCinema(long cinemaId)
+        {
+            var result = await _roomService.GetRoomByCinemaAsync(cinemaId);
+            return Json(result);
+        }
+
+        [HttpGet("GetRoomWithSeats")]
+        public async Task<IActionResult> GetRoomWithSeats(long roomId)
+        {
+            var result = await _roomService.GetRoomWithSeatsById(roomId);
+            if(!result.Success){
+                return Json(new {success = false, message = result.Message});
+            }
+            return Json(new {success = true, data = result.Data});
+        }
+
         [HttpGet("Create")]
         public IActionResult Create()
         {

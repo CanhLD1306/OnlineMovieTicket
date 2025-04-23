@@ -19,7 +19,7 @@ namespace OnlineMovieTicket.DAL.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<ShowtimeSeat>?> GetShowtimeSeatsAsync(long ShowtimeId)
+        public async Task<IEnumerable<ShowtimeSeat>?> GetShowtimeSeatsByShowtimeAsync(long ShowtimeId)
         {
             var ShowtimeSeats = await _context.ShowtimeSeats
                                                 .Where(s => s.ShowtimeId == ShowtimeId && !s.IsDeleted)
@@ -37,6 +37,17 @@ namespace OnlineMovieTicket.DAL.Repositories
         {
             _context.ShowtimeSeats.UpdateRange(showtimeSeats);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<ShowtimeSeat?> GetShowtimeSeatByIdAsync(long showtimeSeatId)
+        {
+            return await _context.ShowtimeSeats.FirstOrDefaultAsync(c => c.Id == showtimeSeatId && !c.IsDeleted);
+        }
+
+        public async Task<bool> ShowtimeHasBookedTicket(long showtimeId)
+        {
+            var result = await _context.ShowtimeSeats.AnyAsync(s => s.ShowtimeId == showtimeId && s.IsBooked && !s.IsDeleted);
+            return result;
         }
     }
 }

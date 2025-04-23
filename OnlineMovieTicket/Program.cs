@@ -95,15 +95,12 @@ builder.Services.AddScoped<ICityRepository, CityRepository>();
 builder.Services.AddScoped<ICityService, CityService>();
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
 builder.Services.AddScoped<IMovieService, MovieService>();
-builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<ISeatRepository, SeatRepository>();
 builder.Services.AddScoped<ISeatService, SeatService>();
 builder.Services.AddScoped<ISeatTypeRepository, SeatTypeRepository>();
 builder.Services.AddScoped<ISeatTypeService, SeatTypeService>();
-builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IShowtimeRepository, ShowtimeRepository>();
 builder.Services.AddScoped<IShowtimeService, ShowtimeService>();
 builder.Services.AddScoped<IShowtimeSeatRepository, ShowtimeSeatRepository>();
@@ -134,13 +131,14 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseExceptionHandler("/Error/500");
+    app.UseStatusCodePagesWithReExecute("/Error/{0}");
     app.UseMigrationsEndPoint();
 }
 else
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    app.UseExceptionHandler("/Error/500");
+    app.UseStatusCodePagesWithReExecute("/Error/{0}");
 }
 
 app.UseCors("AllowSpecific");

@@ -10,6 +10,9 @@ namespace OnlineMovieTicket.BL.Interfaces
 {
     public interface IMovieService
     {
+
+        Task<IEnumerable<MovieDTO>?> GetAllMoviesAsync();
+        Task<MoviesList> GetMoviesForUserAsync(MovieQueryForUserDTO queryDTO);
         Task<MoviesList> GetMoviesAsync(MovieQueryDTO queryDTO);
         Task<Response<MovieDTO>> GetMovieByIdAsync(long movieId);
         Task<Response> CreateMovieAsync(MovieDTO movieDTO);

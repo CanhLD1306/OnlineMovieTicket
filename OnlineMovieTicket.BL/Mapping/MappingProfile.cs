@@ -7,6 +7,8 @@ using OnlineMovieTicket.BL.DTOs.Movie;
 using OnlineMovieTicket.BL.DTOs.Room;
 using OnlineMovieTicket.BL.DTOs.Seat;
 using OnlineMovieTicket.BL.DTOs.SeatType;
+using OnlineMovieTicket.BL.DTOs.Showtime;
+using OnlineMovieTicket.BL.DTOs.ShowtimeSeatSeatSeat;
 using OnlineMovieTicket.DAL.Models;
 
 namespace OnlineMovieTicket.BL.Mapping
@@ -51,6 +53,24 @@ namespace OnlineMovieTicket.BL.Mapping
                 .ForMember(dest => dest.SeatType, opt => opt.Ignore())
                 .ForMember(dest => dest.Room, opt => opt.Ignore());
 
+            CreateMap<Showtime, ShowtimeDTO>()
+                .ForMember(dest => dest.CinemaId, opt => opt.MapFrom(src => src.Room != null ? src.Room.CinemaId : (long?)null))
+                .ForMember(dest => dest.CinemaName, opt => opt.MapFrom(src => src.Room != null ? src.Room.Cinema.Name : string.Empty))
+                .ForMember(dest => dest.RoomName, opt => opt.MapFrom(src => src.Room != null ? src.Room.Name : string.Empty))
+                .ForMember(dest => dest.MovieTitle, opt => opt.MapFrom(src => src.Movie != null ? src.Movie.Title : string.Empty));
+
+            CreateMap<ShowtimeDTO,Showtime>()
+                .ForMember(dest => dest.Movie, opt => opt.Ignore())
+                .ForMember(dest => dest.Room, opt => opt.Ignore());
+
+            CreateMap<ShowtimeSeat, ShowtimeSeatDTO>()
+                .ForMember(dest => dest.color, opt => opt.MapFrom(src => src.Seat != null && src.Seat.SeatType != null ? src.Seat.SeatType.Color : string.Empty))
+                .ForMember(dest => dest.RowIndex, opt => opt.MapFrom(src => src.Seat != null ? src.Seat.RowIndex : (int?)null))
+                .ForMember(dest => dest.ColumnIndex, opt => opt.MapFrom(src => src.Seat != null ? src.Seat.ColumnIndex : (int?)null));
+
+            CreateMap<ShowtimeSeatDTO, ShowtimeSeat>()
+                .ForMember(dest => dest.Seat, opt => opt.Ignore())
+                .ForMember(dest => dest.Showtime, opt => opt.Ignore());
         }
     }
 }

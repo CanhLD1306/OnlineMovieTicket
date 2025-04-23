@@ -137,6 +137,12 @@ namespace OnlineMovieTicket.BL.Services
             }
         }
 
+        public async Task<IEnumerable<MovieDTO>?> GetAllMoviesAsync()
+        {
+            var movies = await _movieRepository.GetAllMoviesAsync();
+            return _mapper.Map<IEnumerable<MovieDTO>>(movies);
+        }
+
         public async Task<Response<MovieDTO>> GetMovieByIdAsync(long movieId)
         {
             var movie = await _movieRepository.GetMovieByIdAsync(movieId);
@@ -153,6 +159,27 @@ namespace OnlineMovieTicket.BL.Services
                                                                     queryDTO.SearchTerm,
                                                                     queryDTO.StartDate,
                                                                     queryDTO.EndDate,
+                                                                    queryDTO.PageNumber,
+                                                                    queryDTO.PageSize,
+                                                                    queryDTO.SortBy,
+                                                                    queryDTO.IsDescending
+                                                                );
+            var moviesDTO = _mapper.Map<IEnumerable<MovieDTO>>(movies);
+
+            return new MoviesList
+            {
+                Movies = moviesDTO,
+                TotalCount = totalCount,
+                FilterCount = filterCount
+            };
+        }
+        public async Task<MoviesList> GetMoviesForUserAsync(MovieQueryForUserDTO queryDTO)
+        {
+            var (movies, totalCount, filterCount) = await _movieRepository.GetMoviesForUserAsync(
+                                                                    queryDTO.SearchTerm,
+                                                                    queryDTO.StartDate,
+                                                                    queryDTO.EndDate,
+                                                                    queryDTO.IsCommingSoon,
                                                                     queryDTO.PageNumber,
                                                                     queryDTO.PageSize,
                                                                     queryDTO.SortBy,

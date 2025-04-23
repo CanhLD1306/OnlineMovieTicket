@@ -21,7 +21,7 @@ namespace OnlineMovieTicket.BL.Services
     public class RoomService : IRoomService
     {
         private readonly IRoomRepository _roomRepository;
-
+        private readonly IShowtimeRepository _showtimeRepository;
         private readonly ICinemaRepository _cinemaRepository;
         private readonly ISeatService _seatService;
         private readonly IAuthService _authService;
@@ -32,12 +32,14 @@ namespace OnlineMovieTicket.BL.Services
         public RoomService(
             IRoomRepository roomRepository,
             ICinemaRepository cinemaRepository,
+            IShowtimeRepository showtimeRepository,
             ILogger<RoomService> logger,
             ISeatService seatService,
             IAuthService authService,
             IMapper mapper)
         {
             _roomRepository = roomRepository;
+            _showtimeRepository = showtimeRepository;
             _cinemaRepository = cinemaRepository;
             _logger = logger;
             _seatService = seatService;
@@ -155,6 +157,10 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if (await _showtimeRepository.RoomHasFutureShotime(roomWithSeats.Room.Id))
+                    {
+                        return new Response(false, "Room has scheduled showtimes in the future. Cannot update room");
+                    }
                     if (roomWithSeats.Seats == null || !roomWithSeats.Seats.Any())
                     {
                         return new Response(false, "You must configure the seating arrangement before submitting.");
@@ -210,6 +216,11 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(await _showtimeRepository.RoomHasFutureShotime(roomId))
+                    {
+                        return new Response(false, "Room has scheduled showtimes in the future. Cannot delete room");
+                    }
+
                     var room = await _roomRepository.GetRoomByIdAsync(roomId);
                     if(room == null){
                         return new Response(false, "Room not found");
@@ -227,7 +238,7 @@ namespace OnlineMovieTicket.BL.Services
                     if(cinema == null){
                         return new Response(false, "Cinema not found");
                     }
-                    cinema.TotalRooms = cinema.TotalRooms - 1;
+                    cinema.TotalRooms = Math.Max(0, cinema.TotalRooms - 1);
                     cinema.UpdatedAt = DateTime.UtcNow;
                     cinema.UpdatedBy = (await _authService.GetUserId()).Data;
                     
@@ -260,6 +271,10 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if (await _showtimeRepository.RoomHasFutureShotime(roomId))
+                    {
+                        return new Response(false, "Room has scheduled showtimes in the future. Cannot change status room");
+                    }
                     var room = await _roomRepository.GetRoomByIdAsync(roomId);
                     if(room == null){
                         return new Response(false, "Room not found");
@@ -278,6 +293,12 @@ namespace OnlineMovieTicket.BL.Services
                     return new Response(false, "Update status fail!");
                 }
             }
+        }
+
+        public async Task<IEnumerable<RoomDTO>?> GetRoomByCinemaAsync(long cinemaId)
+        {
+            var rooms = await _roomRepository.GetRoomByCinemaAsync(cinemaId);
+            return _mapper.Map<IEnumerable<RoomDTO>>(rooms);
         }
     }
 }

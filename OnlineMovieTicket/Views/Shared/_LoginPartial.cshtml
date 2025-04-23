@@ -3,38 +3,15 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-@* <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@User.Identity?.Name!</a>
-    </li>
-    <li class="nav-item">
-        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-        </form>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
-}
-</ul> *@
-
 <ul class="navbar-nav ml-auto">
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-dark" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle text-dark no-caret user-info" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 @User.Identity?.Name?.Substring(0, User.Identity.Name.IndexOf("@"))
                 @if (string.IsNullOrEmpty(UserManager.GetUserAsync(User).Result?.AvatarURL))
                 {
-                    <i class="bi bi-person-circle" style="font-size: 30px;"></i>
+                    <i class="bi bi-person-circle text-secondary" style="font-size: 30px;"></i>
                 }
                 else
                 {
@@ -43,16 +20,17 @@ else
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li>
-                    <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
-                        <i class="bi bi-person-circle"></i> Quản lý tài khoản
+                    <a class="dropdown-item user-info" href="#">
+                        <i class="bi bi-person-circle text-secondary"></i>Profile
                     </a>
                 </li>
                 <li>
-                    <hr class="dropdown-divider">
-                </li>
+                    <a class="dropdown-item user-info" href="#">
+                        <i class="bi bi-ticket-perforated"></i>My Tickets
+                    </a>
                 <li>
-                    <form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                        <button type="submit" class="btn btn-link text-dark">
+                    <form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")">
+                        <button type="submit" class="btn btn-link text-dark text-decoration-none">
                             <i class="bi bi-box-arrow-right"></i> Logout
                         </button>
                     </form>
@@ -63,13 +41,13 @@ else
     else
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">
-                <i class="bi bi-person-plus"></i> Register
+            <a class="btn btn-outline-dark me-2" asp-area="Identity" asp-page="/Account/Login">
+                <i class="bi bi-box-arrow-in-right me-1"></i>Sign In
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">
-                <i class="bi bi-box-arrow-in-right"></i> Login
+            <a class="btn btn-danger" asp-area="Identity" asp-page="/Account/Register">
+                <i class="bi bi-person-plus me-1"></i>Sign Up
             </a>
         </li>
     }

@@ -17,6 +17,6 @@ namespace OnlineMovieTicket.DAL.Interfaces
         Task<Cinema?> GetCinemaByNameAsync(long cinemaId, string name);
         Task CreateCinemaAsync(Cinema cinema);
         Task UpdateCinemaAsync(Cinema cinema);
-        bool HasAnyCinema(long cityId);
+        Task<bool> CityHasAnyCinema(long cityId);
     }
 }

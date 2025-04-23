@@ -92,9 +92,9 @@ namespace OnlineMovieTicket.DAL.Repositories
             _context.Cinemas.Update(cinema);
             await _context.SaveChangesAsync();
         }
-        public bool HasAnyCinema(long cityId)
+        public async Task<bool> CityHasAnyCinema(long cityId)
         {
-            return _context.Cinemas.Any(c => c.CityId == cityId && !c.IsDeleted);
+            return await _context.Cinemas.AnyAsync(c => c.CityId == cityId && !c.IsDeleted);
         }
 
         public async Task<IEnumerable<Cinema>?> GetCinemasByCityAsync(long? cityId)

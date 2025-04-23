@@ -1,0 +1,93 @@
+@model OnlineMovieTicket.BL.DTOs.Movie.MovieDTO
+
+@{
+    ViewData["Title"] = "Detail";
+}
+
+<section class="hero-banner">
+    <img src="@Model.BannerURL" alt="Movie Banner">
+</section>
+<div class="container py-5">
+    <!-- Movie Details Section -->
+    <section class="mb-5">
+        <div class="row">
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <img src="@Model.PosterURL" alt="Movie Poster" class="movie-poster img-fluid w-100">
+            </div>
+            <div class="col-lg-8">
+                <div class="movie-info-card p-4">
+                    <h2 class="mb-4">@Model.Title</h2>
+                    <div class="movie-meta">
+                        <div class="movie-meta-item">
+                            <i class="bi bi-calendar3"></i>
+                            <span>Release Date: @Model.ReleaseDate.ToString("dd MMM yyyy")</span>
+                        </div>
+                        <div class="movie-meta-item">
+                            <i class="bi bi-clock"></i>
+                            <span>Duration: @Model.Duration minutes</span>
+                        </div>
+                        <div class="movie-meta-item">
+                            <i class="bi bi-person"></i>
+                            <span>Director: @Model.Actor</span>
+                        </div>
+                        <div class="movie-meta-item">
+                            <i class="bi bi-currency-dollar"></i>
+                            <span>Price: @Model.Price</span>
+                        </div>
+                    </div>
+                    
+                    <h5 class="mb-3">Description</h5>
+                    <p class="mb-4">
+                        @Model.Description
+                    </p>
+                    
+                    <div class="d-flex flex-wrap gap-2 mb-4">
+                        <a href="javascript:void(0)" onclick="showTrailer('@Model.TrailerURL')" class="btn btn-trailer">
+                            <i class="bi bi-play-circle me-2"></i>Watch Trailer
+                        </a>
+                        <a href="#booking-section" class="btn btn-booking text-white">
+                            <i class="bi bi-ticket-perforated me-2"></i>Book Tickets
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Modal xem trailer -->
+<div class="modal fade trailer-modal" id="trailerModal" tabindex="-1" aria-labelledby="trailerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="trailerModalLabel">Trailer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="stopTrailer()"></button>
+            </div>
+            <div class="modal-body">
+                <div class="ratio ratio-16x9">
+                    <iframe id="trailerIframe" src="" title="Movie Trailer" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            
+        });
+        function showTrailer(youtubeUrl) {
+            const embedUrl = youtubeUrl.replace("watch?v=", "embed/");
+            $('#trailerIframe').attr('src', embedUrl + '?autoplay=1');
+            
+            var trailerModal = new bootstrap.Modal(document.getElementById('trailerModal'));
+            trailerModal.show();
+        }
+
+        function stopTrailer() {
+            $('#trailerIframe').attr('src', '');
+        }
+
+    </script>
+}

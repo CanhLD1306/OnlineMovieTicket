@@ -1,0 +1,49 @@
+@model IEnumerable<OnlineMovieTicket.BL.DTOs.Movie.MoviesList>
+
+@{
+    ViewData["Title"] = "Movies";
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h1 class="display-4 fw-bold mb-4">Movies</h1>
+                <div class="search-bar">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text" class="form-control" placeholder="Search for movies..." id="movieSearch">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="container">
+        <div class="filter-section">
+            <div class="row g-3">
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label">Movie Status</label>  
+                    <select class="form-select" id="movieStatusFilter">
+                        <option value="">All Movies</option>
+                        <option value="true">Now Showing</option>
+                        <option value="false">Coming Soon</option>
+                    </select>
+                </div>
+                <div class="col-lg-3 col-md-6 date-filter">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" class="form-control" id="startDateFilter">
+                </div>
+                <div class="col-lg-3 col-md-6 date-filter">
+                    <label class="form-label">End Date</label>
+                    <input type="date" class="form-control" id="endDateFilter">
+                </div>
+                <div class="col-lg-3 col-md-6 d-flex align-items-end justify-content-center">
+                    <button class="btn reset-btn" id="resetFilters">
+                        <i class="bi bi-arrow-clockwise me-2"></i>Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row g-4 movie-grid">
+        </div>
+    </div>
+</div>

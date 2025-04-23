@@ -9,8 +9,10 @@ namespace OnlineMovieTicket.DAL.Interfaces
 {
     public interface IShowtimeSeatRepository
     {
-        Task<IEnumerable<ShowtimeSeat>?> GetShowtimeSeatsAsync(long ShowtimeId);
+        Task<IEnumerable<ShowtimeSeat>?> GetShowtimeSeatsByShowtimeAsync(long ShowtimeId);
+        Task<ShowtimeSeat?> GetShowtimeSeatByIdAsync(long showtimeSeatId);
         Task CreateShowtimeSeatsAsync(IEnumerable<ShowtimeSeat> showtimeSeats);
         Task UpdateShowtimeSeatsAsync(IEnumerable<ShowtimeSeat> showtimeSeats);
+        Task<bool> ShowtimeHasBookedTicket(long showtimeId);
     }
 }

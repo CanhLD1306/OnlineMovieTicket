@@ -35,7 +35,7 @@ $(document).ready(function () {
                 className: "text-center",
                 "render": function (data, type, row) {
                     const date = new Date(data);
-                    return date.toLocaleDateString('en-GB');
+                    return date.toLocaleDateString('vi-VN');
                 }
             },
             {

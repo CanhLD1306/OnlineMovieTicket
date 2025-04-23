@@ -25,10 +25,11 @@ namespace OnlineMovieTicket.DAL.Repositories
         }
 
         public async Task<(IEnumerable<Showtime>? showtimes, int totalCount, int filterCount)> GetShowtimesAsync(
-            long? countryId, 
-            long? cityId, 
+            string? searchTerm,
             long? cinemaId, 
-            long? roomId, 
+            long? roomId,
+            DateTime? startDate,
+            DateTime? endDate,
             int pageNumber, 
             int pageSize, 
             string sortBy, 
@@ -37,25 +38,15 @@ namespace OnlineMovieTicket.DAL.Repositories
             var query = _context.Showtime
                                 .Include(c => c.Room)
                                 .ThenInclude(Room => Room.Cinema)
-                                .ThenInclude(Cinema => Cinema.City)
-                                .ThenInclude(City => City.Country)
+                                .Include(c => c.Movie)
                                 .Where(c => !c.IsDeleted)
                                 .AsQueryable(); 
 
             var totalCount = await query.CountAsync();
-            if (countryId.HasValue && countryId > 0){
-                query = query.Where(c => c.Room != null &&
-                                        c.Room.Cinema != null &&
-                                        c.Room.Cinema.City != null &&
-                                        c.Room.Cinema.City.Country != null &&
-                                        c.Room.Cinema.City.Country.Id == countryId);
-            }
-            if (cityId.HasValue && cityId > 0){
-                query = query.Where(c => c.Room != null &&
-                                        c.Room.Cinema != null &&
-                                        c.Room.Cinema.City != null &&
-                                        c.Room.Cinema.City.Id == cityId);
-            }
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+                query = query.Where(c => c.Movie.Title.Replace(" ", "").ToLower().Contains(searchTerm.Replace(" ", "").ToLower()));
+
             if (cinemaId.HasValue && cinemaId > 0){
                 query = query.Where(c => c.Room != null &&
                                         c.Room.Cinema != null &&
@@ -64,6 +55,16 @@ namespace OnlineMovieTicket.DAL.Repositories
             if (roomId.HasValue && roomId > 0){
                 query = query.Where(c => c.Room != null &&
                                         c.Room.Id == roomId);
+            }
+
+            if (startDate.HasValue)
+            {
+                query = query.Where(c => c.StartTime >= startDate.Value);
+            }
+            
+            if (endDate.HasValue)
+            {
+                query = query.Where(c => c.StartTime <= endDate.Value);
             }
 
             query = isDescending
@@ -78,16 +79,38 @@ namespace OnlineMovieTicket.DAL.Repositories
             return (showtimes, totalCount, filterCount);
         }
 
-        public async Task CreateShowtimeAsync(Showtime showtime)
+        public async Task<long> CreateShowtimeAsync(Showtime showtime)
         {
             _context.Showtime.Add(showtime);
             await _context.SaveChangesAsync();
+            return showtime.Id;
         }
 
         public async Task UpdateShowtimeAsync(Showtime showtime)
         {
             _context.Showtime.Update(showtime);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> RoomHasFutureShotime(long roomId)
+        {
+            return await _context.Showtime.AnyAsync(s => s.RoomId == roomId &&
+                                                    s.StartTime > DateTime.UtcNow &&
+                                                   !s.IsDeleted);
+        }
+
+        public async Task<bool> MovieHasFutureShotime(long movieId)
+        {
+            return await _context.Showtime.AnyAsync(s => s.MovieId == movieId &&
+                                                    s.StartTime > DateTime.UtcNow &&
+                                                   !s.IsDeleted);
+        }
+
+        public async Task<bool> IsOverLap(long? showtimeId, long roomId, DateTime startTime, DateTime endTime)
+        {
+            return await _context.Showtime.Where(s => s.RoomId == roomId && !s.IsDeleted)
+                                           .Where(s => showtimeId == null || s.Id != showtimeId)
+                                           .AnyAsync(s => startTime < s.EndTime && endTime > s.StartTime);
         }
     }
 }

@@ -9,6 +9,17 @@ namespace OnlineMovieTicket.DAL.Interfaces
 {
     public interface IMovieRepository
     {
+        Task<IEnumerable<Movie>?> GetAllMoviesAsync();
+        Task<(IEnumerable<Movie>? movies, int totalCount, int filterCount)> GetMoviesForUserAsync(
+            string? searchTerm, 
+            DateTime? startDate, 
+            DateTime? endDate,
+            bool? IsComingSoon,
+            int pageNumber, 
+            int pageSize, 
+            string sortBy, 
+            bool isDescending
+        );
         Task<(IEnumerable<Movie>? movies, int totalCount, int filterCount)> GetMoviesAsync(
             string? searchTerm, 
             DateTime? startDate,

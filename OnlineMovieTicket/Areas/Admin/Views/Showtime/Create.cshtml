@@ -1,0 +1,105 @@
+@model OnlineMovieTicket.BL.DTOs.Showtime.ShowtimeDTO
+@{
+    ViewData["Title"] = "Add Showtime";
+}
+<h1 class="h3 mb-0 text-gray-800 mb-3">Add Showtime</h1>
+
+<form id="addShowtimeForm" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-4">    
+                                <label for="addCountrySelected">Country</label>
+                                <select id="addCountrySelected" class="form-control">
+                                    <option value="">-- Select Country --</option>
+                                </select>
+                            </div>
+                            <div class="form-group mb-4">    
+                                <label asp-for="@Model.CinemaId" for="addCinemaSelected">Cinema <span class="text-danger"> *</span></label>
+                                <select asp-for="@Model.CinemaId" id="addCinemaSelected" class="form-control" disabled>
+                                    <option value="">-- Select Cinema --</option>
+                                </select>
+                                <span asp-validation-for="@Model.CinemaId" class="text-danger small validation-message"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-4">    
+                                <label for="addCitySelected">City</label>
+                                <select id="addCitySelected" class="form-control" disabled>
+                                    <option value="">-- Select City --</option>
+                                </select>
+                            </div>
+                            <div class="form-group mb-4">    
+                                <label asp-for="@Model.RoomId">Room <span class="text-danger"> *</span></label>
+                                <select asp-for="@Model.RoomId" id="addRoomSelected" class="form-control" disabled>
+                                    <option value="">-- Select Room --</option>
+                                </select>
+                                <span asp-validation-for="@Model.RoomId" class="text-danger small validation-message"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mb-4">    
+                        <label asp-for="@Model.MovieId">Movie <span class="text-danger">*</span></label>
+                        <select asp-for="@Model.MovieId" id="addMovieSelected" class="form-control">
+                            <option value="">-- Select Movie --</option>
+                        </select>
+                        <span asp-validation-for="@Model.MovieId" class="text-danger small validation-message"></span>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label asp-for="@Model.StartTime">Start Time</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </span>
+                            </div>
+                            <input id="startTime" type="datetime-local" asp-for="@Model.StartTime" class="form-control" disabled>
+                        </div>
+                        <span asp-validation-for="@Model.StartTime" class="text-danger small"></span>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label asp-for="@Model.EndTime">End Time</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </span>
+                            </div>
+                            <input id="endTime" type="datetime-local" asp-for="@Model.EndTime" class="form-control" disabled>
+                        </div>
+                        <span asp-validation-for="@Model.EndTime" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h6 class="mb-3 font-weight-bold">Seats Setting</h6>
+                    <div class="mt-5 seats-container">
+                        <div id="seatsContainer" class="seats-grid-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Save Showtime</button>
+</form>
+
+@section Scripts {
+    <script>    
+        const urlCreateShowtime = '@Url.Action("Create", "Showtime", new { area = "Admin" })';
+        const urlGetAllCountries = '@Url.Action("GetAllCountries", "Country", new { area = "Admin" })';
+        const urlGetCities = '@Url.Action("GetCitiesByCountry", "City", new { area = "Admin" })';
+        const urlGetCinemas = '@Url.Action("GetCinemasByCity", "Cinema", new { area = "Admin" })';
+        const urlGetRooms = '@Url.Action("GetRoomByCinema", "Room", new { area = "Admin" })';
+        const urlGetAllMovies = '@Url.Action("GetAllMovies", "Movie", new { area = "Admin" })';
+        const urlGetRoomWithSeats = '@Url.Action("GetRoomWithSeats", "Room", new { area = "Admin" })';
+        const urlIndex = '@Url.Action("Index", "Showtime", new { area = "Admin" })';
+    </script>
+    <script src="~/Admin/js/CreateShowtime.js" asp-append-version="true"></script>
+}

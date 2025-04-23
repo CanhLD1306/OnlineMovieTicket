@@ -9,6 +9,7 @@ namespace OnlineMovieTicket.DAL.Interfaces
 {
     public interface IRoomRepository
     {
+        Task<IEnumerable<Room>?> GetRoomByCinemaAsync(long cinemaId);
         Task<(IEnumerable<Room>? rooms, int totalCount, int filterCount)> GetRoomsAsync(
             string? searchTerm, 
             long? countryId,
@@ -20,10 +21,11 @@ namespace OnlineMovieTicket.DAL.Interfaces
             string sortBy, 
             bool isDescending);
         
-        Task<Room?> GetRoomByIdAsync(long CinemaId);
+        Task<Room?> GetRoomByIdAsync(long roomIdId);
         Task<Room?> GetRoomByNameAsync(long CinemaId, long RoomId, string name);
         Task<long> CreateRoomAsync(Room room);
         Task UpdateRoomAsync(Room room);
+        Task<bool> CinemaHasRoomAsync(long cinemaId);
 
     }
 }

@@ -33,6 +33,13 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             });
         }
 
+        [HttpGet("GetAllMovies")]
+        public async Task<IActionResult> GetAllMovies()
+        {
+            var movies = await _movieService.GetAllMoviesAsync();
+            return Json(movies);
+        }
+
         [HttpGet("Create")]
         public IActionResult Create()
         {

@@ -8,7 +8,7 @@ namespace OnlineMovieTicket.BL.Services
     {
         public Task<Response> ValidateImageFile(IFormFile file)
         {
-            var validExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp"};
+            var validExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp", ".jfif" };
             var fileExtension = Path.GetExtension(file.FileName).ToLower();
 
             if (!validExtensions.Contains(fileExtension))

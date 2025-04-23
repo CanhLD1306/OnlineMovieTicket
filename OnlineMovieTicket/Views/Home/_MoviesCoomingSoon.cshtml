@@ -1,0 +1,33 @@
+@model OnlineMovieTicket.BL.DTOs.Movie.MoviesList
+
+<section>
+    <h2 class="section-title">Comming Soon</h2>
+    <div class="row g-4">
+        @foreach (var movie in Model.Movies!)
+        {
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="movie-card">
+                    <div class="position-relative">
+                        <a asp-controller="Movie" asp-action="Details" asp-route-movieId="@movie.Id">
+                            <img src="@movie.PosterURL" class="movie-poster w-100" alt="Placeholder">
+                        </a>
+                    </div>
+                    
+                    <div class="movie-info">
+                        <h5 class="movie-title">@movie.Title</h5>
+                        <div class="movie-meta">
+                            <span><i class="bi bi-calendar3"></i> @movie.ReleaseDate.ToString("dd MMM yyyy")</span>
+                            <span><i class="bi bi-clock"></i> @movie.Duration min</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a asp-controller="Movie" asp-action="Details" asp-route-movieId="@movie.Id" class="btn btn-primary btn-sm">View Details</a>
+                            <a href="javascript:void(0)" onclick="showTrailer('@movie.TrailerURL')" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-play-circle"></i> Trailer
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>

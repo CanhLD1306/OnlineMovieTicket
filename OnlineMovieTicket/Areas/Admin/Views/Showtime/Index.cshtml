@@ -1,1 +1,133 @@
-﻿<h1>Showtime</h1>
+﻿@{
+    ViewData["Title"] = "Showtime Management";
+}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Showtime Management</h1>
+    <a href="@Url.Action("Create", "Showtime", new { area = "Admin" })" class="btn btn-primary btn-icon-split btn-sm cursor-pointer">
+        <span class="icon text-white">
+            <i class="fas fa-plus"></i>
+        </span>
+        <span class="text">Add New Showtime</span>
+    </a>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-3">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+            <input type="text" id="searchTerm" class="form-control" placeholder="Search by Title">
+        </div>
+    </div>
+    <div class="col-md-9 text-right">
+        <button class="btn btn-outline-primary mb-3" data-toggle="modal" data-target="#filterModal">
+            <i class="fas fa-filter"></i>
+        </button> 
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="showtimesTable" class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Movie</th>
+                        <th class="text-center">Room</th>
+                        <th>Cinema</th>
+                        <th class="text-center">Show Date</th>
+                        <th class="text-center">Start Time</th>
+                        <th class="text-center">End Time</th>
+                        <th class="text-center"></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="modalPlaceholder">
+    <div class="modal fade" id="showtimeModal" tabindex="-1" role="dialog" aria-labelledby="showtimeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="filterModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="filterModalLabel">Filter Showtime</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="filterForm">
+            <div class="form-row">
+                <div class="form-group col-6">
+                    <label for="countryFilter">Country</label>
+                    <select id="countryFilter" class="form-control">
+                        <option value="">All Countries</option>
+                    </select>
+                </div>
+                <div class="form-group col-6">
+                    <label for="cityFilter">City</label>
+                    <select id="cityFilter" class="form-control" disabled>
+                        <option value="">All Cities</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-6">
+                    <label for="cinemaFilter">Cinema</label>
+                    <select id="cinemaFilter" class="form-control" disabled>
+                        <option value="">All Cinema</option>
+                    </select>
+                </div>
+                <div class="form-group col-6">
+                    <label for="roomFilter">Room</label>
+                    <select id="roomFilter" class="form-control" disabled>
+                        <option value="">All Room</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-6">
+                <label for="startDate">Start Date</label>
+                <input type="date" class="form-control" id="startDate">
+                </div>
+                <div class="form-group col-6">
+                <label for="endDate">End Date</label>
+                <input type="date" class="form-control" id="endDate">
+                </div>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-danger" id="resetBtn">Reset</button>
+        <button type="button" class="btn btn-primary" id="applyFilterBtn">Apply Filter</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+    <script>
+        const urlGetShowtimes = '@Url.Action("GetShowtimes", "Showtime", new { area = "Admin" })';
+        const urlGetAllCountries = '@Url.Action("GetAllCountries", "Country", new { area = "Admin" })';
+        const urlGetCities = '@Url.Action("GetCitiesByCountry", "City", new { area = "Admin" })';
+        const urlGetCinemas = '@Url.Action("GetCinemasByCity", "Cinema", new { area = "Admin" })';
+        const urlGetRooms = '@Url.Action("GetRoomByCinema", "Room", new { area = "Admin" })';
+        const urlEdit = '@Url.Action("Edit", "Showtime", new { area = "Admin" })';
+        const urlDelete = '@Url.Action("Delete", "Showtime", new { area = "Admin" })';
+    </script>
+    <script src="~/Admin/js/Showtime.js" asp-append-version="true"></script>
+}

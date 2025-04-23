@@ -138,7 +138,7 @@ namespace OnlineMovieTicket.BL.Services
                     if(city == null){
                         return new Response(false, "City not found");
                     }
-                    if(_cinemaRepository.HasAnyCinema(cityId)){
+                    if(await _cinemaRepository.CityHasAnyCinema(cityId)){
                         return new Response(false, "Cannot delete this city because there are still cinemas associated with it.");
                     }
 

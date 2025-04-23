@@ -5,6 +5,7 @@ using OnlineMovieTicket.BL.DTOs;
 using OnlineMovieTicket.BL.DTOs.Cinema;
 using OnlineMovieTicket.BL.Interfaces;
 using OnlineMovieTicket.DAL.Interfaces;
+using OnlineMovieTicket.DAL.Migrations;
 using OnlineMovieTicket.DAL.Models;
 
 namespace OnlineMovieTicket.BL.Services
@@ -12,12 +13,18 @@ namespace OnlineMovieTicket.BL.Services
     public class CinemaService : ICinemaService
     {
         private readonly ICinemaRepository _cinemaRepository;
+        private readonly IRoomRepository _roomRepository;
         private readonly IAuthService _authService;
         private readonly IMapper _mapper;
 
-        public CinemaService(ICinemaRepository cinemaRepository, IMapper mapper, IAuthService authService)
+        public CinemaService(
+            ICinemaRepository cinemaRepository, 
+            IRoomRepository roomRepository,
+            IMapper mapper, 
+            IAuthService authService)
         {
             _cinemaRepository = cinemaRepository;
+            _roomRepository = roomRepository;
             _authService = authService;
             _mapper = mapper;
         }
@@ -128,7 +135,7 @@ namespace OnlineMovieTicket.BL.Services
                         return new Response(false, "Cinema not found");
                     }
 
-                    if(cinema.TotalRooms > 0){
+                    if(await _roomRepository.CinemaHasRoomAsync(cinemaId)){
                         return new Response(false, "Cannot delete this cinema because there are still rooms associated with it.");
                     }
 

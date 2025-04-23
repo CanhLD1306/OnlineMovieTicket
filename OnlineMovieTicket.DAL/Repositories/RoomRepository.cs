@@ -107,5 +107,15 @@ namespace OnlineMovieTicket.DAL.Repositories
             _context.Rooms.Update(room);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<Room>?> GetRoomByCinemaAsync(long cinemaId)
+        {
+            return await _context.Rooms.Where(c => c.CinemaId == cinemaId && !c.IsDeleted).ToListAsync();
+        }
+
+        public async Task<bool> CinemaHasRoomAsync(long cinemaId)
+        {
+            return await _context.Rooms.AnyAsync(c => c.CinemaId == cinemaId && !c.IsDeleted);
+        }
     }
 }

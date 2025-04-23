@@ -44,7 +44,7 @@ function previewImage(event, previewId, messageSpanId) {
     messageSpan.style.display = "none";
 
     if (file) {
-        const validImageTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+        const validImageTypes = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/jpg", "image/jfif"];
 
         if (!validImageTypes.includes(file.type)) {
             messageSpan.textContent = "Only image files (JPG, PNG, GIF, WEBP) are allowed";

@@ -137,7 +137,7 @@ namespace OnlineMovieTicket.BL.Services
                     if(country == null){
                         return new Response(false, "Country not found");
                     }
-                    if(_cityRepository.HasAnyCity(countryId)){
+                    if(await _cityRepository.CountryHasAnyCity(countryId)){
                         return new Response(false, "Cannot delete this country because there are still cities associated with it.");
                     }
 

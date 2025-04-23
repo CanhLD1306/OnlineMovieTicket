@@ -12,5 +12,6 @@ namespace OnlineMovieTicket.BL.Interfaces
         Task<Response> UpdateRoomsAsync(RoomWithSeatsDTO roomWithSeats);
         Task<Response> DeleteRoomAsync(long roomId);
         Task<Response> ChangeStatusAsync(long roomId);
+        Task<IEnumerable<RoomDTO>?> GetRoomByCinemaAsync(long cinemaId);
     }
 }
