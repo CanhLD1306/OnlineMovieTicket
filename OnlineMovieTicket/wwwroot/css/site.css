@@ -13,6 +13,10 @@ html {
   min-height: 100%;
 }
 
+.d-grid{
+  display: grid;
+}
+
 .mb-10px {
   margin-bottom: 10px !important;
 }
@@ -177,7 +181,7 @@ margin-bottom: 1.5rem;
   bottom: -10px;
   width: 50px;
   height: 3px;
-  background-color: var(--primary-color);
+  background-color: #e50914;
 }
 .privacy-section {
   border-bottom: 1px solid #333;
@@ -231,11 +235,6 @@ margin-bottom: 1.5rem;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
-.movie-poster {
-  height: 380px;
-  object-fit: cover;
-}
-
 .movie-info {
   padding: 1.25rem;
 }
@@ -246,21 +245,6 @@ margin-bottom: 1.5rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.movie-meta {
-  color: #6c757d;
-  font-size: 0.9rem;
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-}
-
-.btn-trailer {
-  background-color: transparent;
-  color: var(--primary-color);
-  border: 1px solid var(--primary-color);
-  transition: all 0.3s ease;
 }
 
 .page-header {
@@ -335,7 +319,7 @@ margin-bottom: 1.5rem;
 }
 
 .filter-dropdown .dropdown-item.active {
-  background-color: var(--primary-color);
+  background-color: #e50914;
   color: white;
 }
 
@@ -356,4 +340,134 @@ margin-bottom: 1.5rem;
 
 .reset-btn:hover {
   background-color: #f8f9fa;
+}
+
+.pagination .page-item .page-link {
+  border: none;
+  margin: 0 0.25rem;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #293ad3;
+  color: white;
+}
+
+.pagination .page-item .page-link:hover {
+  background-color: #f8f9fa;
+}
+
+.pagination .page-item.active .page-link:hover {
+  background-color: #e50914;
+}
+
+.no-results {
+  text-align: center;
+  padding: 3rem;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.no-results i {
+  font-size: 4rem;
+  color: #dee2e6;
+  margin-bottom: 1.5rem;
+}
+
+.badge-category {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: #e50914;
+  color: white;
+  font-weight: 500;
+  padding: 0.35rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+}
+
+.badge-coming-soon {
+  background-color: #6c757d;
+}
+
+.hero-banner {
+  position: relative;
+  height: 500px;
+  overflow: hidden;
+}
+
+.hero-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.5);
+}
+
+.movie-poster {
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  object-fit: contain;
+}
+
+.movie-poster:hover {
+  transform: scale(1.02);
+}
+
+.movie-info-card {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+.movie-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  color: #6c757d;
+  font-size: 0.9rem;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.movie-meta-item {
+  display: flex;
+  align-items: center;
+  color: #6c757d;
+}
+
+.movie-meta-item i {
+  margin-right: 0.5rem;
+  color: #c50812;
+}
+
+.btn-trailer {
+  background-color: transparent;
+  color: #c50812;
+  border: 1px solid #c50812;
+  transition: all 0.3s ease;
+}
+
+.btn-trailer:hover {
+  background-color: #c50812;
+  color: white;
+}
+
+.btn-booking {
+  background-color: #c50812;
+  border-color: #c50812;
+  transition: all 0.3s ease;
+}
+
+.btn-booking:hover {
+  background-color: #c50812;
+  border-color: #c50812;
 }

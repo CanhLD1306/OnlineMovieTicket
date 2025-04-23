@@ -25,6 +25,13 @@ namespace OnlineMovieTicket.Controllers
             return View();
         }
 
+        [HttpGet("GetMovies")]
+        public async Task<IActionResult> GetMovies([FromQuery] MovieQueryForUserDTO queryModel)
+        {
+            var result = await _movieService.GetMoviesForUserAsync(queryModel);
+            return PartialView("_MoviesList", result);
+        }
+
         public async Task<IActionResult> Details(long movieId)
         {
             var result = await _movieService.GetMovieByIdAsync(movieId);

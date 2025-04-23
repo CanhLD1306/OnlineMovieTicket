@@ -75,6 +75,10 @@ $(document).ready(function () {
         language: {
             emptyTable: "No data available in table",
             infoFiltered: "",
+            paginate: {
+                previous: '&lt;',
+                next: '&gt;',
+            }
         }
     });
 
