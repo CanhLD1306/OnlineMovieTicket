@@ -54,6 +54,7 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             return Json(new {success = true, data = result.Data});
         }
 
+        
         [HttpGet("Create")]
         public IActionResult Create()
         {
@@ -63,6 +64,7 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
 
         [HttpPost("Create")]
         [ValidateAntiForgeryToken]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Create([FromForm] RoomWithSeatsDTO roomWithSeats, [FromForm] string SeatsJson)
         {
             try

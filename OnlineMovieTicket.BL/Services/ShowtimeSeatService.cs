@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using OnlineMovieTicket.BL.DTOs;
 using OnlineMovieTicket.BL.DTOs.Seat;
-using OnlineMovieTicket.BL.DTOs.ShowtimeSeatSeatSeat;
+using OnlineMovieTicket.BL.DTOs.ShowtimeSeat;
 using OnlineMovieTicket.BL.Interfaces;
 using OnlineMovieTicket.DAL.Interfaces;
 using OnlineMovieTicket.DAL.Models;
@@ -98,11 +98,6 @@ namespace OnlineMovieTicket.BL.Services
         {
             var showtimeSeats = await _showtimeSeatRepository.GetShowtimeSeatsByShowtimeAsync(showtimeId);
             return _mapper.Map<IEnumerable<ShowtimeSeatDTO>>(showtimeSeats);
-        }
-
-        public Task<Response> UpdateShowtimeSeatsAsync(IEnumerable<ShowtimeSeatDTO> showtimeseatsDTO, long showtimeId)
-        {
-            throw new NotImplementedException();
         }
     }
 }

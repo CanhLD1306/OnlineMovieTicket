@@ -6,6 +6,7 @@ namespace OnlineMovieTicket.BL.DTOs.Showtime
     public class ShowtimeDTO
     {
         public long Id { get; set; }
+        public long? CityId { get; set; }
         [Required(ErrorMessage = "Please select a movie")]
         public long MovieId { get; set; }
         public string? MovieTitle { get; set; }

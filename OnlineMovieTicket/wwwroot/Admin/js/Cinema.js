@@ -1,10 +1,12 @@
+let sortBy = "CreatedAt";
+let isDescending = true;
+let isAdjustingPage = false;
+
 $(document).ready(function () {
 
     // List, search, filter and sort cinema in table
 
-    let sortBy = "CreatedAt";
-    let isDescending = true;
-    let isAdjustingPage = false;
+    
 
     loadCountries($('#countryFilter'), $('#cityFilter'));
 

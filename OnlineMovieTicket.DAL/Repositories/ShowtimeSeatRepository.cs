@@ -22,6 +22,8 @@ namespace OnlineMovieTicket.DAL.Repositories
         public async Task<IEnumerable<ShowtimeSeat>?> GetShowtimeSeatsByShowtimeAsync(long ShowtimeId)
         {
             var ShowtimeSeats = await _context.ShowtimeSeats
+                                                .Include(s => s.Seat)
+                                                .Include(s => s.Seat.SeatType)
                                                 .Where(s => s.ShowtimeId == ShowtimeId && !s.IsDeleted)
                                                 .ToListAsync();
             return ShowtimeSeats;

@@ -58,7 +58,7 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
         [HttpGet("Edit")]
         public async Task<IActionResult> Edit(long showtimeId)
         {
-            var result = await _showtimeService.GetShowtimeByIdAsync(showtimeId);
+            var result = await _showtimeService.GetShowtimeWithSeatsById(showtimeId);
             if(!result.Success){
                 return Json(new {success = false, message = result.Message});
             }
@@ -67,13 +67,12 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
 
         [HttpPost("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([FromForm] ShowtimeDTO showtime)
+        public async Task<IActionResult> Edit([FromForm] ShowtimeWithSeatsDTO showtimeWithSeatsDTO)
         {
-            _logger.LogInformation("I'm Edit");
             if(!ModelState.IsValid){
                 return Json(new {success = false, message = "Invalid input data."});
             }
-            var result = await _showtimeService.UpdateShowtimeAsync(showtime);
+            var result = await _showtimeService.UpdateShowtimeAsync(showtimeWithSeatsDTO);
 
             if(!result.Success){
                 return Json(new {success = false, message = result.Message});

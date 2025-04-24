@@ -11,9 +11,10 @@ namespace OnlineMovieTicket.BL.Interfaces
     public interface IShowtimeService
     {
         Task<Response> CreateShowtimeAsync(ShowtimeDTO showtimeDTO);
-        Task<Response> UpdateShowtimeAsync(ShowtimeDTO showtimeDTO);
+        Task<Response> UpdateShowtimeAsync(ShowtimeWithSeatsDTO showtimeWithSeats);
         Task<Response> DeleteShowtimeAsync(long id);
         Task<ShowtimesList> GetShowtimesAsync(ShowtimeQueryDTO queryDTO);
         Task<Response<ShowtimeDTO>> GetShowtimeByIdAsync(long showtimeId);
+        Task<Response<ShowtimeWithSeatsDTO>> GetShowtimeWithSeatsById(long showtimeId);
     }
 }

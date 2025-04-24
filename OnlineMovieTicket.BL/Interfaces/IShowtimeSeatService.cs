@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OnlineMovieTicket.BL.DTOs;
 using OnlineMovieTicket.BL.DTOs.Seat;
-using OnlineMovieTicket.BL.DTOs.ShowtimeSeatSeatSeat;
+using OnlineMovieTicket.BL.DTOs.ShowtimeSeat;
 using OnlineMovieTicket.DAL.Models;
 
 namespace OnlineMovieTicket.BL.Interfaces
@@ -14,7 +14,6 @@ namespace OnlineMovieTicket.BL.Interfaces
     {
         Task<IEnumerable<ShowtimeSeatDTO>?> GetAllShowtimeSeatsByShowtimeAsync(long showtimeId);
         Task<Response> CreateShowtimeSeatsAsync(IEnumerable<Seat> seats, long showtimeId);
-        Task<Response> UpdateShowtimeSeatsAsync(IEnumerable<ShowtimeSeatDTO> showtimeSeatsDTO, long showtimeId);
         Task<Response> DeleteShowtimeSeatsByRoomAsync(long showtimeId);
     }
 }

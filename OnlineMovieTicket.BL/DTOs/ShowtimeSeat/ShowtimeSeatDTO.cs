@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace OnlineMovieTicket.BL.DTOs.ShowtimeSeatSeatSeat
+namespace OnlineMovieTicket.BL.DTOs.ShowtimeSeat
 {
     public class ShowtimeSeatDTO
     {

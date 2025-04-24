@@ -1,7 +1,9 @@
+let sortBy = "CreatedAt";
+let isDescending = true;
+let isAdjustingPage = false;
+
 $(document).ready(function () {
-    let sortBy = "CreatedAt";
-    let isDescending = true;
-    let isAdjustingPage = false;
+    
     loadCountries($('#countryFilter'));
 
     $('#roomsTable').DataTable({
@@ -174,6 +176,10 @@ $(document).ready(function () {
     });
 
     // Change status
+    $(document).on('focusin', '.toggle-status', function () {
+        const currentChecked = $(this).prop('checked');
+        $(this).data('prev', currentChecked);
+    });
 
     $(document).on('change', '.toggle-status', function () {
         const $checkbox = $(this);

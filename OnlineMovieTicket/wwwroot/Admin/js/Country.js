@@ -1,11 +1,10 @@
+let sortBy = "CreatedAt";
+let isDescending = true;
+let isAdjustingPage = false;
+
 $(document).ready(function () {
 
     // List, search, filter and sort country in table
-
-    let sortBy = "CreatedAt";
-    let isDescending = true;
-    let isAdjustingPage = false;
-
     $('#countriesTable').DataTable({
         processing: true,
         serverSide: true,

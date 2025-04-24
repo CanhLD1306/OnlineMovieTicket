@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Detail";
+    var isLoggedIn = User.Identity!.IsAuthenticated;
 }
 
 <section class="hero-banner">
@@ -45,7 +46,7 @@
                         <a href="javascript:void(0)" onclick="showTrailer('@Model.TrailerURL')" class="btn btn-trailer">
                             <i class="bi bi-play-circle me-2"></i>Watch Trailer
                         </a>
-                        <a href="#booking-section" class="btn btn-booking text-white">
+                        <a href="javascript:void(0)" id="bookNowBtn" class="btn btn-booking text-white">
                             <i class="bi bi-ticket-perforated me-2"></i>Book Tickets
                         </a>
                     </div>
@@ -74,8 +75,15 @@
 
 @section Scripts {
     <script>
+        const isLoggedIn = @isLoggedIn.ToString().ToLower();
         $(document).ready(function () {
-            
+            $('#bookNowBtn').click(function(e) {
+                if (!isLoggedIn) {
+                    // Chưa đăng nhập → redirect về login
+                    const returnUrl = window.location.pathname + window.location.search;
+                    window.location.href = `/Identity/Account/Login?returnUrl=${encodeURIComponent(returnUrl)}`;
+                }
+            });
         });
         function showTrailer(youtubeUrl) {
             const embedUrl = youtubeUrl.replace("watch?v=", "embed/");

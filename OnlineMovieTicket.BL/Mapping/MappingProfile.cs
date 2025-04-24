@@ -8,7 +8,7 @@ using OnlineMovieTicket.BL.DTOs.Room;
 using OnlineMovieTicket.BL.DTOs.Seat;
 using OnlineMovieTicket.BL.DTOs.SeatType;
 using OnlineMovieTicket.BL.DTOs.Showtime;
-using OnlineMovieTicket.BL.DTOs.ShowtimeSeatSeatSeat;
+using OnlineMovieTicket.BL.DTOs.ShowtimeSeat;
 using OnlineMovieTicket.DAL.Models;
 
 namespace OnlineMovieTicket.BL.Mapping
@@ -54,6 +54,7 @@ namespace OnlineMovieTicket.BL.Mapping
                 .ForMember(dest => dest.Room, opt => opt.Ignore());
 
             CreateMap<Showtime, ShowtimeDTO>()
+                .ForMember(dest => dest.CityId, opt => opt.MapFrom(src => src.Room != null && src.Room.Cinema != null ? src.Room.Cinema.CityId : (long?)null))
                 .ForMember(dest => dest.CinemaId, opt => opt.MapFrom(src => src.Room != null ? src.Room.CinemaId : (long?)null))
                 .ForMember(dest => dest.CinemaName, opt => opt.MapFrom(src => src.Room != null ? src.Room.Cinema.Name : string.Empty))
                 .ForMember(dest => dest.RoomName, opt => opt.MapFrom(src => src.Room != null ? src.Room.Name : string.Empty))

@@ -17,6 +17,7 @@ namespace OnlineMovieTicket.BL.Services
     public class ShowtimeService : IShowtimeService
     {
         private readonly IShowtimeRepository _showtimeRepository;
+        private readonly IShowtimeSeatRepository _showtimeSeatRepository;
         private readonly IShowtimeSeatService _showtimeSeatService;
         private readonly IRoomRepository _roomRepository;
         private readonly IMovieRepository _movieRepository;
@@ -26,6 +27,7 @@ namespace OnlineMovieTicket.BL.Services
 
         public ShowtimeService(
             IShowtimeRepository showtimeRepository,
+            IShowtimeSeatRepository showtimeSeatRepository,
             IRoomRepository roomRepository,
             IMovieRepository movieRepository,
             ISeatRepository seatRepository,
@@ -34,6 +36,7 @@ namespace OnlineMovieTicket.BL.Services
             IAuthService authService)
         {
             _showtimeRepository = showtimeRepository;
+            _showtimeSeatRepository = showtimeSeatRepository;
             _roomRepository = roomRepository;
             _movieRepository = movieRepository;
             _seatRepository = seatRepository;
@@ -119,6 +122,11 @@ namespace OnlineMovieTicket.BL.Services
                         return new Response(false, "Showtime not found");
                     }
 
+                    if (await _showtimeSeatRepository.ShowtimeHasBookedTicket(showtimeId))
+                    {
+                        return new Response(false, "Showtime has booked tickets, cannot delete!");
+                    }
+
                     showtime.IsDeleted = true;
                     showtime.UpdatedAt = DateTime.UtcNow;
                     showtime.UpdatedBy = (await _authService.GetUserId()).Data;
@@ -168,32 +176,44 @@ namespace OnlineMovieTicket.BL.Services
             return new Response<ShowtimeDTO>(false,"Showtime not found");
         }
 
-        public async Task<Response> UpdateShowtimeAsync(ShowtimeDTO showtimeDTO)
+        public async Task<Response> UpdateShowtimeAsync(ShowtimeWithSeatsDTO showtimeWithSeatsDTO)
         {
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 try
                 {
-                    var room = await _roomRepository.GetRoomByIdAsync(showtimeDTO.RoomId);
-                    if (room == null || !room.IsAvailable)
-                        return new Response(false, "The room does not exist or is not active.");
-
-                    var movie = await _movieRepository.GetMovieByIdAsync(showtimeDTO.MovieId);
+                    var movie = await _movieRepository.GetMovieByIdAsync(showtimeWithSeatsDTO.Showtime.MovieId);
                     if (movie == null)
                             return new Response(false, "The movie does not exist!");
+                    if (movie.ReleaseDate < DateTime.Now.Date)
+                    {
+                        if (showtimeWithSeatsDTO.Showtime.StartTime.Date <= DateTime.Now.Date)
+                            return new Response(false, "The showtime must be at least 1 day after the current date for a movie released in the past.");
+                    }
+                    else if (movie.ReleaseDate > DateTime.Now.Date)
+                    {
+                        if (showtimeWithSeatsDTO.Showtime.StartTime.Date < movie.ReleaseDate)
+                            return new Response(false, "The showtime cannot be created before the movie's release date.");
+                    }
+                    if (showtimeWithSeatsDTO.Showtime.StartTime <= DateTime.UtcNow)
+                        return new Response(false, "Cannot update a showtime that has already started or finished.");
 
-                    if ((showtimeDTO.EndTime - showtimeDTO.StartTime).TotalMinutes < (movie.Duration + 15))
+                    if ((showtimeWithSeatsDTO.Showtime.EndTime - showtimeWithSeatsDTO.Showtime.StartTime).TotalMinutes < (movie.Duration + 15))
                         return new Response(false, "The selected time range is invalid. Please adjust the start and end times.");
 
-                    if (await _showtimeRepository.IsOverLap(null, showtimeDTO.RoomId, showtimeDTO.StartTime, showtimeDTO.EndTime))
+                    if (await _showtimeRepository.IsOverLap(
+                    showtimeWithSeatsDTO.Showtime.Id,
+                    showtimeWithSeatsDTO.Showtime.RoomId, 
+                    showtimeWithSeatsDTO.Showtime.StartTime, 
+                    showtimeWithSeatsDTO.Showtime.EndTime))
                         return new Response(false, "The selected time range overlaps with an existing showtime."); 
 
-                    var showtime = await _showtimeRepository.GetShowtimeByIdAsync(showtimeDTO.Id);
+                    var showtime = await _showtimeRepository.GetShowtimeByIdAsync(showtimeWithSeatsDTO.Showtime.Id);
                     if(showtime == null){
                         return new Response(false, "Showtime not found");
                     }
 
-                    _mapper.Map(showtimeDTO, showtime);
+                    _mapper.Map(showtimeWithSeatsDTO.Showtime, showtime);
                     showtime.UpdatedAt = DateTime.UtcNow;
                     showtime.UpdatedBy = (await _authService.GetUserId()).Data;
 
@@ -206,6 +226,23 @@ namespace OnlineMovieTicket.BL.Services
                     return new Response(false, "Update showtime fail!");
                 }
             }
+        }
+
+        public async Task<Response<ShowtimeWithSeatsDTO>> GetShowtimeWithSeatsById(long showtimeId)
+        {
+            var showtime = await _showtimeRepository.GetShowtimeByIdAsync(showtimeId);
+            var seats = await _showtimeSeatService.GetAllShowtimeSeatsByShowtimeAsync(showtimeId);
+
+            if(showtime == null || seats == null || !seats.Any()){
+                return new Response<ShowtimeWithSeatsDTO>(false, "Showtime or seats not found", null);
+            }
+
+            var showtimeWithSeats = new ShowtimeWithSeatsDTO {
+                Showtime = _mapper.Map<ShowtimeDTO>(showtime),
+                ShowtimeSeats = seats
+            };
+
+            return new Response<ShowtimeWithSeatsDTO>(true, null, showtimeWithSeats);
         }
     }
 }

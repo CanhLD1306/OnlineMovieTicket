@@ -129,14 +129,7 @@ namespace OnlineMovieTicket.BL.Services
         public async Task<Response<RoomWithSeatsDTO>> GetRoomWithSeatsById(long roomId)
         {
             var room = await _roomRepository.GetRoomByIdAsync(roomId);
-            if(room == null){
-                _logger.LogInformation("Room is null");
-            }
             var seats = await _seatService.GetAllSeatsByRoomAsync(roomId);
-
-            if(seats == null || !seats.Any()){
-                _logger.LogInformation("Seats is null");
-            }
 
             if(room == null || seats == null || !seats.Any()){
                 return new Response<RoomWithSeatsDTO>(false, "Room or seats not found", null);

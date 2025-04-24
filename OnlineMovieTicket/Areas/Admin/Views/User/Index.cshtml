@@ -1,1 +1,52 @@
-﻿<h1>User</h1>
+﻿@{
+    ViewData["Title"] = "User Management";
+}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">User Management</h1>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-3">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+            <input type="text" id="searchTerm" class="form-control" placeholder="Search">
+        </div>  
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="usersTable" class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Full Name</th>
+                        <th class="text-center">Phone Number</th>
+                        <th class="text-center">Gender</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center"></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="modalPlaceholder">
+    <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    
+}

@@ -12,6 +12,7 @@ namespace OnlineMovieTicket.BL.Services
     public class MovieService : IMovieService
     {
         private readonly IMovieRepository _movieRepository;
+        private readonly IShowtimeRepository _showtimeRepository;
         private readonly IFileUploadService _fileUploadService;
         private readonly ICloudinaryService _cloudinaryService;
         private readonly IAuthService _authService;
@@ -19,6 +20,7 @@ namespace OnlineMovieTicket.BL.Services
 
         public MovieService(
             IMovieRepository movieRepository, 
+            IShowtimeRepository showtimeRepository,
             IFileUploadService fileUploadService,
             ICloudinaryService cloudinaryService,
             IAuthService authService, 
@@ -26,6 +28,7 @@ namespace OnlineMovieTicket.BL.Services
 )
         {
             _movieRepository = movieRepository;
+            _showtimeRepository = showtimeRepository;
             _fileUploadService = fileUploadService;
             _cloudinaryService = cloudinaryService;
             _authService = authService;
@@ -120,6 +123,11 @@ namespace OnlineMovieTicket.BL.Services
                     var movie = await _movieRepository.GetMovieByIdAsync(movieId);
                     if(movie == null){
                         return new Response(false, "Movie not found");
+                    }
+
+                    if(await _showtimeRepository.MovieHasFutureShotime(movieId))
+                    {
+                        return new Response(false, "Movie has future showtime, cannot delete!");
                     }
                     
                     movie.IsDeleted = true;

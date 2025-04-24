@@ -1,9 +1,11 @@
+let sortBy = "CreatedAt";
+let startDate = "";
+let endDate = "";
+let isDescending = true;
+let isAdjustingPage = false;
+
 $(document).ready(function () {
-    let sortBy = "CreatedAt";
-    let startDate = "";
-    let endDate = "";
-    let isDescending = true;
-    let isAdjustingPage = false;
+    
 
     $('#moviesTable').DataTable({
         processing: true,

@@ -1,8 +1,9 @@
+let sortBy = "CreatedAt";
+let pageSize = 5;
+let isDescending = true;
+
 $(document).ready(function () {
-    let sortBy = "CreatedAt";
-    let pageSize = 5;
-    let isDescending = true;
-    let isAdjustingPage = false;
+    
 
     // Banner Table
 

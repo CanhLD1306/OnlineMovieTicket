@@ -1,8 +1,9 @@
+let sortBy = "CreatedAt";
+let isDescending = true;
+let isAdjustingPage = false;
+
 $(document).ready(function () {
-    let sortBy = "CreatedAt";
-    let isDescending = true;
-    let isAdjustingPage = false;
-    const searchTerm = $('#searchTerm');
+    
 
     // List, search, filter and sort SeatType in table
 
@@ -18,7 +19,7 @@ $(document).ready(function () {
             data: function (d) {
                 return {
                     Draw: d.draw,
-                    SearchTerm: searchTerm.val(),
+                    SearchTerm: $('#searchTerm').val(),
                     PageNumber: (d.start / d.length) + 1,
                     PageSize: d.length,
                     SortBy: sortBy,

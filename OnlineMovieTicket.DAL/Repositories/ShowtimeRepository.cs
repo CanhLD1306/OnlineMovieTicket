@@ -21,7 +21,11 @@ namespace OnlineMovieTicket.DAL.Repositories
 
         public async Task<Showtime?> GetShowtimeByIdAsync(long showtimeId)
         {
-            return await _context.Showtime.FirstOrDefaultAsync(s => s.Id == showtimeId && !s.IsDeleted);
+            return await _context.Showtime
+                                        .Include(c => c.Room)
+                                        .ThenInclude(Room => Room.Cinema)
+                                        .Include(c => c.Movie)
+                                        .FirstOrDefaultAsync(s => s.Id == showtimeId && !s.IsDeleted);
         }
 
         public async Task<(IEnumerable<Showtime>? showtimes, int totalCount, int filterCount)> GetShowtimesAsync(
@@ -109,8 +113,8 @@ namespace OnlineMovieTicket.DAL.Repositories
         public async Task<bool> IsOverLap(long? showtimeId, long roomId, DateTime startTime, DateTime endTime)
         {
             return await _context.Showtime.Where(s => s.RoomId == roomId && !s.IsDeleted)
-                                           .Where(s => showtimeId == null || s.Id != showtimeId)
-                                           .AnyAsync(s => startTime < s.EndTime && endTime > s.StartTime);
+                                            .Where(s => showtimeId == null || s.Id != showtimeId)
+                                            .AnyAsync(s => startTime < s.EndTime && endTime > s.StartTime);
         }
     }
 }

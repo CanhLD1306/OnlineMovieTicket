@@ -61,6 +61,26 @@ $(document).ready(function () {
             },
             {
                 "data": null,
+                "className": "text-center",
+                "render": function (data, type, row) {
+                    const now = new Date();
+                    const start = new Date(row.startTime);
+                    const end = new Date(row.endTime);
+                    let statusHtml = '';
+                    if (isNaN(start) || isNaN(end)) {
+                        statusHtml = '<span class="badge bg-warning text-dark">Invalid Time</span>';
+                    } else if (now < start) {
+                        statusHtml = '<span class="badge bg-secondary text-white">Scheduled</span>';
+                    } else if (now >= start && now < end) {
+                        statusHtml = '<span class="badge bg-success text-white">Ongoing</span>';
+                    } else {
+                        statusHtml = '<span class="badge bg-dark text-white">Completed</span>';
+                    }
+                    return statusHtml;
+                }
+            },
+            {
+                "data": null,
                 className: "text-center",
                 "render": function (data, type, row) {
                     return `<a class='btn btn-sm btn-info btn-edit-showtime' title='Edit' data-id='${row.id}'>
@@ -133,6 +153,28 @@ $(document).ready(function () {
     $('#cinemaFilter').on('change', function () {
         const cinemaId = $(this).val();
         loadRooms($('#roomFilter'), cinemaId);
+    });
+
+    // Edit showtime
+
+    $(document).on('click', '.btn-edit-showtime', function (e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        $.ajax({
+            url: urlEdit,
+            type: 'GET',
+            data: { showtimeId: id },           
+            success: function (response) {
+                if (response) {
+                    window.location.href = `${urlEdit}?showtimeId=${id}`    
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                toastr.error('There was an error processing your request: ' + error);
+            }
+        });
     });
 
     // Delete showtime
