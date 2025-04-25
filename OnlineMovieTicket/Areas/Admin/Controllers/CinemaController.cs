@@ -12,18 +12,12 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
     public class CinemaController : BaseController
     {
         private readonly ICinemaService _cinemaService;
-        private readonly ICityService _cityService;
-        private readonly ICountryService _countryService;
         private readonly ILogger<CinemaController> _logger;
 
         public CinemaController(
             ICinemaService cinemaService, 
-            ICountryService countryService,
-            ICityService cityService, 
             ILogger<CinemaController> logger)
         {
-            _cityService = cityService;
-            _countryService = countryService;
             _cinemaService = cinemaService;
             _logger = logger;
         }

@@ -15,7 +15,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+        <nav class="navbar navbar-expand-md navbar-light bg-white sticky-top">
             <div class="container">
                 <a class="navbar-brand fs-3" asp-area="" asp-controller="Home" asp-action="Index">
                     <i class="bi bi-film text-highlight"></i> OMT
@@ -47,7 +47,7 @@
 
     <!-- Footer -->
     <footer class="py-5 bg-dark">
-        <div class="container">
+        <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <h5 class="fw-bold text-light">
@@ -55,15 +55,15 @@
                     </h5>
                     <p class="text-light">Your ultimate destination for the best cinema experience. State-of-the-art technology, comfortable seating, and a wide selection of movies.</p>
                 </div>
-                <div class="col-lg-4 col-md-6 mb-4 mb-md-0 d-grid justify-content-center">
+                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
                     <h5 class="fw-bold text-light">Quick Links</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a asp-controller="Home" asp-action="Index" class="text-light text-decoration-none">Home</a></li>
                         <li class="mb-2"><a asp-controller="Movie" asp-action="Index" class="text-light text-decoration-none">Movies</a></li>
-                        <li class="mb-2"><a asp-controller="Privacy" asp-action="Index" class="text-light text-decoration-none">Privacy</a></li>
+                        <li class="mb-2"><a asp-controller="Home" asp-action="Privacy" class="text-light text-decoration-none">Privacy</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-4 col-md-6 d-grid justify-content-center">
+                <div class="col-lg-4 col-md-6">
                     <h5 class="fw-bold mb-3 text-light">Follow Us</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2">

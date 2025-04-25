@@ -1,8 +1,18 @@
 @model OnlineMovieTicket.BL.DTOs.Movie.MovieDTO
-
+@using Microsoft.AspNetCore.Identity
+@using OnlineMovieTicket.DAL.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 @{
     ViewData["Title"] = "Detail";
-    var isLoggedIn = User.Identity!.IsAuthenticated;
+    var isLoggedIn = SignInManager.IsSignedIn(User);
+    ApplicationUser? user = null;
+    bool isAdmin = false;
+    if (isLoggedIn)
+    {
+        user = await UserManager.GetUserAsync(User);
+        isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
+    }
 }
 
 <section class="hero-banner">
@@ -54,7 +64,66 @@
             </div>
         </div>
     </section>
+    @if (isLoggedIn){
+        <section id="booking-area" class="booking-area">
+            <div class="booking-header">
+                <h3><i class="bi bi-ticket-perforated me-2"></i>Book Your Tickets</h3>
+            </div>
+            <div class="booking-content">
+                <div class="booking-step">
+                    <div class="step-title">
+                        <div class="step-number">1</div>
+                        <h4>Select Location</h4>
+                    </div>
+                    <div class="filter-section">
+                        <div class="row">
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <label for="countryFilter" class="form-label filter-title">Country</label>
+                                <select class="form-select" id="countryFilter">
+                                    <option value="">All Countries</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <label for="cityFilter" class="form-label filter-title">City</label>
+                                <select class="form-select" id="cityFilter" disabled>
+                                    <option value="">All Cities</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <label for="cinemaFilter" class="form-label filter-title">Cinema</label>
+                                <select class="form-select" id="cinemaFilter" disabled>
+                                    <option value="">All Cinemas</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h5 class="mb-3 mt-4">Select Date</h5>
+                    <div class="date-selector" id="dateSelector"></div>
+                    <h5 class="mb-3 mt-4 ">Available Showtimes</h5>
+                    <div class="cinema-selector d-none" id="cinemaSelector">
+                        <div class="cinema-item">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <h5 class="cinema-name">Cinema City - IMAX</h5>
+                                    <p class="cinema-address">123 Main Street, New York, NY 10001</p>
+                                </div>
+                            </div>
+                            <div class="time-selector mt-3">
+                                <div class="time-item">10:30 AM</div>
+                                <div class="time-item">1:15 PM</div>
+                                <div class="time-item">4:00 PM</div>
+                                <div class="time-item">7:30 PM</div>
+                                <div class="time-item">10:15 PM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
 </div>
+
 
 <!-- Modal xem trailer -->
 <div class="modal fade trailer-modal" id="trailerModal" tabindex="-1" aria-labelledby="trailerModalLabel" aria-hidden="true">
@@ -75,16 +144,72 @@
 
 @section Scripts {
     <script>
+        const urlGetAllCountries = '@Url.Action("GetAllCountries", "Movie")';
+        const urlGetCities = '@Url.Action("GetCitiesByCountry", "Movie")';
+        const urlGetCinemas = '@Url.Action("GetCinemasByCity", "Movie")';
         const isLoggedIn = @isLoggedIn.ToString().ToLower();
+
+        const dateSelector = document.getElementById("dateSelector");
+        const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        let dateSelected = null;
+
         $(document).ready(function () {
+            loadCountries($('#countryFilter'));
+            if (isLoggedIn) {
+                renderDateList();
+            }
             $('#bookNowBtn').click(function(e) {
                 if (!isLoggedIn) {
-                    // Chưa đăng nhập → redirect về login
                     const returnUrl = window.location.pathname + window.location.search;
                     window.location.href = `/Identity/Account/Login?returnUrl=${encodeURIComponent(returnUrl)}`;
                 }
             });
+
+            $('#countryFilter').on('change', function () {
+                const countryId = $(this).val();
+                $('#cityFilter').val("");
+                $('#cinemaFilter').val("");
+                loadCities($('#cityFilter'), countryId);
+                loadCinemas($('#cinemaFilter'));
+            });
+
+            $('#cityFilter').on('change', function () {
+                const cityId = $(this).val();
+                $('#cinemaFilter').val("");
+                loadCinemas($('#cinemaFilter'), cityId);
+            });
+
+            $('#cinemaFilter').on('change', function () {
+                checkShowtimeVisibility()
+            });
         });
+        const dateItems = document.querySelectorAll('.date-item');
+        dateItems.forEach(item => {
+            item.addEventListener('click', function() {
+                dateItems.forEach(date => date.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        const timeItems = document.querySelectorAll('.time-item');
+        timeItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const parent = this.closest('.cinema-item');
+                parent.querySelectorAll('.time-item').forEach(time => time.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        const cinemaItems = document.querySelectorAll('.cinema-item');
+        cinemaItems.forEach(item => {
+            item.addEventListener('click', function() {
+                cinemaItems.forEach(cinema => cinema.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
         function showTrailer(youtubeUrl) {
             const embedUrl = youtubeUrl.replace("watch?v=", "embed/");
             $('#trailerIframe').attr('src', embedUrl + '?autoplay=1');
@@ -97,5 +222,119 @@
             $('#trailerIframe').attr('src', '');
         }
 
+        function loadCountries(selectElement) {
+            $.ajax({
+                url: urlGetAllCountries,
+                type: 'GET',
+                success: function (data) {
+                    selectElement.val("");
+                    selectElement.find('option').not('[value=""]').remove();
+                    $.each(data, function (i, country) {
+                        selectElement.append($('<option>', {
+                            value: country.id,
+                            text: country.name,
+                        }));
+                    });
+                },
+                error: function () {
+                    toastr.error("Failed to load countries.");
+                }
+            });
+        }
+        function loadCities(selectElement, countryId = null) {
+            $.ajax({
+                url: urlGetCities,
+                type: 'GET',
+                data: {countryId: countryId},
+                success: function (data) {
+                    selectElement.val("");
+                    selectElement.find('option').not('[value=""]').remove();
+                    if(!countryId){
+                        selectElement.prop('disabled', true);
+                    }else{
+                        selectElement.prop('disabled', false);
+                    }
+                    $.each(data, function (i, city) {
+                        selectElement.append($('<option>', {
+                            value: city.id,
+                            text: city.name,
+                        }));
+                    });
+                },
+                error: function () {
+                    toastr.error("Failed to load Cities.");
+                }
+            });
+        }
+        function loadCinemas(selectElement, cityId = null) {
+            $.ajax({
+                url: urlGetCinemas,
+                type: 'GET',
+                data: {cityId: cityId},
+                success: function (data) {
+                    selectElement.val("");
+                    selectElement.find('option').not('[value=""]').remove();
+                    if(!cityId){
+                        selectElement.prop('disabled', true);
+                        return;
+                    }else{
+                        selectElement.prop('disabled', false);
+                    }
+                    $.each(data, function (i, cinema) {
+                        selectElement.append($('<option>', {
+                            value: cinema.id,
+                            text: cinema.name,
+                        }));
+                    });
+                },
+                error: function () {
+                    toastr.error("Failed to load Cinema.");
+                }
+            });
+        }
+
+        function renderDateList(startDate = new Date(), numberOfDays = 10) {
+            const dateSelector = document.getElementById("dateSelector");
+            dateSelector.innerHTML = "";
+
+            const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+            for (let i = 0; i <= numberOfDays; i++) {
+                const date = new Date(startDate);
+                date.setDate(startDate.getDate() + i);
+
+                const day = date.getDate();
+                const month = months[date.getMonth()];
+                const weekday = weekdays[date.getDay()];
+
+                const dateItem = `
+                    <div class="date-item" data-date="${date.toISOString().split('T')[0]}">
+                        <span class="date-day">${day}</span>
+                        <span class="date-month">${month}</span>
+                        <span class="date-weekday">${weekday}</span>
+                    </div>
+                `;
+                dateSelector.innerHTML += dateItem;
+            }
+            document.querySelectorAll('.date-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    document.querySelectorAll('.date-item').forEach(d => d.classList.remove('active'));
+                    this.classList.add('active');
+                    dateSelected = this.getAttribute('data-date');
+                    checkShowtimeVisibility();
+                });
+            });
+        }
+
+        function checkShowtimeVisibility (){
+            const cinemaSelected = $('#cinemaFilter').val();
+            if(cinemaSelected && dateSelected){
+                cinemaSelector.classList.remove('d-none');
+            } else {
+                cinemaSelector.classList.add('d-none');
+            }
+        }
     </script>
 }

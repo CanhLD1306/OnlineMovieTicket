@@ -1,5 +1,7 @@
-﻿@{
+﻿@using OnlineMovieTicket.DAL.Enum
+@{
     ViewData["Title"] = "User Management";
+    var genderValues = Enum.GetValues(typeof(Gender)).Cast<Gender>();
 }
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">User Management</h1>
@@ -15,6 +17,22 @@
             </div>
             <input type="text" id="searchTerm" class="form-control" placeholder="Search">
         </div>  
+    </div>
+    <div class="col-md-2">
+        <select id="genderFilter" class="form-control">
+            <option value="">All Gender</option>
+            @foreach (var gender in genderValues)
+            {
+                <option value="@(Convert.ToInt32(gender))">@gender</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select id="lockedFilter" class="form-control">
+            <option value="">All Status</option>
+            <option value="true">Locked</option>
+            <option value="false">Active</option>
+        </select>
     </div>
 </div>
 
@@ -48,5 +66,10 @@
 </div>
 
 @section Scripts {
-    
+    <script>
+        const urlGetUsers = '@Url.Action("GetUsers", "User", new { area = "Admin" })';
+        const urlGetUser = '@Url.Action("GetUser", "User", new { area = "Admin" })';
+        const urlLockOrUnlockUser = '@Url.Action("LockOrUnlockUser", "User", new { area = "Admin" })';
+    </script>
+    <script src="~/Admin/js/User.js" asp-append-version="true"></script>
 }

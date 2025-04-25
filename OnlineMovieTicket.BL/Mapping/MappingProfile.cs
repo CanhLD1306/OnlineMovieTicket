@@ -9,6 +9,7 @@ using OnlineMovieTicket.BL.DTOs.Seat;
 using OnlineMovieTicket.BL.DTOs.SeatType;
 using OnlineMovieTicket.BL.DTOs.Showtime;
 using OnlineMovieTicket.BL.DTOs.ShowtimeSeat;
+using OnlineMovieTicket.BL.DTOs.User;
 using OnlineMovieTicket.DAL.Models;
 
 namespace OnlineMovieTicket.BL.Mapping
@@ -72,6 +73,10 @@ namespace OnlineMovieTicket.BL.Mapping
             CreateMap<ShowtimeSeatDTO, ShowtimeSeat>()
                 .ForMember(dest => dest.Seat, opt => opt.Ignore())
                 .ForMember(dest => dest.Showtime, opt => opt.Ignore());
+            
+            CreateMap<ApplicationUser, UserDTO>()
+                .ForMember(dest => dest.IsLockedOut, opt => opt.MapFrom(src => src.LockoutEnd.HasValue && src.LockoutEnd.Value > DateTimeOffset.UtcNow));
+            
         }
     }
 }

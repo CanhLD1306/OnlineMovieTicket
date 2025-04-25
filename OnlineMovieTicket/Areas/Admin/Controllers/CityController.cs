@@ -10,12 +10,10 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
     public class CityController : BaseController
     {
         private readonly ICityService _cityService;
-        private readonly ICountryService _countryService;
         private readonly ILogger<CityController> _logger;
 
         public CityController(ICityService cityService, ICountryService countryService, ILogger<CityController> logger)
         {
-            _countryService = countryService;
             _cityService = cityService;
             _logger = logger;
         }
@@ -26,7 +24,7 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
             return View();
         }
 
-        [HttpGet("GetAllCities")]
+        [HttpGet("GetCitiesByCountry")]
         public async Task<IActionResult> GetCitiesByCountry(long countryId)
         {
             var cities = await _cityService.GetCitiesByCountryAsync(countryId);

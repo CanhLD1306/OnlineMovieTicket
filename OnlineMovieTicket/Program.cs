@@ -70,11 +70,14 @@ builder.Services.AddAuthentication()
         };
     });
 
-builder.Services.AddCors(options => {
-    options.AddPolicy("AllowSpecific", policy =>{
-        policy.WithOrigins("https://localhost:7019")
-                .AllowAnyMethod()
-                .AllowAnyHeader();
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecific", policy =>
+    {
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyMethod()
+              .AllowAnyHeader();
     });
 });
 
@@ -105,6 +108,8 @@ builder.Services.AddScoped<IShowtimeRepository, ShowtimeRepository>();
 builder.Services.AddScoped<IShowtimeService, ShowtimeService>();
 builder.Services.AddScoped<IShowtimeSeatRepository, ShowtimeSeatRepository>();
 builder.Services.AddScoped<IShowtimeSeatService, ShowtimeSeatService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddTransient<ICloudinaryService, CloudinaryService>();
 builder.Services.AddTransient<IFileUploadService, FileUploadService>();
@@ -120,13 +125,8 @@ builder.Services.AddAuthorization(options =>
 });
 
 var app = builder.Build();
+await SeedDataAsync(app);
 
-using (var scope = app.Services.CreateScope()) 
-{
-    var services = scope.ServiceProvider;
-    var seedManager = services.GetRequiredService<SeedManager>();
-    await seedManager.SeedAsync();
-}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -161,3 +161,15 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+
+
+async Task SeedDataAsync(WebApplication app)    
+{
+    using var scope = app.Services.CreateScope();
+    var services = scope.ServiceProvider;
+
+    var seedManager = services.GetRequiredService<SeedManager>();
+    await seedManager.SeedAsync();
+
+    Console.WriteLine("? Data Seeding Completed.");
+}

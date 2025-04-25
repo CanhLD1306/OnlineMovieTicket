@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "mssql3": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('serviceConnectorResourceGroupName')]/providers/Microsoft.Web/sites/OnlineMovieTicket/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsOnlineMovieTicketDbCont_704CE06266",
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/onlinemovieticketdbserver/databases/OnlineMovieTicket_db",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:OnlineMovieTicketDbContextConnection"
+    }
+  }
+}
