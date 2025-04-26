@@ -56,6 +56,7 @@ namespace OnlineMovieTicket.BL.Services
 
         public async Task<Response<CityDTO>> GetCityByIdAsync(long cityId)
         {
+            
             var city = await _cityRepository.GetCityByIdAsync(cityId);
 
             if(city != null){
@@ -71,6 +72,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     if(await _cityRepository.GetCityByNameAsync(cityDTO.Id,cityDTO.Name) != null){
                         return new Response(false, "City name already exists.");
                     }
@@ -102,6 +106,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     var city = await _cityRepository.GetCityByIdAsync(cityDTO.Id);
                     if(city == null){
                         return new Response(false, "City not found");
@@ -134,6 +141,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     var city = await _cityRepository.GetCityByIdAsync(cityId);
                     if(city == null){
                         return new Response(false, "City not found");
@@ -159,15 +169,3 @@ namespace OnlineMovieTicket.BL.Services
     }
 }
 
-
-// using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-// {
-//     try
-//     {
-        
-//     }
-//     catch (Exception)
-//     {
-        
-//     }
-// }

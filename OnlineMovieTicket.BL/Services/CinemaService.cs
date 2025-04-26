@@ -73,6 +73,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     if(await _cinemaRepository.GetCinemaByNameAsync(cinemaDTO.Id,cinemaDTO.Name) != null){
                         return new Response(false, "Cinema name already exists.");
                     }
@@ -102,6 +105,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     var cinema = await _cinemaRepository.GetCinemaByIdAsync(cinemaDTO.Id);
                     if(cinema == null){
                         return new Response(false, "Cinema not found");
@@ -130,6 +136,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     var cinema = await _cinemaRepository.GetCinemaByIdAsync(cinemaId);
                     if(cinema == null){
                         return new Response(false, "Cinema not found");
@@ -160,6 +169,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     var cinema = await _cinemaRepository.GetCinemaByIdAsync(cinemaId);
                     if(cinema == null){
                         return new Response(false, "Cinema not found");

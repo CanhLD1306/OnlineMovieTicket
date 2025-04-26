@@ -31,13 +31,8 @@
                 @if (!isAdmin)
                 {
                     <li>
-                        <a class="dropdown-item user-info" href="#">
+                        <a class="dropdown-item user-info" asp-controller="User" asp-action="Index">
                             <i class="bi bi-person-circle text-secondary"></i> Profile
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item user-info" href="#">
-                            <i class="bi bi-ticket-perforated"></i> My Tickets
                         </a>
                     </li>
                 }

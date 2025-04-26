@@ -76,6 +76,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     if (roomWithSeats.Seats == null || !roomWithSeats.Seats.Any())
                     {
                         return new Response(false, "You must configure the seating arrangement before submitting.");
@@ -150,6 +153,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     if (await _showtimeRepository.RoomHasFutureShotime(roomWithSeats.Room.Id))
                     {
                         return new Response(false, "Room has scheduled showtimes in the future. Cannot update room");
@@ -209,6 +215,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     if(await _showtimeRepository.RoomHasFutureShotime(roomId))
                     {
                         return new Response(false, "Room has scheduled showtimes in the future. Cannot delete room");
@@ -264,6 +273,12 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     if (await _showtimeRepository.RoomHasFutureShotime(roomId))
                     {
                         return new Response(false, "Room has scheduled showtimes in the future. Cannot change status room");

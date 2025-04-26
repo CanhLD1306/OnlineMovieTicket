@@ -1,0 +1,68 @@
+@model OnlineMovieTicket.BL.DTOs.User.UserDTO
+@using OnlineMovieTicket.DAL.Enum
+@{
+    var genderValues = Enum.GetValues(typeof(Gender)).Cast<Gender>();
+}
+<form id="profileForm" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-lg-4 mb-4 mb-lg-0">
+            <div class="text-center">
+                <div class="profile-picture-container">
+                    <img src="@(string.IsNullOrEmpty(Model.AvatarURL) ? Url.Content("~/Image/Profile.svg") : Model.AvatarURL)" 
+                    alt="Profile Picture" class="profile-picture" id="avatarPreview" />
+                </div>
+                <div class="d-grid gap-2">
+                    <label class="btn btn-outline-primary" asp-for="@Model.Image">
+                        <i class="bi bi-upload me-2"></i>Upload New Photo
+                    </label>
+                    <input asp-for="@Model.Image" type="file" class="d-none" id="Image" accept="image/*" onchange="previewImage(event, 'avatarPreview', 'avatarMessage')"/>
+                    <span asp-for="@Model.Image" id="avatarMessage" class="text-danger small"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <h3 class="section-title">Personal Information</h3>
+            <input type="hidden" asp-for="@Model.AvatarURL" value="@Model.AvatarURL" />
+            <div class="row mb-3">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <label asp-for="@Model.FirstName" class="form-label">First Name</label>
+                    <input asp-for="@Model.FirstName" type="text" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="@Model.LastName" class="form-label">Last Name</label>
+                    <input asp-for="@Model.LastName" type="text" class="form-control">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label asp-for="@Model.Email" class="form-label">Email Address</label>
+                <input asp-for="@Model.Email" type="email" class="form-control" readonly>
+            </div>
+            <div class="mb-3">
+                <label asp-for="@Model.Gender" class="form-label">Gender</label>
+                <select asp-for="@Model.Gender" class="form-select">
+                    <option value="">-- Select Gender --</option>
+                    @foreach (var gender in genderValues)
+                    {
+                        <option value="@(Convert.ToInt32(gender))">@gender</option>
+                    }
+                </select>
+            </div>
+            <div class="mb-3">
+                <label asp-for="@Model.PhoneNumber" class="form-label">Phone Number</label>
+                <input asp-for="@Model.PhoneNumber" type="number" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label asp-for="@Model.DateOfBirth" class="form-label">Date of Birth</label>
+                <input asp-for="@Model.DateOfBirth" type="date" class="form-control">
+            </div>
+            <div class="mb-4">
+                <label asp-for="@Model.Address" class="form-label">Address</label>
+                <textarea asp-for="@Model.Address"class="form-control" rows="3"></textarea>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</form>

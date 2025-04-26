@@ -40,5 +40,7 @@ namespace OnlineMovieTicket.BL.Interfaces
         Task<IdentityResult> UpdateUserAsync(ApplicationUser user, string firstName, string lastName, Gender gender, string? phoneNumber, string? address, DateTime? dateOfBirth);
         Task<ExternalLoginInfo?> GetExternalLoginInfoAsync();
         Task<Response<Guid>> GetUserId();
+        Task<Response<String>> GetUserEmailAsync();
+        Task<bool> IsAdminAsync();
     }
 }

@@ -76,6 +76,19 @@ namespace OnlineMovieTicket.BL.Mapping
             
             CreateMap<ApplicationUser, UserDTO>()
                 .ForMember(dest => dest.IsLockedOut, opt => opt.MapFrom(src => src.LockoutEnd.HasValue && src.LockoutEnd.Value > DateTimeOffset.UtcNow));
+
+            CreateMap<UserDTO, ApplicationUser>()
+                .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
+                .ForMember(dest => dest.SecurityStamp, opt => opt.Ignore())
+                .ForMember(dest => dest.ConcurrencyStamp, opt => opt.Ignore())
+                .ForMember(dest => dest.NormalizedEmail, opt => opt.Ignore())
+                .ForMember(dest => dest.NormalizedUserName, opt => opt.Ignore())
+                .ForMember(dest => dest.EmailConfirmed, opt => opt.Ignore())
+                .ForMember(dest => dest.PhoneNumberConfirmed, opt => opt.Ignore())
+                .ForMember(dest => dest.AccessFailedCount, opt => opt.Ignore())
+                .ForMember(dest => dest.TwoFactorEnabled, opt => opt.Ignore())
+                .ForMember(dest => dest.LockoutEnd, opt => opt.Ignore())
+                .ForMember(dest => dest.LockoutEnabled, opt => opt.Ignore());
             
         }
     }

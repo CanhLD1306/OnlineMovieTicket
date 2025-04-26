@@ -186,5 +186,28 @@ namespace OnlineMovieTicket.BL.Services
             }
             return new Response<Guid>(true, null, userId);
         }
+
+        public async Task<bool> IsAdminAsync()
+        {
+            var userIdString = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(userIdString);
+            return await _userManager.IsInRoleAsync(user, "Admin");
+        }
+
+        public async Task<Response<string>> GetUserEmailAsync()
+        {
+            var email = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Email);
+            if(string.IsNullOrEmpty(email))
+            {
+                return new Response<string>(false, "Unauthorized", null);
+            }
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                return new Response<string>(false, "User not found", null);
+            }
+            return new Response<string>(true, null, email);
+        }
     }
 }

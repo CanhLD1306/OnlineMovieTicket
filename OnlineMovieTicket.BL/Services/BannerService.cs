@@ -35,6 +35,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     var banner = await _bannerRepository.GetBannerByIdAsync(bannerId);
                     
                     if(banner == null){
@@ -72,6 +75,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     if (bannerDTO.Image == null)
                     {
                         return new Response(false, "Please upload image!");
@@ -121,6 +127,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     var banner = await _bannerRepository.GetBannerByIdAsync(bannerId);
                     if(banner == null){
                         return new Response(false, "Banner not found");
@@ -183,6 +192,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     var banner = await _bannerRepository.GetBannerByIdAsync(bannerDTO.Id);
                     if(banner == null){
                         return new Response(false, "Banner not found");

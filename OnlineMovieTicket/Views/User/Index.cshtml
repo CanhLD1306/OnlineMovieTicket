@@ -1,0 +1,305 @@
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<section class="page-header">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h1 class="display-4 fw-bold mb-4">My Profile</h1>
+                <p class="lead">Manage your account information and view your tickets</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="profile-container">
+        <ul class="nav nav-tabs profile-tabs" id="profileTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="true">
+                    <i class="bi bi-person me-2"></i>Profile
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="password-tab" data-bs-toggle="tab" data-bs-target="#password" type="button" role="tab" aria-controls="password" aria-selected="false">
+                    <i class="bi bi-pass me-2"></i>Change Password
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tickets-tab" data-bs-toggle="tab" data-bs-target="#tickets" type="button" role="tab" aria-controls="tickets" aria-selected="false">
+                    <i class="bi bi-ticket-perforated me-2"></i>My Tickets
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="profileTabsContent">
+            <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="profile-content" id="profileInformation">
+                    
+                </div>
+            </div>
+            <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
+                <div class="profile-content">
+                    <form id="changePasswordForm">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <h3 class="section-title">Change Password</h3>
+                                <div class="mb-3">
+                                        <label for="newPassword" class="form-label">New Password</label>
+                                        <input type="password" class="form-control" id="newPassword">
+                                </div>
+                                <div class="mb-3">
+                                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                                        <input type="password" class="form-control" id="confirmPassword">
+                                </div>
+                                <div class="d-flex justify-content-start">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Tickets Tab -->
+            <div class="tab-pane fade" id="tickets" role="tabpanel" aria-labelledby="tickets-tab">
+                <div class="profile-content">
+                    <div class="ticket-filter">
+                        <div class="btn-group" role="group" aria-label="Ticket filter">
+                            <input type="radio" class="btn-check" name="ticketFilter" id="allTickets" checked>
+                            <label class="btn btn-outline-primary" for="allTickets">All Tickets</label>
+                            
+                            <input type="radio" class="btn-check" name="ticketFilter" id="upcomingTickets">
+                            <label class="btn btn-outline-primary" for="upcomingTickets">Upcoming</label>
+                            
+                            <input type="radio" class="btn-check" name="ticketFilter" id="pastTickets">
+                            <label class="btn btn-outline-primary" for="pastTickets">Past</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Upcoming Ticket -->
+                    <div class="ticket-card" data-ticket-type="upcoming">
+                        <div class="ticket-header">
+                            <h5 class="mb-0">Booking #OMT12345</h5>
+                            <span class="ticket-status upcoming">Upcoming</span>
+                        </div>
+                        <div class="ticket-body">
+                            <div class="ticket-movie">
+                                <div class="ticket-poster">
+                                    <img src="" alt="Movie Poster">
+                                </div>
+                                <div class="ticket-info">
+                                    <h5>Deadpool & Wolverine</h5>
+                                    <div class="ticket-meta">
+                                        <div class="ticket-meta-item">
+                                            <i class="bi bi-calendar3"></i>
+                                            <span>July 26, 2024</span>
+                                        </div>
+                                        <div class="ticket-meta-item">
+                                            <i class="bi bi-clock"></i>
+                                            <span>7:30 PM</span>
+                                        </div>
+                                        <div class="ticket-meta-item">
+                                            <i class="bi bi-film"></i>
+                                            <span>Cinema City - Hall 1 (IMAX)</span>
+                                        </div>
+                                    </div>
+                                    <p class="mb-2">Seats:</p>
+                                    <div class="ticket-seats">
+                                        <span class="ticket-seat">G10</span>
+                                        <span class="ticket-seat">G11</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ticket-actions">
+                                <div class="ticket-price">
+                                    Total: $27.98
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Past Ticket -->
+                    <div class="ticket-card" data-ticket-type="past">
+                        <div class="ticket-header expired">
+                            <h5 class="mb-0">Booking #OMT12344</h5>
+                            <span class="ticket-status expired">Expired</span>
+                        </div>
+                        <div class="ticket-body">
+                            <div class="ticket-movie">
+                                <div class="ticket-poster">
+                                    <img src="" alt="Movie Poster">
+                                </div>
+                                <div class="ticket-info">
+                                    <h5>Dune: Part Two</h5>
+                                    <div class="ticket-meta">
+                                        <div class="ticket-meta-item">
+                                            <i class="bi bi-calendar3"></i>
+                                            <span>March 15, 2024</span>
+                                        </div>
+                                        <div class="ticket-meta-item">
+                                            <i class="bi bi-clock"></i>
+                                            <span>6:00 PM</span>
+                                        </div>
+                                        <div class="ticket-meta-item">
+                                            <i class="bi bi-film"></i>
+                                            <span>MoviePlex - Downtown</span>
+                                        </div>
+                                    </div>
+                                    <p class="mb-2">Seats:</p>
+                                    <div class="ticket-seats">
+                                        <span class="ticket-seat">D5</span>
+                                        <span class="ticket-seat">D6</span>
+                                        <span class="ticket-seat">D7</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ticket-actions">
+                                <div class="ticket-price">
+                                    Total: $38.97
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Past Ticket -->
+                    <div class="ticket-card" data-ticket-type="past">
+                        <div class="ticket-header expired">
+                            <h5 class="mb-0">Booking #OMT12343</h5>
+                            <span class="ticket-status expired">Expired</span>
+                        </div>
+                        <div class="ticket-body">
+                            <div class="ticket-movie">
+                                <div class="ticket-poster">
+                                    <img src="" alt="Movie Poster">
+                                </div>
+                                <div class="ticket-info">
+                                    <h5>Avengers: Endgame</h5>
+                                    <div class="ticket-meta">
+                                        <div class="ticket-meta-item">
+                                            <i class="bi bi-calendar3"></i>
+                                            <span>April 30, 2023</span>
+                                        </div>
+                                        <div class="ticket-meta-item">
+                                            <i class="bi bi-clock"></i>
+                                            <span>8:15 PM</span>
+                                        </div>
+                                        <div class="ticket-meta-item">
+                                            <i class="bi bi-film"></i>
+                                            <span>StarCinemas - Mall of Entertainment</span>
+                                        </div>
+                                    </div>
+                                    <p class="mb-2">Seats:</p>
+                                    <div class="ticket-seats">
+                                        <span class="ticket-seat">J12</span>
+                                        <span class="ticket-seat">J13</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ticket-actions">
+                                <div class="ticket-price">
+                                    Total: $25.98
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="no-tickets d-none">
+                        <i class="bi bi-ticket-perforated"></i>
+                        <h3 class="mb-3">No Tickets Found</h3>
+                        <p class="text-muted mb-4">You haven't booked any tickets yet.</p>
+                        <a href="movies.html" class="btn btn-primary">
+                            <i class="bi bi-film me-2"></i>Browse Movies
+                        </a>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const urlGetProfile= '@Url.Action("GetProfile", "User")';
+        const urlUploadProfile= '@Url.Action("UploadProfile", "User")';
+
+        $(document).ready(function () {
+            loadProfile();
+            $(document).on('submit', '#profileForm', function (e) {
+                e.preventDefault();
+                if (!$(this).valid()) {
+                    return;
+                }
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                var form = $('#profileForm')[0];
+                var formData = new FormData(form);
+                $.ajax({
+                    url: urlUploadProfile,
+                    type: 'POST',
+                    contentType: false,
+                    processData: false,
+                    data: formData,
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            setTimeout(function () {
+                                location.reload();
+                            }, 2000);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('There was an error processing your request: ' + error);
+                    }
+                });
+            });
+        });
+        function loadProfile (){
+            $.ajax({
+                url: urlGetProfile,
+                type: 'GET',
+                success: function (response) {
+                    $('#profileInformation').html(response);
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('There was an error processing your request: ' + error);
+                }
+            });
+        }
+
+        function previewImage(event, previewId, messageSpanId) {
+            const preview = document.getElementById(previewId);
+            const messageSpan = document.getElementById(messageSpanId);
+            const file = event.target.files[0];
+
+            messageSpan.textContent = "";
+            messageSpan.style.display = "none";
+
+            if (file) {
+                const validImageTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+
+                if (!validImageTypes.includes(file.type)) {
+                    messageSpan.textContent = "Only image files (JPG, PNG, GIF, WEBP) are allowed";
+                    messageSpan.style.display = "block";
+                    event.target.value = "";
+                    preview.src = "#";
+                    preview.style.display = "none";
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = "block";
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "#";
+                preview.style.display = "none";
+            }
+        }
+    </script>
+}

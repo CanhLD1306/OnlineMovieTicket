@@ -66,6 +66,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     var seatType = await _seatTypeRepository.GetSeatTypeByIdAsync(seatTypeDTO.Id);
                     if (seatType == null)
                     {

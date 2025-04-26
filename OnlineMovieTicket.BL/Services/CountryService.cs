@@ -70,6 +70,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     if(await _countryRepository.GetCountryByNameAsync(countryDTO.Id,countryDTO.Name) != null){
                         return new Response(false, "Country name already exists.");
                     }
@@ -101,6 +104,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     var country = await _countryRepository.GetCountryByIdAsync(countryDTO.Id);
                     if(country == null){
                         return new Response(false, "Country not found");
@@ -133,6 +139,9 @@ namespace OnlineMovieTicket.BL.Services
             {
                 try
                 {
+                    if(!await _authService.IsAdminAsync()){
+                        return new Response(false, "You do not have permissions");
+                    }
                     var country = await _countryRepository.GetCountryByIdAsync(countryId);
                     if(country == null){
                         return new Response(false, "Country not found");
