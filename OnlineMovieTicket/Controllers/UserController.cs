@@ -56,6 +56,13 @@
                 return Json(new {success = true, message = result.Message});
             }
 
+            [HttpGet("ChangePassword")]
+            public IActionResult ChangePassword()
+            {
+                var model = new ChangePasswordDTO();
+                return PartialView("_ChangePassword", model);
+            }
+
             [HttpPost("ChangePassword")]
             [ValidateAntiForgeryToken]
             public async Task<IActionResult> ChangePassword([FromForm] ChangePasswordDTO changePassword)

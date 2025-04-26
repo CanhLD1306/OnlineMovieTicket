@@ -55,7 +55,7 @@ namespace OnlineMovieTicket.BL.Services
                 if(!result.Succeeded || updateUser == null){
                     return new Response  (false, "Change password fail!");
                 }
-                return new Response  (false, "Change password successfull!");
+                return new Response  (true, "Change password successfull!");
             }
             catch (Exception)
             {

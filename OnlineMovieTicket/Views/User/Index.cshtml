@@ -23,7 +23,7 @@
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="password-tab" data-bs-toggle="tab" data-bs-target="#password" type="button" role="tab" aria-controls="password" aria-selected="false">
-                    <i class="bi bi-pass me-2"></i>Change Password
+                    <i class="bi bi-key me-2"></i>Change Password
                 </button>
             </li>
             <li class="nav-item" role="presentation">
@@ -40,25 +40,8 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
-                <div class="profile-content">
-                    <form id="changePasswordForm">
-                        <div class="row">
-                            <div class="col-lg-4">
-                                <h3 class="section-title">Change Password</h3>
-                                <div class="mb-3">
-                                        <label for="newPassword" class="form-label">New Password</label>
-                                        <input type="password" class="form-control" id="newPassword">
-                                </div>
-                                <div class="mb-3">
-                                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                                        <input type="password" class="form-control" id="confirmPassword">
-                                </div>
-                                <div class="d-flex justify-content-start">
-                                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                <div class="profile-content" id="changePassword">
+                    
                 </div>
             </div>
             <!-- Tickets Tab -->
@@ -119,91 +102,6 @@
                         </div>
                     </div>
                     
-                    <!-- Past Ticket -->
-                    <div class="ticket-card" data-ticket-type="past">
-                        <div class="ticket-header expired">
-                            <h5 class="mb-0">Booking #OMT12344</h5>
-                            <span class="ticket-status expired">Expired</span>
-                        </div>
-                        <div class="ticket-body">
-                            <div class="ticket-movie">
-                                <div class="ticket-poster">
-                                    <img src="" alt="Movie Poster">
-                                </div>
-                                <div class="ticket-info">
-                                    <h5>Dune: Part Two</h5>
-                                    <div class="ticket-meta">
-                                        <div class="ticket-meta-item">
-                                            <i class="bi bi-calendar3"></i>
-                                            <span>March 15, 2024</span>
-                                        </div>
-                                        <div class="ticket-meta-item">
-                                            <i class="bi bi-clock"></i>
-                                            <span>6:00 PM</span>
-                                        </div>
-                                        <div class="ticket-meta-item">
-                                            <i class="bi bi-film"></i>
-                                            <span>MoviePlex - Downtown</span>
-                                        </div>
-                                    </div>
-                                    <p class="mb-2">Seats:</p>
-                                    <div class="ticket-seats">
-                                        <span class="ticket-seat">D5</span>
-                                        <span class="ticket-seat">D6</span>
-                                        <span class="ticket-seat">D7</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="ticket-actions">
-                                <div class="ticket-price">
-                                    Total: $38.97
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Past Ticket -->
-                    <div class="ticket-card" data-ticket-type="past">
-                        <div class="ticket-header expired">
-                            <h5 class="mb-0">Booking #OMT12343</h5>
-                            <span class="ticket-status expired">Expired</span>
-                        </div>
-                        <div class="ticket-body">
-                            <div class="ticket-movie">
-                                <div class="ticket-poster">
-                                    <img src="" alt="Movie Poster">
-                                </div>
-                                <div class="ticket-info">
-                                    <h5>Avengers: Endgame</h5>
-                                    <div class="ticket-meta">
-                                        <div class="ticket-meta-item">
-                                            <i class="bi bi-calendar3"></i>
-                                            <span>April 30, 2023</span>
-                                        </div>
-                                        <div class="ticket-meta-item">
-                                            <i class="bi bi-clock"></i>
-                                            <span>8:15 PM</span>
-                                        </div>
-                                        <div class="ticket-meta-item">
-                                            <i class="bi bi-film"></i>
-                                            <span>StarCinemas - Mall of Entertainment</span>
-                                        </div>
-                                    </div>
-                                    <p class="mb-2">Seats:</p>
-                                    <div class="ticket-seats">
-                                        <span class="ticket-seat">J12</span>
-                                        <span class="ticket-seat">J13</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="ticket-actions">
-                                <div class="ticket-price">
-                                    Total: $25.98
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
                     <div class="no-tickets d-none">
                         <i class="bi bi-ticket-perforated"></i>
                         <h3 class="mb-3">No Tickets Found</h3>
@@ -221,9 +119,20 @@
     <script>
         const urlGetProfile= '@Url.Action("GetProfile", "User")';
         const urlUploadProfile= '@Url.Action("UploadProfile", "User")';
+        const urlChangePassword = '@Url.Action("ChangePassword", "User")';
 
         $(document).ready(function () {
             loadProfile();
+            $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                const targetId = $(e.target).data('bsTarget');
+                localStorage.setItem('selectedTab', targetId);
+                if (targetId === '#profile') {
+                    loadProfile();
+                } else if (targetId === '#password') {
+                    loadChangePassword();
+                }
+            });
+
             $(document).on('submit', '#profileForm', function (e) {
                 e.preventDefault();
                 if (!$(this).valid()) {
@@ -256,6 +165,37 @@
                     }
                 });
             });
+
+            $(document).on('submit', '#changePasswordForm', function (e) {
+                e.preventDefault();
+                if (!$(this).valid()) {
+                    return;
+                }
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                var formData = $(this).serialize();
+                $.ajax({
+                    url: urlChangePassword,
+                    type: 'POST',
+                    data: formData,
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            loadChangePassword();
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('There was an error processing your request: ' + error);
+                    }
+                });
+            });
+
+
+        
         });
         function loadProfile (){
             $.ajax({
@@ -263,6 +203,38 @@
                 type: 'GET',
                 success: function (response) {
                     $('#profileInformation').html(response);
+                    $.validator.unobtrusive.parse('#profileForm');
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('There was an error processing your request: ' + error);
+                }
+            });
+        }
+
+        function loadChangePassword(){
+            $.ajax({
+                url: urlChangePassword,
+                type: 'GET',
+                success: function (response) {
+                    $('#changePassword').html(response);
+                    $.validator.unobtrusive.parse('#changePasswordForm');
+                    const inputPassword = document.getElementById("inputPassword");
+                    const reqLength = document.getElementById("req-length");
+                    const reqUppercase = document.getElementById("req-uppercase");
+                    const reqLowercase = document.getElementById("req-lowercase");
+                    const reqNumber = document.getElementById("req-number");
+                    const reqSpecial = document.getElementById("req-special");
+
+                    if (inputPassword) {
+                        inputPassword.addEventListener("input", function () {
+                            const password = inputPassword.value;
+                            reqLength.classList.toggle("text-success", password.length >= 6);
+                            reqUppercase.classList.toggle("text-success", /[A-Z]/.test(password));
+                            reqLowercase.classList.toggle("text-success", /[a-z]/.test(password));
+                            reqNumber.classList.toggle("text-success", /\d/.test(password));
+                            reqSpecial.classList.toggle("text-success", /[^A-Za-z0-9]/.test(password));
+                        });
+                    }
                 },
                 error: function (xhr, status, error) {
                     toastr.error('There was an error processing your request: ' + error);
