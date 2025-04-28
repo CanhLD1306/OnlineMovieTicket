@@ -49,69 +49,22 @@
                 <div class="profile-content">
                     <div class="ticket-filter">
                         <div class="btn-group" role="group" aria-label="Ticket filter">
-                            <input type="radio" class="btn-check" name="ticketFilter" id="allTickets" checked>
+                            <input type="radio" class="btn-check" name="ticketFilter" id="allTickets" value="" checked>
                             <label class="btn btn-outline-primary" for="allTickets">All Tickets</label>
                             
-                            <input type="radio" class="btn-check" name="ticketFilter" id="upcomingTickets">
+                            <input type="radio" class="btn-check" name="ticketFilter" id="upcomingTickets" value="true">
                             <label class="btn btn-outline-primary" for="upcomingTickets">Upcoming</label>
                             
-                            <input type="radio" class="btn-check" name="ticketFilter" id="pastTickets">
+                            <input type="radio" class="btn-check" name="ticketFilter" id="pastTickets" value="false">
                             <label class="btn btn-outline-primary" for="pastTickets">Past</label>
                         </div>
                     </div>
-                    
-                    <!-- Upcoming Ticket -->
-                    <div class="ticket-card" data-ticket-type="upcoming">
-                        <div class="ticket-header">
-                            <h5 class="mb-0">Booking #OMT12345</h5>
-                            <span class="ticket-status upcoming">Upcoming</span>
-                        </div>
-                        <div class="ticket-body">
-                            <div class="ticket-movie">
-                                <div class="ticket-poster">
-                                    <img src="" alt="Movie Poster">
-                                </div>
-                                <div class="ticket-info">
-                                    <h5>Deadpool & Wolverine</h5>
-                                    <div class="ticket-meta">
-                                        <div class="ticket-meta-item">
-                                            <i class="bi bi-calendar3"></i>
-                                            <span>July 26, 2024</span>
-                                        </div>
-                                        <div class="ticket-meta-item">
-                                            <i class="bi bi-clock"></i>
-                                            <span>7:30 PM</span>
-                                        </div>
-                                        <div class="ticket-meta-item">
-                                            <i class="bi bi-film"></i>
-                                            <span>Cinema City - Hall 1 (IMAX)</span>
-                                        </div>
-                                    </div>
-                                    <p class="mb-2">Seats:</p>
-                                    <div class="ticket-seats">
-                                        <span class="ticket-seat">G10</span>
-                                        <span class="ticket-seat">G11</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="ticket-actions">
-                                <div class="ticket-price">
-                                    Total: $27.98
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="no-tickets d-none">
-                        <i class="bi bi-ticket-perforated"></i>
-                        <h3 class="mb-3">No Tickets Found</h3>
-                        <p class="text-muted mb-4">You haven't booked any tickets yet.</p>
-                        <a href="movies.html" class="btn btn-primary">
-                            <i class="bi bi-film me-2"></i>Browse Movies
-                        </a>
+                    <div id="ticketList">
+
                     </div>
                 </div>
             </div>
+        </div>
     </div>
 </div>
 
@@ -120,6 +73,8 @@
         const urlGetProfile= '@Url.Action("GetProfile", "User")';
         const urlUploadProfile= '@Url.Action("UploadProfile", "User")';
         const urlChangePassword = '@Url.Action("ChangePassword", "User")';
+        const urlGetTickets = '@Url.Action("GetTickets", "User")';
+        let filterValue = "";
 
         $(document).ready(function () {
             loadProfile();
@@ -130,7 +85,17 @@
                     loadProfile();
                 } else if (targetId === '#password') {
                     loadChangePassword();
+                } else if (targetId === '#tickets') {
+                    filterValue = "";
+                    $('input[name="ticketFilter"]').prop('checked', false);
+                    $('#allTickets').prop('checked', true);
+                    loadTickets(5, filterValue)
                 }
+            });
+
+            $('input[name="ticketFilter"]').change(function () {
+                filterValue = $(this).val();
+                loadTickets(5, filterValue);
             });
 
             $(document).on('submit', '#profileForm', function (e) {
@@ -271,6 +236,28 @@
             } else {
                 preview.src = "#";
                 preview.style.display = "none";
+            }
+        }
+
+        function loadTickets(maxRecord, isUpcoming) {
+            $.ajax({
+                url: urlGetTickets,
+                type: 'GET',
+                data: {maxRecord: maxRecord, isUpcoming: isUpcoming},
+                success: function (response) {
+                    $('#ticketList').html(response);
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('There was an error processing your request: ' + error);
+                }
+            });
+        }
+
+        function loadMoreTickets() {
+            var totalCount = parseInt(document.getElementById('totalCount').value);
+            var currentCount = parseInt(document.getElementById('currentCount').value);
+            if(currentCount < totalCount){
+                loadTickets(currentCount + 5,filterValue)
             }
         }
     </script>

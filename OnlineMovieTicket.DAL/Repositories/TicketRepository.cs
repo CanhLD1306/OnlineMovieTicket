@@ -58,18 +58,40 @@ namespace OnlineMovieTicket.DAL.Repositories
             return (tickets, totalCount, filterCount);
         }
 
-        public async Task<IEnumerable<Ticket>?> GetTicketsByUser(Guid userId, int maxRecord)
+        public async Task<(IEnumerable<Ticket>? tickets, int totalCount)> GetTicketsByUser(Guid userId, int maxRecord, bool? isUpcoming)
         {
-            var tickets = await _context.Tickets
+            var query = _context.Tickets
                             .Include(t => t.ShowtimeSeat)
                             .ThenInclude(ss => ss.Showtime)
-                            .ThenInclude(st => st.Movie)
+                                .ThenInclude(st => st.Movie)
+                            .Include(t => t.ShowtimeSeat)
+                            .ThenInclude(ss => ss.Showtime)
+                                .ThenInclude(st => st.Room)
+                                    .ThenInclude(r => r.Cinema)
+                            .Include(t => t.ShowtimeSeat)
+                            .ThenInclude(ss => ss.Seat)
                             .Where(t => t.CreatedBy == userId && !t.IsDeleted)
-                            .OrderByDescending(t => t.PurchaseDate)
-                            .Take(maxRecord)
-                            .ToListAsync();
+                            .AsQueryable();
+            var totalCount = await query.CountAsync();
 
-            return tickets;
+            if (isUpcoming.HasValue)
+            {
+                if (isUpcoming.Value)
+                {
+                    query = query.Where(t => t.ShowtimeSeat.Showtime.StartTime > DateTime.Now);  // Upcoming tickets
+                }
+                else
+                {
+                    query = query.Where(t => t.ShowtimeSeat.Showtime.StartTime <= DateTime.Now);  // Past tickets
+                }
+            }
+
+            var tickets = await query
+                                .OrderByDescending(t => t.PurchaseDate)
+                                .Take(maxRecord)
+                                .ToListAsync();
+
+            return (tickets, totalCount);
         }
     }
 }

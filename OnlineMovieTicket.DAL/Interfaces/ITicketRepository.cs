@@ -10,7 +10,7 @@ namespace OnlineMovieTicket.DAL.Interfaces
         int pageSize, 
         string sortBy, 
         bool isDescending);
-        Task<IEnumerable<Ticket>?> GetTicketsByUser(Guid userId, int maxRecord);
+        Task<(IEnumerable<Ticket>? tickets, int totalCount)> GetTicketsByUser(Guid userId, int maxRecord, bool? isUpcoming);
         Task CreateTicketsAsync(IEnumerable<Ticket> tickets);
     }
 }

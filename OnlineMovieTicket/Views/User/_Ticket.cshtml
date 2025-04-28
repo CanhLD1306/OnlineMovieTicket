@@ -1,0 +1,67 @@
+@model OnlineMovieTicket.BL.DTOs.Ticket.ListTicketForUser
+
+@if(Model == null || !Model.Tickets!.Any())
+{
+    <div class="no-tickets">
+        <i class="bi bi-ticket-perforated"></i>
+        <h3 class="mb-3">No Tickets Found</h3>
+        <p class="text-muted mb-4">You haven't booked any tickets yet.</p>
+    </div>
+}else{
+    @foreach(var ticket in Model.Tickets!)
+    {
+        var isUpcoming = ticket.StartTime > DateTime.Now;
+        <input type="hidden" id="totalCount" value="@Model.TotalCount" readonly class="form-control" />
+        <input type="hidden" id="currentCount" value="@Model.Tickets.Count()" readonly class="form-control mt-2" />
+        <div class="ticket-card" data-ticket-type="@(isUpcoming ? "upcoming" : "past")">
+            <div class="ticket-header @(isUpcoming ? "" : "expired")">
+                <h5 class="mb-0">Booking #@ticket.TicketCode</h5>
+                <span class="ticket-status @(isUpcoming ? "upcoming" : "expired")">
+                    @(isUpcoming ? "Upcoming" : "Expired")
+                </span>
+            </div>
+            <div class="ticket-body">
+                <div class="ticket-movie">
+                    <div class="ticket-poster">
+                        <img src="@ticket.MoviePoster" alt="Movie Poster">
+                    </div>
+                    <div class="ticket-info">
+                        <h5>@ticket.MovieTitle</h5>
+                        <div class="ticket-meta">
+                            <div class="ticket-meta-item">
+                                <i class="bi bi-calendar3"></i>
+                                <span>@ticket.StartTime.ToString("MMMM dd, yyyy")</span>
+                            </div>
+                            <div class="ticket-meta-item">
+                                <i class="bi bi-clock"></i>
+                                <span>@ticket.StartTime.ToString("hh:mm tt")</span>
+                            </div>
+                            <div class="ticket-meta-item">
+                                <i class="bi bi-film"></i>
+                                <span>@ticket.Cinema - @ticket.Room</span>
+                            </div>
+                        </div>
+                        <p class="mb-2">Seat:</p>
+                        <div class="ticket-seats">
+                            <span class="ticket-seat">
+                                @((char)('A' + ticket.RowIndex))@ticket.ColIndex
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket-actions">
+                    <div class="ticket-price">
+                        Total: $@ticket.Price.ToString("0.00")
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    if(Model.TotalCount != Model.Tickets.Count())
+    {
+        <div class="text-center">
+            <button id="loadMoreBtn" class="btn btn-primary" onclick="loadMoreTickets()">Load More</button>
+        </div>
+    }
+    
+}

@@ -2,6 +2,7 @@ using System.Transactions;
 using AutoMapper;
 using OnlineMovieTicket.BL.DTOs;
 using OnlineMovieTicket.BL.DTOs.ShowtimeSeat;
+using OnlineMovieTicket.BL.DTOs.Ticket;
 using OnlineMovieTicket.BL.Interfaces;
 using OnlineMovieTicket.DAL.Interfaces;
 using OnlineMovieTicket.DAL.Models;
@@ -72,6 +73,19 @@ namespace OnlineMovieTicket.BL.Services
                 }
             }
 
+        }
+
+        public async Task<ListTicketForUser> GetTicketsForUser(int maxRecord, bool? isUpcoming)
+        {
+            var (tickets, totalCount) = await _ticketRepository.GetTicketsByUser(
+                                                (await _authService.GetUserId()).Data,
+                                                maxRecord,
+                                                isUpcoming);
+            var ticketsDTO = _mapper.Map<List<TicketForUserDTO>>(tickets);
+            return new ListTicketForUser{
+                Tickets = ticketsDTO,
+                TotalCount = totalCount
+            };
         }
 
         private string GenerateTicketCode(int length = 4)

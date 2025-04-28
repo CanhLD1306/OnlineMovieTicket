@@ -9,6 +9,7 @@ using OnlineMovieTicket.BL.DTOs.Seat;
 using OnlineMovieTicket.BL.DTOs.SeatType;
 using OnlineMovieTicket.BL.DTOs.Showtime;
 using OnlineMovieTicket.BL.DTOs.ShowtimeSeat;
+using OnlineMovieTicket.BL.DTOs.Ticket;
 using OnlineMovieTicket.BL.DTOs.User;
 using OnlineMovieTicket.DAL.Models;
 
@@ -98,6 +99,43 @@ namespace OnlineMovieTicket.BL.Mapping
                 .ForMember(dest => dest.Showtimes, opt => opt.MapFrom(src => src.Showtimes));
 
             CreateMap<ShowtimeQueryModel, ShowtimeQueryModelDTO>();
+
+            CreateMap<Ticket, TicketForUserDTO>()
+                .ForMember(dest => dest.MoviePoster, opt => opt.MapFrom(
+                                                    src => src.ShowtimeSeat != null 
+                                                    && src.ShowtimeSeat.Showtime != null 
+                                                    && src.ShowtimeSeat.Showtime.Movie != null
+                                                    ? src.ShowtimeSeat.Showtime.Movie.PosterURL : string.Empty))
+                .ForMember(dest => dest.MovieTitle, opt => opt.MapFrom(
+                                                    src => src.ShowtimeSeat != null 
+                                                    && src.ShowtimeSeat.Showtime != null 
+                                                    && src.ShowtimeSeat.Showtime.Movie != null
+                                                    ? src.ShowtimeSeat.Showtime.Movie.Title : string.Empty))
+                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(
+                                                    src => src.ShowtimeSeat != null 
+                                                    && src.ShowtimeSeat.Showtime != null 
+                                                    ? src.ShowtimeSeat.Showtime.StartTime : (DateTime?) null))
+                .ForMember(dest => dest.Room, opt => opt.MapFrom(
+                                                    src => src.ShowtimeSeat != null 
+                                                    && src.ShowtimeSeat.Showtime != null 
+                                                    && src.ShowtimeSeat.Showtime.Room != null
+                                                    ? src.ShowtimeSeat.Showtime.Room.Name : string.Empty))
+
+                .ForMember(dest => dest.Cinema, opt => opt.MapFrom(
+                                                    src => src.ShowtimeSeat != null 
+                                                    && src.ShowtimeSeat.Showtime != null 
+                                                    && src.ShowtimeSeat.Showtime.Room != null
+                                                    && src.ShowtimeSeat.Showtime.Room.Cinema != null
+                                                    ? src.ShowtimeSeat.Showtime.Room.Cinema.Name : string.Empty))
+                .ForMember(dest => dest.RowIndex, opt => opt.MapFrom(
+                                                    src => src.ShowtimeSeat != null 
+                                                    && src.ShowtimeSeat.Seat != null
+                                                    ? src.ShowtimeSeat.Seat.RowIndex : (int?)null))
+                .ForMember(dest => dest.ColIndex, opt => opt.MapFrom(
+                                                    src => src.ShowtimeSeat != null 
+                                                    && src.ShowtimeSeat.Seat != null
+                                                    ? src.ShowtimeSeat.Seat.ColumnIndex : (int?)null));
+                                                    
         }
     }
 }

@@ -14,11 +14,14 @@
         {
             private readonly ILogger<MovieController> _logger;
             private readonly IUserService _userService;
+            private readonly ITicketService _ticketService;
 
             public UserController(
+                ITicketService ticketService,
                 IUserService userService,
                 ILogger<MovieController> logger)
             {
+                _ticketService = ticketService;
                 _userService = userService;
                 _logger = logger;
             }
@@ -78,5 +81,11 @@
                 return Json(new {success = true, message = result.Message});
             }
 
+            [HttpGet("GetTickets")]
+            public async Task<IActionResult> GetTickets(int maxRecord, bool? isUpcoming)
+            {
+                var results = await _ticketService.GetTicketsForUser(maxRecord, isUpcoming);
+                return PartialView("_Ticket", results);
+            }
         }
     }
