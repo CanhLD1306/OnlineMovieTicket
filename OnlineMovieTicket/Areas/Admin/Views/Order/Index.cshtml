@@ -1,1 +1,63 @@
-﻿<h1>Order</h1>
+﻿@{
+    ViewData["Title"] = "Order Management";
+}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Order Management</h1>
+</div>
+<div class="row mb-3">
+    <div class="col-md-3">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="fas fa-search"></i>
+                </span>
+            </div>
+            <input type="text" id="searchTerm" class="form-control" placeholder="Search by Title">
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="fas fa-calendar-alt"></i>
+                </span>
+            </div>
+            <input type="date" id="startDate" class="form-control" placeholder="Start Date">
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="fas fa-calendar-alt"></i>
+                </span>
+            </div>
+            <input type="date" id="endDate" class="form-control" placeholder="End Date">
+        </div>
+    </div>    
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="ordersTable" class="table table-bordered" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Ticket</th>
+                        <th>User</th>
+                        <th>Movie</th>
+                        <th class="text-center">Purchase Date</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const urlGetTickets = '@Url.Action("GetTickets", "Order", new { area = "Admin" })';
+    </script>
+    <script src="~/Admin/js/Order.js" asp-append-version="true"></script>
+}

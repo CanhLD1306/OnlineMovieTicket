@@ -1,3 +1,7 @@
+let defaultSeatType = null;
+let selectedSeats = [];
+let seatDataList = [];
+let seatTypeList = [];
 $(document).ready(function () {
     loadCountries($('#addCountrySelected'));
     loadSeatTypes($('#addSeatTypeSelect'));

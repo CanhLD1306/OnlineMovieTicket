@@ -135,7 +135,16 @@ namespace OnlineMovieTicket.BL.Mapping
                                                     src => src.ShowtimeSeat != null 
                                                     && src.ShowtimeSeat.Seat != null
                                                     ? src.ShowtimeSeat.Seat.ColumnIndex : (int?)null));
-                                                    
+
+            CreateMap<Ticket, TicketDTO>()       
+                .ForMember(dest => dest.User, opt => opt.MapFrom(
+                                                    scr => scr.User != null
+                                                    ? scr.User.UserName : string.Empty))
+                .ForMember(dest => dest.Movie, opt => opt.MapFrom(
+                                                    src => src.ShowtimeSeat != null 
+                                                    && src.ShowtimeSeat.Showtime != null 
+                                                    && src.ShowtimeSeat.Showtime.Movie != null
+                                                    ? src.ShowtimeSeat.Showtime.Movie.Title : string.Empty)); 
         }
     }
 }

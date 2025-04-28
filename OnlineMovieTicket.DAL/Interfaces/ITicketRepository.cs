@@ -4,8 +4,10 @@ namespace OnlineMovieTicket.DAL.Interfaces
 {
     public interface ITicketRepository
     {
-        Task<(IEnumerable<Ticket>? ticket, int totalCount, int filterCount)> GetTickets
-        (string? searchTerm, 
+        Task<(IEnumerable<Ticket>? ticket, int totalCount, int filterCount)> GetTicketsAsync
+        (string? searchTerm,
+        DateTime? startDate,
+        DateTime? endDate,
         int pageNumber, 
         int pageSize, 
         string sortBy, 

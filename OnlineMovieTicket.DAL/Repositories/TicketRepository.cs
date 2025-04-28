@@ -23,20 +23,39 @@ namespace OnlineMovieTicket.DAL.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<(IEnumerable<Ticket>? ticket, int totalCount, int filterCount)> GetTickets(string? searchTerm, int pageNumber, int pageSize, string sortBy, bool isDescending)
+        public async Task<(IEnumerable<Ticket>? ticket, int totalCount, int filterCount)> GetTicketsAsync
+        (string? searchTerm,
+        DateTime? startDate,
+        DateTime? endDate,
+        int pageNumber, 
+        int pageSize, 
+        string sortBy, 
+        bool isDescending)
         {
             var query = _context.Tickets
                                 .Include(t => t.ShowtimeSeat)
                                 .ThenInclude(ss => ss.Showtime)
-                                .ThenInclude(s => s.Movie)
-                                .Where(t => !t.IsDeleted);
+                                    .ThenInclude(st => st.Movie)
+                                .Include(t => t.User)
+                                .Where(t => !t.IsDeleted)
+                                .AsQueryable();
             
             int totalCount = await query.CountAsync();
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                query = query.Where(t => t.TicketCode.Contains(searchTerm) || 
-                                        t.ShowtimeSeat.Showtime.Movie.Title.Contains(searchTerm));
+                query = query.Where(t => t.TicketCode.Replace(" ", "").ToLower().Contains(searchTerm.Replace(" ", "").ToLower()) 
+                                || t.ShowtimeSeat.Showtime.Movie.Title.Replace(" ", "").ToLower().Contains(searchTerm.Replace(" ", "").ToLower()));
+            }
+
+            if (startDate.HasValue)
+            {
+                query = query.Where(t => t.PurchaseDate >= startDate);
+            }
+
+            if (endDate.HasValue)
+            {
+                query = query.Where(t => t.PurchaseDate <= endDate);
             }
 
             query = isDescending
@@ -49,11 +68,6 @@ namespace OnlineMovieTicket.DAL.Repositories
                                 .ToListAsync();
             
             int filterCount = await query.CountAsync();
-
-            foreach (var ticket in tickets)
-            {
-                ticket.User = await _userManager.FindByIdAsync(ticket.CreatedBy.ToString());
-            }
 
             return (tickets, totalCount, filterCount);
         }

@@ -9,5 +9,6 @@ namespace OnlineMovieTicket.BL.Interfaces
 
         Task<Response> CreateTicketsAsync(List<ShowtimeSeatDTO> showtimeSeatDTOs, decimal price);
         Task<ListTicketForUser> GetTicketsForUser(int maxRecord, bool? isUpcoming);
+        Task<ListTicketsDTO> GetTickesAsync(TicketQueryDTO queryDTO);
     }
 }

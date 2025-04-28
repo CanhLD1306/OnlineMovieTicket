@@ -75,6 +75,24 @@ namespace OnlineMovieTicket.BL.Services
 
         }
 
+        public async Task<ListTicketsDTO> GetTickesAsync(TicketQueryDTO queryDTO)
+        {
+            var (tickets, totalCount, filterCount) = await _ticketRepository.GetTicketsAsync(
+                                                                            queryDTO.SearchTerm,
+                                                                            queryDTO.StartDate,
+                                                                            queryDTO.EndDate,
+                                                                            queryDTO.PageNumber,
+                                                                            queryDTO.PageSize,
+                                                                            queryDTO.SortBy,
+                                                                            queryDTO.IsDescending);
+            var ticketsDTO = _mapper.Map<List<TicketDTO>>(tickets);
+            return new ListTicketsDTO{
+                Tickets = ticketsDTO,
+                TotalCount = totalCount,
+                FilterCount = filterCount
+            };
+        }
+
         public async Task<ListTicketForUser> GetTicketsForUser(int maxRecord, bool? isUpcoming)
         {
             var (tickets, totalCount) = await _ticketRepository.GetTicketsByUser(
