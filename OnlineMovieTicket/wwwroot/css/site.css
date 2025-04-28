@@ -16,6 +16,9 @@ html {
 .d-grid{
   display: grid;
 }
+.gap-10 {
+  gap: 10px;
+}
 
 .mb-10px {
   margin-bottom: 10px !important;
@@ -27,6 +30,9 @@ html {
 
 .object-fit-cover {
   object-fit: cover;
+}
+.text-align-end{
+  text-align: end;
 }
 
 .validation-message{
@@ -665,6 +671,7 @@ margin-bottom: 1.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 0.9rem;
+  cursor: pointer;
 }
 
 .time-item:hover {
@@ -959,4 +966,89 @@ margin-bottom: 1.5rem;
 
 .profile-icon {
   font-size: 150px;
+}
+
+.booking-summary {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 1.25rem;
+  padding-top: 0.75rem;
+  margin-top: 0.75rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.checkout-btn {
+  background-color: #c50812;
+  border-color: #c50812;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+
+.checkout-btn:hover {
+  background-color: #c50812;
+  border-color: #c50812;
+}
+
+.payment-form {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+}
+
+.payment-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.payment-title {
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.card-element {
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.card-element:focus-within {
+  border-color: #635bff;
+  box-shadow: 0 0 0 1px #635bff;
+}
+
+.card-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.card-input {
+  position: relative;
+}
+
+.card-input i {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
 }

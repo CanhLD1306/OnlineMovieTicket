@@ -117,5 +117,6 @@ namespace OnlineMovieTicket.DAL.Repositories
         {
             return await _context.Rooms.AnyAsync(c => c.CinemaId == cinemaId && !c.IsDeleted);
         }
+        
     }
 }

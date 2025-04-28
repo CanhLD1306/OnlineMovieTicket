@@ -1,0 +1,33 @@
+@model List<OnlineMovieTicket.BL.DTOs.Room.RoomWithShowtimesDTO>
+
+
+@if (Model == null || !Model.Any())
+{
+    <h5 class="text-muted">There are currently no showtimes available</h5>
+}
+else
+{
+    @foreach (var room in Model)
+    {
+        <div class="cinema-item mb-4">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <div>
+                    <h5 class="cinema-name">@room.Cinema - @room.Room</h5>
+                    <p class="cinema-address">@room.Address</p>
+                </div>
+            </div>
+            <div class="time-selector mt-3">
+                @foreach (var showtime in room.Showtimes!)
+                {
+                    <div class="time-item" 
+                        data-showtime-id="@showtime.ShowtimeId"
+                        data-cinema='@room.Cinema'
+                        data-room='@room.Room'
+                        data-startTime='@showtime.StartTime.ToString("yyyy-MM-ddTHH:mm:ss")'>
+                        @showtime.StartTime.ToString("HH:mm tt")
+                    </div>
+                }
+            </div>
+        </div>
+    }
+}

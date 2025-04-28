@@ -1,0 +1,33 @@
+@model IEnumerable<OnlineMovieTicket.BL.DTOs.ShowtimeSeat.ShowtimeSeatDTO>
+@{
+    var maxRow = Model.Max(s => s.RowIndex);
+    var maxCol = Model.Max(s => s.ColumnIndex);
+    var rows = Enumerable.Range(0, maxRow + 1);
+    var cols = Enumerable.Range(1, maxCol);
+}
+
+<div id="seatsContainer" class="d-grid justify-content-center gap-10">
+    <div class="screen" style="grid-column: span @maxCol;">
+        SCREEN
+    </div>
+
+    @for (int r = 0; r <= maxRow; r++)
+    {
+        var rowLetter = (char)('A' + r);
+        for (int c = 1; c <= maxCol; c++)
+        {
+            var seat = Model.FirstOrDefault(s => s.RowIndex == r && s.ColumnIndex == c);
+            var seatCode = $"{rowLetter}{c}";
+
+            var seatColor = seat!.IsBooked ? "#808080" : (seat.color ?? "#ccc");
+            var isDisabled = seat.IsBooked ? "disabled" : "";
+
+            <button class="seat btn btn-outline-secondary mb-2"
+                    data-seat-info='@Html.Raw(Json.Serialize(seat))'
+                    style="background-color: @seatColor;"
+                    @isDisabled>
+                @seatCode
+            </button>
+        }
+    }
+</div>

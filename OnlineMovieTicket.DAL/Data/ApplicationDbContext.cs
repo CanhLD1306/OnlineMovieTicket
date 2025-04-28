@@ -9,6 +9,18 @@ namespace OnlineMovieTicket.DAL.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+               
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Cấu hình mối quan hệ giữa Ticket và ApplicationUser
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.User)
+                .WithMany()
+                .HasForeignKey(t => t.UserId);
         }
 
         public DbSet<Cinema> Cinemas { get; set; } = null!;
@@ -21,5 +33,6 @@ namespace OnlineMovieTicket.DAL.Data
         public DbSet<Showtime> Showtime { get; set; } = null!;
         public DbSet<ShowtimeSeat> ShowtimeSeats { get; set; } = null!;
         public DbSet<Banner> Banners { get; set; } = null!;
+        public DbSet<Ticket> Tickets { get; set; } = null!;
     }
 }

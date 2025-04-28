@@ -41,6 +41,12 @@ namespace OnlineMovieTicket.DAL.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task UpdateShowtimeSeatAsync(ShowtimeSeat showtimeSeat)
+        {
+            _context.ShowtimeSeats.Update(showtimeSeat);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<ShowtimeSeat?> GetShowtimeSeatByIdAsync(long showtimeSeatId)
         {
             return await _context.ShowtimeSeats.FirstOrDefaultAsync(c => c.Id == showtimeSeatId && !c.IsDeleted);

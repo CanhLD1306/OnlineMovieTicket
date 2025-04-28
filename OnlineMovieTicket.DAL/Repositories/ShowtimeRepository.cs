@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using OnlineMovieTicket.DAL.Data;
 using OnlineMovieTicket.DAL.Interfaces;
 using OnlineMovieTicket.DAL.Models;
@@ -13,9 +14,11 @@ namespace OnlineMovieTicket.DAL.Repositories
     public class ShowtimeRepository : IShowtimeRepository
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<IShowtimeRepository> _logger;
 
-        public ShowtimeRepository(ApplicationDbContext context)
+        public ShowtimeRepository(ApplicationDbContext context, ILogger<IShowtimeRepository> logger)
         {
+            _logger = logger;
             _context = context;
         }
 
@@ -115,6 +118,56 @@ namespace OnlineMovieTicket.DAL.Repositories
             return await _context.Showtime.Where(s => s.RoomId == roomId && !s.IsDeleted)
                                             .Where(s => showtimeId == null || s.Id != showtimeId)
                                             .AnyAsync(s => startTime < s.EndTime && endTime > s.StartTime);
+        }
+
+        public async Task<List<RoomWithShowtimes>?> GetShowtimesByCinemaAndDate(long cinemaId, long movieId, DateTime selectedDate)
+        {
+            var now = DateTime.Now;
+
+            DateTime startDateTime;
+            DateTime endDateTime = selectedDate.Date.AddDays(1).AddTicks(-1);
+
+            if (selectedDate.Date == now.Date)
+            {
+                startDateTime = now;
+            }
+            else
+            {
+                startDateTime = selectedDate.Date;
+            }
+
+            var showtimes = await _context.Showtime
+                                            .AsNoTracking()
+                                            .Include(s => s.Room)
+                                            .ThenInclude(Room => Room.Cinema)
+                                            .Where(s =>
+                                                s.Room.CinemaId == cinemaId &&
+                                                s.MovieId == movieId &&
+                                                s.StartTime >= startDateTime && s.StartTime <= endDateTime &&
+                                                !s.IsDeleted &&
+                                                !s.Room.IsDeleted &&
+                                                !s.Room.Cinema.IsDeleted)
+                                            .ToListAsync();
+
+
+            var groupedByRoom = showtimes
+                                .GroupBy(s => new {RoomName = s.Room.Name, CinemaName = s.Room.Cinema.Name, CinemaAddress = s.Room.Cinema.Address })
+                                .Select(group => new RoomWithShowtimes
+                                {
+                                    Room = group.Key.RoomName,
+                                    Cinema = group.Key.CinemaName,
+                                    Address = group.Key.CinemaAddress,
+                                    Showtimes = group
+                                    .OrderBy(s => s.StartTime)  
+                                    .Select(s => new ShowtimeQueryModel
+                                    {
+                                        ShowtimeId = s.Id,
+                                        StartTime = s.StartTime
+                                    }).ToList()
+                                })
+                                .ToList();
+
+            return groupedByRoom;
         }
     }
 }

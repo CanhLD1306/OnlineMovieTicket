@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,31 +9,31 @@ using System.Threading.Tasks;
 
 namespace OnlineMovieTicket.DAL.Models
 {
-    public class Showtime
+    public class Ticket
     {
         [Key]
         public long Id { get; set; }
         [Required]
-        public long MovieId { get; set; }
+        public string TicketCode { get; set; } = string.Empty;
         [Required]
-        public long RoomId { get; set; }
+        public long ShowtimeSeatId { get; set; }
         [Required]
-        public DateTime StartTime { get; set; }
+        [Precision(18, 2)]
+        public decimal Price { get; set; }
         [Required]
-        public DateTime EndTime { get; set; }
+        public bool IsPaid { get; set; }
         [Required]
+        public DateTime PurchaseDate { get; set; }
+        [Required]
+        public String UserId { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
-        [Required]
         public Guid CreatedBy { get; set; }
-        [Required]
         public DateTime UpdatedAt { get; set; }
-        [Required]
         public Guid UpdatedBy { get; set; }
-        [Required]
         public bool IsDeleted { get; set; }
 
-        public Movie Movie { get; set; } = null!;
+        public ApplicationUser? User { get; set; } = null!;
 
-        public Room Room { get; set; } = null!;
+        public ShowtimeSeat ShowtimeSeat { get; set; } = null!;
     }
 }

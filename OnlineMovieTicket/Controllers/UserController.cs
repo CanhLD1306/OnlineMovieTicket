@@ -9,7 +9,7 @@
 
     namespace OnlineMovieTicket.Controllers
     {
-        [Authorize]
+        [Authorize("RequireCustomerRole")]
         public class UserController : Controller
         {
             private readonly ILogger<MovieController> _logger;

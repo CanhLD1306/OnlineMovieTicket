@@ -308,5 +308,11 @@ namespace OnlineMovieTicket.BL.Services
             var rooms = await _roomRepository.GetRoomByCinemaAsync(cinemaId);
             return _mapper.Map<IEnumerable<RoomDTO>>(rooms);
         }
+
+        public async Task<List<RoomWithShowtimesDTO>?> GetRoomsWithShowtimes(long cinemaId, long movieId, DateTime selectedDate)
+        {
+            var roomWithShowtimes = await _showtimeRepository.GetShowtimesByCinemaAndDate(cinemaId, movieId, selectedDate);
+            return _mapper.Map<List<RoomWithShowtimesDTO>>(roomWithShowtimes);
+        }
     }
 }

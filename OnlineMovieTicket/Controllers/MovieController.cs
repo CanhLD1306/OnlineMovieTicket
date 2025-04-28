@@ -10,19 +10,24 @@ namespace OnlineMovieTicket.Controllers
     public class MovieController : Controller
     {
         private readonly ILogger<MovieController> _logger;
+        private readonly IShowtimeSeatService _showtimeSeatService;
         private readonly ICountryService _countryService;
         private readonly ICityService _cityService;
         private readonly ICinemaService _cinemaService;
         private readonly IMovieService _movieService;
+        private readonly IRoomService _roomService;
 
         public MovieController(
-            
+            IShowtimeSeatService showtimeSeatService,
             ILogger<MovieController> logger, 
+            IRoomService roomService,
             ICountryService countryService,
             ICityService cityService,
             ICinemaService cinemaService, 
             IMovieService movieService)
         {
+            _showtimeSeatService = showtimeSeatService;
+            _roomService = roomService;
             _movieService = movieService;
             _countryService = countryService;
             _cityService = cityService;
@@ -69,5 +74,18 @@ namespace OnlineMovieTicket.Controllers
             return Json(cinemas);
         }
 
+        [HttpGet("GetShowtimes")]
+        public async Task<IActionResult> GetShowtimes(long cinemaId, long movieId, DateTime selectedDate)
+        {
+            var result = await _roomService.GetRoomsWithShowtimes(cinemaId, movieId, selectedDate);
+            return PartialView("_Showtimes", result);
+        }
+
+        [HttpGet("GetShowtimeSeats")]
+        public async Task<IActionResult> GetShowtimeSeats(long showtimeId)
+        {
+            var result = await _showtimeSeatService.GetAllShowtimeSeatsByShowtimeAsync(showtimeId);
+            return PartialView("_ShowtimeSeats", result);
+        }
     }
 }

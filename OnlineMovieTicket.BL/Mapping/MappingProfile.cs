@@ -66,6 +66,7 @@ namespace OnlineMovieTicket.BL.Mapping
                 .ForMember(dest => dest.Room, opt => opt.Ignore());
 
             CreateMap<ShowtimeSeat, ShowtimeSeatDTO>()
+                .ForMember(dest => dest.PriceMultiplier, opt => opt.MapFrom(src => src.Seat != null && src.Seat.SeatType != null ? src.Seat.SeatType.PriceMultiplier : (decimal?)null))
                 .ForMember(dest => dest.color, opt => opt.MapFrom(src => src.Seat != null && src.Seat.SeatType != null ? src.Seat.SeatType.Color : string.Empty))
                 .ForMember(dest => dest.RowIndex, opt => opt.MapFrom(src => src.Seat != null ? src.Seat.RowIndex : (int?)null))
                 .ForMember(dest => dest.ColumnIndex, opt => opt.MapFrom(src => src.Seat != null ? src.Seat.ColumnIndex : (int?)null));
@@ -90,6 +91,13 @@ namespace OnlineMovieTicket.BL.Mapping
                 .ForMember(dest => dest.LockoutEnd, opt => opt.Ignore())
                 .ForMember(dest => dest.LockoutEnabled, opt => opt.Ignore());
             
+            CreateMap<RoomWithShowtimes, RoomWithShowtimesDTO>()
+                .ForMember(dest => dest.Room, opt => opt.MapFrom(src => src.Room))
+                .ForMember(dest => dest.Cinema, opt => opt.MapFrom(src => src.Cinema))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
+                .ForMember(dest => dest.Showtimes, opt => opt.MapFrom(src => src.Showtimes));
+
+            CreateMap<ShowtimeQueryModel, ShowtimeQueryModelDTO>();
         }
     }
 }

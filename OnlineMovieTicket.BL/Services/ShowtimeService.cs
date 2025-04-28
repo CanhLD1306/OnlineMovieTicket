@@ -195,7 +195,11 @@ namespace OnlineMovieTicket.BL.Services
                         if (showtimeWithSeatsDTO.Showtime.StartTime.Date < movie.ReleaseDate)
                             return new Response(false, "The showtime cannot be created before the movie's release date.");
                     }
-                    if (showtimeWithSeatsDTO.Showtime.StartTime <= DateTime.UtcNow)
+                    var showtime = await _showtimeRepository.GetShowtimeByIdAsync(showtimeWithSeatsDTO.Showtime.Id);
+                    if(showtime == null){
+                        return new Response(false, "Showtime not found");
+                    }
+                    if (showtime.StartTime <= DateTime.Now || showtime.EndTime <= DateTime.Now)
                         return new Response(false, "Cannot update a showtime that has already started or finished.");
 
                     if ((showtimeWithSeatsDTO.Showtime.EndTime - showtimeWithSeatsDTO.Showtime.StartTime).TotalMinutes < (movie.Duration + 15))
@@ -207,11 +211,6 @@ namespace OnlineMovieTicket.BL.Services
                     showtimeWithSeatsDTO.Showtime.StartTime, 
                     showtimeWithSeatsDTO.Showtime.EndTime))
                         return new Response(false, "The selected time range overlaps with an existing showtime."); 
-
-                    var showtime = await _showtimeRepository.GetShowtimeByIdAsync(showtimeWithSeatsDTO.Showtime.Id);
-                    if(showtime == null){
-                        return new Response(false, "Showtime not found");
-                    }
 
                     _mapper.Map(showtimeWithSeatsDTO.Showtime, showtime);
                     showtime.UpdatedAt = DateTime.UtcNow;

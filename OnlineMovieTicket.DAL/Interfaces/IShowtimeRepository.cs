@@ -26,5 +26,6 @@ namespace OnlineMovieTicket.DAL.Interfaces
         Task<bool> IsOverLap(long? showtimeId, long roomId, DateTime startTime, DateTime endTime);
         Task<bool> RoomHasFutureShotime(long roomId);
         Task<bool> MovieHasFutureShotime(long movieId);
+        Task<List<RoomWithShowtimes>?> GetShowtimesByCinemaAndDate(long cinemaId, long movieId, DateTime selectedDate);
     }
 }

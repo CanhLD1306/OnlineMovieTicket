@@ -73,15 +73,17 @@ builder.Services.AddAuthentication()
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecific", policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        policy.WithOrigins(allowedOrigins)
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+        // policy.WithOrigins(allowedOrigins)
+        //       .AllowAnyMethod()
+        //       .AllowAnyHeader();
+        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
 });
 
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSettings"));
 
 builder.Services.AddScoped<SeedManager>();
 builder.Services.AddScoped<RoleSeeder>();
@@ -110,6 +112,9 @@ builder.Services.AddScoped<IShowtimeSeatRepository, ShowtimeSeatRepository>();
 builder.Services.AddScoped<IShowtimeSeatService, ShowtimeSeatService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddTransient<IPaymentService, PaymentService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddTransient<ICloudinaryService, CloudinaryService>();
 builder.Services.AddTransient<IFileUploadService, FileUploadService>();
@@ -121,7 +126,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("RequireUserRole", policy => policy.RequireRole("User"));
+    options.AddPolicy("RequireCustomerRole", policy => policy.RequireRole("Customer"));
 });
 
 var app = builder.Build();
@@ -129,17 +134,12 @@ await SeedDataAsync(app);
 
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error/500");
-    app.UseStatusCodePagesWithReExecute("/Error/{0}");
-    app.UseMigrationsEndPoint();
-}
-else
-{
-    app.UseExceptionHandler("/Error/500");
-    app.UseStatusCodePagesWithReExecute("/Error/{0}");
-}
+
+app.UseExceptionHandler("/Error/500");
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
+app.UseMigrationsEndPoint();
+
+
 
 app.UseCors("AllowSpecific");
 app.UseHttpsRedirection();

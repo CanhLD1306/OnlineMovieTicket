@@ -13,6 +13,7 @@ namespace OnlineMovieTicket.DAL.Interfaces
         Task<ShowtimeSeat?> GetShowtimeSeatByIdAsync(long showtimeSeatId);
         Task CreateShowtimeSeatsAsync(IEnumerable<ShowtimeSeat> showtimeSeats);
         Task UpdateShowtimeSeatsAsync(IEnumerable<ShowtimeSeat> showtimeSeats);
+        Task UpdateShowtimeSeatAsync(ShowtimeSeat showtimeSeat);
         Task<bool> ShowtimeHasBookedTicket(long showtimeId);
     }
 }

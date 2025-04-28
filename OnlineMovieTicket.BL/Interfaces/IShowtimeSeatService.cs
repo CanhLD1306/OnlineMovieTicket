@@ -15,5 +15,6 @@ namespace OnlineMovieTicket.BL.Interfaces
         Task<IEnumerable<ShowtimeSeatDTO>?> GetAllShowtimeSeatsByShowtimeAsync(long showtimeId);
         Task<Response> CreateShowtimeSeatsAsync(IEnumerable<Seat> seats, long showtimeId);
         Task<Response> DeleteShowtimeSeatsByRoomAsync(long showtimeId);
+        Task<Response> BookShowtimeSeatAsync(long showtimeSeatId);
     }
 }

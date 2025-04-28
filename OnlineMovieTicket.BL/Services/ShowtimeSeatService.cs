@@ -6,6 +6,7 @@ using OnlineMovieTicket.BL.Interfaces;
 using OnlineMovieTicket.DAL.Interfaces;
 using OnlineMovieTicket.DAL.Models;
 using OnlineMovieTicket.DAL.Repositories;
+using Org.BouncyCastle.Bcpg.Sig;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,6 +99,32 @@ namespace OnlineMovieTicket.BL.Services
         {
             var showtimeSeats = await _showtimeSeatRepository.GetShowtimeSeatsByShowtimeAsync(showtimeId);
             return _mapper.Map<IEnumerable<ShowtimeSeatDTO>>(showtimeSeats);
+        }
+
+        public async Task<Response> BookShowtimeSeatAsync(long showtimeSeatId)
+        {
+            try
+            {
+                var showtimeSeat = await _showtimeSeatRepository.GetShowtimeSeatByIdAsync(showtimeSeatId);
+                if(showtimeSeat == null)
+                {
+                    return new Response(false, "seat not found");
+                }
+
+                if(showtimeSeat.IsBooked){
+                    return new Response(false, "This seat has book");
+                }
+                showtimeSeat.IsBooked = true;
+                showtimeSeat.UpdatedAt = DateTime.UtcNow;
+                showtimeSeat.UpdatedBy = (await _authService.GetUserId()).Data;
+
+                await _showtimeSeatRepository.UpdateShowtimeSeatAsync(showtimeSeat);
+                return new Response(true, "Update seat successfull");
+            }
+            catch (Exception)
+            {
+                return new Response(false, "Update seat fail");
+            }    
         }
     }
 }

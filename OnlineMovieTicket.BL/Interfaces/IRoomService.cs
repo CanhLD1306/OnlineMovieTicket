@@ -13,5 +13,6 @@ namespace OnlineMovieTicket.BL.Interfaces
         Task<Response> DeleteRoomAsync(long roomId);
         Task<Response> ChangeStatusAsync(long roomId);
         Task<IEnumerable<RoomDTO>?> GetRoomByCinemaAsync(long cinemaId);
+        Task<List<RoomWithShowtimesDTO>?> GetRoomsWithShowtimes (long cinemaId, long movieId, DateTime selectedDate);
     }
 }
