@@ -32,5 +32,6 @@ namespace OnlineMovieTicket.DAL.Interfaces
         Task<Movie?> GetMovieByTitleAsync(long movieId, string title);
         Task CreateMovieAsync(Movie movie);
         Task UpdateMovieAsync(Movie movie);
+        Task<(List<TopMovieRevenueModel>? movies, int totalCount, int filterCount)> GetTop5MoviesByRevenueAsync();
     }
 }

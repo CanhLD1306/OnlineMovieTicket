@@ -12,6 +12,7 @@ namespace OnlineMovieTicket.BL.Interfaces
         Task<Response> UnlockUserAsync(string email);
         Task<Response> UpdateProfileAsync (UserDTO userDTO);
         Task<Response> ChangePasswordAsync (ChangePasswordDTO changePasswordDTO);
+        Task<int> GetTotalCustomers();
 
     }
 }

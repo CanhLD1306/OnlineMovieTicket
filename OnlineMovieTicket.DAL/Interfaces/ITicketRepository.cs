@@ -14,5 +14,10 @@ namespace OnlineMovieTicket.DAL.Interfaces
         bool isDescending);
         Task<(IEnumerable<Ticket>? tickets, int totalCount)> GetTicketsByUser(Guid userId, int maxRecord, bool? isUpcoming);
         Task CreateTicketsAsync(IEnumerable<Ticket> tickets);
+        Task<decimal> GetTotalRevenueThisMonthAsync();
+        Task<int> GetTotalTickets();
+
+        Task<List<RevenueByTime>> GetRevenueByDateGroupAsync(string groupBy);
+        Task<List<TicketRatioBySeatType>> GetTicketRatioBySeatTypeAsync();
     }
 }

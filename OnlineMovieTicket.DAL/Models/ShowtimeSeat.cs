@@ -32,5 +32,7 @@ namespace OnlineMovieTicket.DAL.Models
         public Showtime Showtime { get; set; } = null!;
 
         public Seat Seat { get; set; } = null!;
+
+        public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
     }
 }

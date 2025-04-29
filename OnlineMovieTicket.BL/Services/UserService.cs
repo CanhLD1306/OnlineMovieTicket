@@ -95,6 +95,11 @@ namespace OnlineMovieTicket.BL.Services
             return new Response<UserDTO> (true, null,userDTO);
         }
 
+        public async Task<int> GetTotalCustomers()
+        {
+            return await _userRepository.GetTotalCustomers();
+        }
+
         public async Task<Response<UserDTO>> GetUserAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);

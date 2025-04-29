@@ -44,5 +44,6 @@ namespace OnlineMovieTicket.DAL.Models
         public DateTime UpdatedAt { get; set; }
         public Guid UpdatedBy { get; set; }
         public bool IsDeleted { get; set; }
+        public ICollection<Showtime> Showtimes { get; set; } = new List<Showtime>();
     }
 }

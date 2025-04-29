@@ -73,5 +73,15 @@ namespace OnlineMovieTicket.DAL.Interfaces
                                 
             return (users, totalCount, filterCount);
         }
+
+        public async Task<int> GetTotalCustomers()
+        {
+            return await (from user in _context.Users
+                            join userRole in _context.UserRoles on user.Id equals userRole.UserId
+                            join role in _context.Roles on userRole.RoleId equals role.Id
+                            where role.Name == "Customer"
+                            select user)
+                            .CountAsync();
+        }
     }
 }

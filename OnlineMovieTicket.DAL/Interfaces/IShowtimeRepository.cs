@@ -27,5 +27,6 @@ namespace OnlineMovieTicket.DAL.Interfaces
         Task<bool> RoomHasFutureShotime(long roomId);
         Task<bool> MovieHasFutureShotime(long movieId);
         Task<List<RoomWithShowtimes>?> GetShowtimesByCinemaAndDate(long cinemaId, long movieId, DateTime selectedDate);
+        Task<int> GetTotalShowtimes();
     }
 }

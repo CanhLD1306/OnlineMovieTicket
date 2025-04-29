@@ -157,5 +157,38 @@ namespace OnlineMovieTicket.DAL.Repositories
                                 .ToListAsync();
             return (movies, totalCount, filterCount);
         }
+
+        public async Task<(List<TopMovieRevenueModel>? movies, int totalCount, int filterCount)> GetTop5MoviesByRevenueAsync()
+        {
+            var movies = await _context.Movies
+                                        .Where(m => !m.IsDeleted)
+                                        .Select(m => new TopMovieRevenueModel
+                                        {
+                                            Title = m.Title,
+                                            PosterURL = m.PosterURL,
+                                            ReleaseDate = m.ReleaseDate,
+                                            TotalRevenue = m.Showtimes
+                                                .Where(s => !s.IsDeleted)
+                                                .SelectMany(s => s.ShowtimeSeats)
+                                                .Where(ss => !ss.IsDeleted)
+                                                .SelectMany(ss => ss.Tickets)
+                                                .Where(t => !t.IsDeleted && t.IsPaid)
+                                                .Sum(t => t.Price),
+                                            TotalTicketSold = m.Showtimes
+                                                .Where(s => !s.IsDeleted)
+                                                .SelectMany(s => s.ShowtimeSeats)
+                                                .Where(ss => !ss.IsDeleted)
+                                                .SelectMany(ss => ss.Tickets)
+                                                .Count(t => !t.IsDeleted && t.IsPaid)
+                                        })
+                                        .OrderByDescending(m => m.TotalRevenue)
+                                        .Take(5)
+                                        .ToListAsync();
+
+            var totalCount = movies.Count();  
+            var filterCount = movies.Count();
+
+            return (movies, totalCount, filterCount);
+        }
     }
 }

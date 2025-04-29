@@ -169,5 +169,10 @@ namespace OnlineMovieTicket.DAL.Repositories
 
             return groupedByRoom;
         }
+
+        public async Task<int> GetTotalShowtimes()
+        {
+            return await _context.Showtime.Where(s => !s.IsDeleted && s.StartTime > DateTime.Now).CountAsync();
+        }
     }
 }

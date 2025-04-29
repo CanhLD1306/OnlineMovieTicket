@@ -4,6 +4,7 @@ using AutoMapper;
 using OnlineMovieTicket.BL.DTOs;
 using OnlineMovieTicket.BL.DTOs.Movie;
 using OnlineMovieTicket.BL.Interfaces;
+using OnlineMovieTicket.BLL.DTOs.Dashboard;
 using OnlineMovieTicket.DAL.Interfaces;
 using OnlineMovieTicket.DAL.Models;
 
@@ -207,6 +208,20 @@ namespace OnlineMovieTicket.BL.Services
                 TotalCount = totalCount,
                 FilterCount = filterCount
             };
+        }
+
+        public async Task<ListMovieRevenuesDTO> GetTop5MoviesByRevenueAsync()
+        {
+            
+            var (movies, totalCount, filterCount) = await _movieRepository.GetTop5MoviesByRevenueAsync();
+            
+            var moviesDTO = _mapper.Map<List<MovieRevenueDTO>>(movies);
+            return new ListMovieRevenuesDTO{
+                MovieRevenuesDTO = moviesDTO,
+                TotalCount = totalCount,
+                FilterCount = filterCount
+            };
+
         }
 
         public async Task<Response> UpdateMovieAsync(MovieDTO movieDTO)

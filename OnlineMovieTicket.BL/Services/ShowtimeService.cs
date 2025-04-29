@@ -243,5 +243,10 @@ namespace OnlineMovieTicket.BL.Services
 
             return new Response<ShowtimeWithSeatsDTO>(true, null, showtimeWithSeats);
         }
+
+        public async Task<int> GetTotalShowtimes()
+        {
+            return await _showtimeRepository.GetTotalShowtimes();
+        }
     }
 }

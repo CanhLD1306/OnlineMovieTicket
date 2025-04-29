@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OnlineMovieTicket.BL.DTOs;
 using OnlineMovieTicket.BL.DTOs.Movie;
+using OnlineMovieTicket.BLL.DTOs.Dashboard;
 
 namespace OnlineMovieTicket.BL.Interfaces
 {
@@ -18,5 +19,6 @@ namespace OnlineMovieTicket.BL.Interfaces
         Task<Response> CreateMovieAsync(MovieDTO movieDTO);
         Task<Response> UpdateMovieAsync(MovieDTO movieDTO);
         Task<Response> DeleteMovieAsync(long movieId);
+        Task<ListMovieRevenuesDTO> GetTop5MoviesByRevenueAsync();
     }
 }

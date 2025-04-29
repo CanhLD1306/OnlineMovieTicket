@@ -7,12 +7,10 @@ namespace OnlineMovieTicket.Areas.Admin.Controllers
     public class ShowtimeController : BaseController
     {
         private readonly IShowtimeService _showtimeService;
-        private readonly ILogger<ShowtimeController> _logger;
 
-        public ShowtimeController(IShowtimeService showtimeService, ILogger<ShowtimeController> logger)
+        public ShowtimeController(IShowtimeService showtimeService)
         {
             _showtimeService = showtimeService;
-            _logger = logger;
         }
         public IActionResult Index()
         {

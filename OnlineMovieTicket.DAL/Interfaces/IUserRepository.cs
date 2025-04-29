@@ -10,5 +10,7 @@ namespace OnlineMovieTicket.DAL.Interfaces
             bool? isLocked,
             int pageNumber, 
             int pageSize);
+
+        Task<int> GetTotalCustomers();
     }
 }

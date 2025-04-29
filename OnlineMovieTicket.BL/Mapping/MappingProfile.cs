@@ -3,6 +3,7 @@ using OnlineMovieTicket.BL.DTOs.Banner;
 using OnlineMovieTicket.BL.DTOs.Cinema;
 using OnlineMovieTicket.BL.DTOs.City;
 using OnlineMovieTicket.BL.DTOs.Country;
+using OnlineMovieTicket.BL.DTOs.Dashboard;
 using OnlineMovieTicket.BL.DTOs.Movie;
 using OnlineMovieTicket.BL.DTOs.Room;
 using OnlineMovieTicket.BL.DTOs.Seat;
@@ -11,6 +12,7 @@ using OnlineMovieTicket.BL.DTOs.Showtime;
 using OnlineMovieTicket.BL.DTOs.ShowtimeSeat;
 using OnlineMovieTicket.BL.DTOs.Ticket;
 using OnlineMovieTicket.BL.DTOs.User;
+using OnlineMovieTicket.BLL.DTOs.Dashboard;
 using OnlineMovieTicket.DAL.Models;
 
 namespace OnlineMovieTicket.BL.Mapping
@@ -145,6 +147,10 @@ namespace OnlineMovieTicket.BL.Mapping
                                                     && src.ShowtimeSeat.Showtime != null 
                                                     && src.ShowtimeSeat.Showtime.Movie != null
                                                     ? src.ShowtimeSeat.Showtime.Movie.Title : string.Empty)); 
+            
+            CreateMap<TopMovieRevenueModel, MovieRevenueDTO>();
+            CreateMap<RevenueByTime, RevenueByTimeDTO>();
+            CreateMap<TicketRatioBySeatType, TicketRatioBySeatTypeDTO>();
         }
     }
 }

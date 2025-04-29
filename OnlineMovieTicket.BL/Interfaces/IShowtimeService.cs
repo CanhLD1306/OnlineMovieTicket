@@ -16,5 +16,6 @@ namespace OnlineMovieTicket.BL.Interfaces
         Task<ShowtimesList> GetShowtimesAsync(ShowtimeQueryDTO queryDTO);
         Task<Response<ShowtimeDTO>> GetShowtimeByIdAsync(long showtimeId);
         Task<Response<ShowtimeWithSeatsDTO>> GetShowtimeWithSeatsById(long showtimeId);
+        Task<int> GetTotalShowtimes();
     }
 }

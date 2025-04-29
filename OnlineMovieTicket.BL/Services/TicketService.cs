@@ -1,6 +1,7 @@
 using System.Transactions;
 using AutoMapper;
 using OnlineMovieTicket.BL.DTOs;
+using OnlineMovieTicket.BL.DTOs.Dashboard;
 using OnlineMovieTicket.BL.DTOs.ShowtimeSeat;
 using OnlineMovieTicket.BL.DTOs.Ticket;
 using OnlineMovieTicket.BL.Interfaces;
@@ -75,6 +76,11 @@ namespace OnlineMovieTicket.BL.Services
 
         }
 
+        public async Task<List<RevenueByTimeDTO>> GetRevenueByDateGroupAsync(string groupBy)
+        {
+            return _mapper.Map<List<RevenueByTimeDTO>>(await _ticketRepository.GetRevenueByDateGroupAsync(groupBy));
+        }
+
         public async Task<ListTicketsDTO> GetTickesAsync(TicketQueryDTO queryDTO)
         {
             var (tickets, totalCount, filterCount) = await _ticketRepository.GetTicketsAsync(
@@ -93,6 +99,11 @@ namespace OnlineMovieTicket.BL.Services
             };
         }
 
+        public async Task<List<TicketRatioBySeatTypeDTO>> GetTicketRatioBySeatTypeAsync()
+        {
+            return _mapper.Map<List<TicketRatioBySeatTypeDTO>>(await _ticketRepository.GetTicketRatioBySeatTypeAsync());
+        }
+
         public async Task<ListTicketForUser> GetTicketsForUser(int maxRecord, bool? isUpcoming)
         {
             var (tickets, totalCount) = await _ticketRepository.GetTicketsByUser(
@@ -104,6 +115,16 @@ namespace OnlineMovieTicket.BL.Services
                 Tickets = ticketsDTO,
                 TotalCount = totalCount
             };
+        }
+
+        public async Task<decimal> GetTotalRevenueThisMonthAsync()
+        {
+            return await _ticketRepository.GetTotalRevenueThisMonthAsync();
+        }
+
+        public async Task<int> GetTotalTickets()
+        {
+            return await _ticketRepository.GetTotalTickets();
         }
 
         private string GenerateTicketCode(int length = 4)
